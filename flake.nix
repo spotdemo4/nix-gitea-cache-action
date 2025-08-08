@@ -40,7 +40,7 @@
           git
           pkgs.nur.repos.trev.bumper
 
-          nodejs_24
+          nodejs_20
           biome
           prettier
 
