@@ -15,10 +15,12 @@ try {
 		});
 	}
 
+	// Get current system closure
+	const closure = await exec.getExecOutput("nix-store -qR /run/current-system");
+	const paths = closure.stdout.trim().replace(/\n/g, " ");
+
 	// Export nix store
-	await exec.exec(
-		"nix-store --export $(find /nix/store -maxdepth 1 -name '*-*') > /tmp/nixcache",
-	);
+	await exec.exec(`nix-store --export ${paths} > /tmp/nixcache`);
 
 	// Save nix store to cache
 	await cache.saveCache(
