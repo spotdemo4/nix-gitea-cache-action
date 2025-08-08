@@ -82693,7 +82693,7 @@ try {
         });
     }
     // Get current system closure
-    const closure = await execExports.getExecOutput("nix-store -qR /run/current-system");
+    const closure = await execExports.getExecOutput("find /nix/store -maxdepth 1 -name '*-*'");
     const paths = closure.stdout.trim().replace(/\n/g, " ");
     // Export nix store
     await execExports.exec(`nix-store --export ${paths} > /tmp/nixcache`);
