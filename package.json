@@ -1,11 +1,19 @@
 {
 	"name": "nix-gitea-cache-action",
+	"description": "GitHub Action to cache the nix store",
 	"version": "1.0.1",
 	"type": "module",
-	"keywords": [],
+	"keywords": [
+		"actions"
+	],
 	"author": "",
 	"license": "ISC",
-	"description": "",
+	"exports": {
+		".": "./dist/index.js"
+	},
+	"scripts": {
+		"build": "rollup --config rollup.config.js"
+	},
 	"dependencies": {
 		"@actions/cache": "^4.0.5",
 		"@actions/core": "^1.11.1",
