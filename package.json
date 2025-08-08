@@ -7,7 +7,7 @@
 		"actions"
 	],
 	"author": "",
-	"license": "ISC",
+	"license": "MIT",
 	"exports": {
 		".": "./dist/index.js"
 	},
