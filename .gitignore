@@ -1,0 +1,7 @@
+# Build
+/node_modules/
+/dist/
+
+# Nix
+/result*
+/.direnv/

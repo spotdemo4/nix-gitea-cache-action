@@ -1,0 +1,21 @@
+name: Gitea Nix Cache Action
+description: Imports/exports the nix store to/from the actions cache
+author: Trev
+branding:
+  icon: chevron-up
+  color: yellow
+
+inputs:
+  key:
+    description: An explicit key for a cache entry.
+    required: false
+
+outputs:
+  cache-hit:
+    description: A string value to indicate an exact match was found for the key.
+    value: ${{ steps.nix-cache.outputs.cache-hit }}
+
+runs:
+  using: node24
+  main: dist/index.js
+  post: dist/cleanup.js
