@@ -82692,11 +82692,11 @@ try {
             },
         });
     }
-    // Get current system closure
-    const closure = await execExports.getExecOutput("find /nix/store -maxdepth 1 -name '*-*'");
-    const paths = closure.stdout.trim().replace(/\n/g, " ");
     // Export nix store
-    await execExports.exec(`nix-store --export ${paths} > /tmp/nixcache`);
+    await execExports.exec("bash", [
+        "-c",
+        "nix-store --export $(find /nix/store -maxdepth 1 -name '*-*') > /tmp/nixcache",
+    ]);
     // Save nix store to cache
     await cacheExports.saveCache(["/tmp/nixcache"], `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}-${key}`);
 }
