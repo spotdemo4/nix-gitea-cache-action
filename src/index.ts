@@ -8,10 +8,7 @@ try {
 	const key = await getKey();
 
 	// Restore cache to tmp
-	const restore = await cache.restoreCache(
-		["/tmp/nixcache"],
-		`nix-store-${core.platform.platform}-${core.platform.arch}-${key}`,
-	);
+	const restore = await cache.restoreCache(["/tmp/nixcache"], key);
 
 	// If cache was restored, import it
 	if (restore) {
