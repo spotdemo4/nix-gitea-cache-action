@@ -82718,7 +82718,13 @@ async function main() {
         return;
     }
     // If cache was restored, import it
-    await execExports.exec("nix", ["copy", "--all", "--from", "file:///tmp/nix-cache"]);
+    await execExports.exec("nix", [
+        "copy",
+        "--all",
+        "--from",
+        "file:///tmp/nix-cache",
+        "--no-check-sigs",
+    ]);
 }
 try {
     await main();
