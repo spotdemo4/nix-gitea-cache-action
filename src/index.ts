@@ -1,19 +1,11 @@
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
+import { getKey } from "./key.js";
 
 try {
 	// Get cache key
-	let key = core.getInput("key");
-	if (!key) {
-		await exec.exec("nix", ["hash", "file", "flake.lock"], {
-			listeners: {
-				stdout: (data) => {
-					key += data.toString().trim();
-				},
-			},
-		});
-	}
+	const key = await getKey();
 
 	// Restore cache to tmp
 	const restore = await cache.restoreCache(
@@ -23,7 +15,7 @@ try {
 
 	// If cache was restored, import it
 	if (restore) {
-		await exec.exec("nix-store --import < /tmp/nixcache");
+		await exec.exec("bash", ["-c", "nix-store --import < /tmp/nixcache"]);
 	}
 
 	core.setOutput("cache-hit", restore ? "true" : "false");

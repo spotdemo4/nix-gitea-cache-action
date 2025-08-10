@@ -1,19 +1,11 @@
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
+import { getKey } from "./key.js";
 
 try {
 	// Get cache key
-	let key = core.getInput("key");
-	if (!key) {
-		await exec.exec("nix", ["hash", "file", "flake.lock"], {
-			listeners: {
-				stdout: (data) => {
-					key += data.toString().trim();
-				},
-			},
-		});
-	}
+	const key = await getKey();
 
 	// Export nix store
 	await exec.exec("bash", [
