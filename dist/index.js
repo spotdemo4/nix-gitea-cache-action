@@ -82683,31 +82683,35 @@ var execExports = requireExec();
 async function getKey() {
     try {
         // Get cache key from input
-        let key = coreExports.getInput("key");
+        const key = coreExports.getInput("key");
         if (key)
             return key;
-        // If no key is provided, generate one from flake.lock
+        // If no key is provided, generate one from flake.lock hash
+        let hash = "";
         await execExports.exec("nix", ["hash", "file", "flake.lock"], {
             listeners: {
                 stdout: (data) => {
-                    key += data.toString().trim();
+                    hash += data.toString().trim();
                 },
             },
         });
-        if (key)
-            return key;
+        if (hash) {
+            return `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}-${hash}`;
+        }
+        // Fallback if flake.lock is not available
+        return `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}`;
     }
     catch (error) {
         console.error("Failed to generate cache key:", error);
     }
-    return "";
+    return "nix-store-default"; // Default key if all else fails
 }
 
 try {
     // Get cache key
     const key = await getKey();
     // Restore cache to tmp
-    const restore = await cacheExports.restoreCache(["/tmp/nixcache"], `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}-${key}`);
+    const restore = await cacheExports.restoreCache(["/tmp/nixcache"], key);
     // If cache was restored, import it
     if (restore) {
         await execExports.exec("bash", ["-c", "nix-store --import < /tmp/nixcache"]);

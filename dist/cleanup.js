@@ -82683,36 +82683,40 @@ var execExports = requireExec();
 async function getKey() {
     try {
         // Get cache key from input
-        let key = coreExports.getInput("key");
+        const key = coreExports.getInput("key");
         if (key)
             return key;
-        // If no key is provided, generate one from flake.lock
+        // If no key is provided, generate one from flake.lock hash
+        let hash = "";
         await execExports.exec("nix", ["hash", "file", "flake.lock"], {
             listeners: {
                 stdout: (data) => {
-                    key += data.toString().trim();
+                    hash += data.toString().trim();
                 },
             },
         });
-        if (key)
-            return key;
+        if (hash) {
+            return `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}-${hash}`;
+        }
+        // Fallback if flake.lock is not available
+        return `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}`;
     }
     catch (error) {
         console.error("Failed to generate cache key:", error);
     }
-    return "";
+    return "nix-store-default"; // Default key if all else fails
 }
 
 try {
-    // Get cache key
-    const key = await getKey();
     // Export nix store
     await execExports.exec("bash", [
         "-c",
         "nix-store --export $(find /nix/store -maxdepth 1 -name '*-*') > /tmp/nixcache",
     ]);
+    // Get cache key
+    const key = await getKey();
     // Save nix store to cache
-    await cacheExports.saveCache(["/tmp/nixcache"], `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}-${key}`);
+    await cacheExports.saveCache(["/tmp/nixcache"], key);
 }
 catch (error) {
     if (error instanceof Error)

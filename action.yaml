@@ -7,7 +7,7 @@ branding:
 
 inputs:
   key:
-    description: An explicit key for a cache entry.
+    description: An explicit key for the cache entry.
     required: false
 
 outputs:
