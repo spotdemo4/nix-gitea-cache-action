@@ -16,7 +16,13 @@ async function main() {
 	}
 
 	// If cache was restored, import it
-	await exec.exec("nix", ["copy", "--all", "--from", "file:///tmp/nix-cache"]);
+	await exec.exec("nix", [
+		"copy",
+		"--all",
+		"--from",
+		"file:///tmp/nix-cache",
+		"--no-check-sigs",
+	]);
 }
 
 try {

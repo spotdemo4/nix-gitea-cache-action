@@ -8,7 +8,13 @@ async function main() {
 	await exec.exec("nix", ["store", "optimise"]);
 
 	// Export nix store
-	await exec.exec("nix", ["copy", "--all", "--to", "file:///tmp/nix-cache"]);
+	await exec.exec("nix", [
+		"copy",
+		"--all",
+		"--to",
+		"file:///tmp/nix-cache",
+		"--no-check-sigs",
+	]);
 
 	// Get cache key
 	const key = await getKey();
