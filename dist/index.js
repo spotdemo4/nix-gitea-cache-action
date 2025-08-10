@@ -82680,10 +82680,13 @@ var coreExports = requireCore();
 
 var execExports = requireExec();
 
-try {
-    // Get cache key
-    let key = coreExports.getInput("key");
-    if (!key) {
+async function getKey() {
+    try {
+        // Get cache key from input
+        let key = coreExports.getInput("key");
+        if (key)
+            return key;
+        // If no key is provided, generate one from flake.lock
         await execExports.exec("nix", ["hash", "file", "flake.lock"], {
             listeners: {
                 stdout: (data) => {
@@ -82691,12 +82694,23 @@ try {
                 },
             },
         });
+        if (key)
+            return key;
     }
+    catch (error) {
+        console.error("Failed to generate cache key:", error);
+    }
+    return "";
+}
+
+try {
+    // Get cache key
+    const key = await getKey();
     // Restore cache to tmp
     const restore = await cacheExports.restoreCache(["/tmp/nixcache"], `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}-${key}`);
     // If cache was restored, import it
     if (restore) {
-        await execExports.exec("nix-store --import < /tmp/nixcache");
+        await execExports.exec("bash", ["-c", "nix-store --import < /tmp/nixcache"]);
     }
     coreExports.setOutput("cache-hit", restore ? "true" : "false");
 }
