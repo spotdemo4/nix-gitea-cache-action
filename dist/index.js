@@ -1758,7 +1758,7 @@ function requireTimers () {
 	return timers;
 }
 
-var main = {exports: {}};
+var main$1 = {exports: {}};
 
 var sbmh;
 var hasRequiredSbmh;
@@ -3296,7 +3296,7 @@ function requireUrlencoded () {
 var hasRequiredMain;
 
 function requireMain () {
-	if (hasRequiredMain) return main.exports;
+	if (hasRequiredMain) return main$1.exports;
 	hasRequiredMain = 1;
 
 	const WritableStream = require$$0$b.Writable;
@@ -3377,12 +3377,12 @@ function requireMain () {
 	  this._parser.write(chunk, cb);
 	};
 
-	main.exports = Busboy;
-	main.exports.default = Busboy;
-	main.exports.Busboy = Busboy;
+	main$1.exports = Busboy;
+	main$1.exports.default = Busboy;
+	main$1.exports.Busboy = Busboy;
 
-	main.exports.Dicer = Dicer;
-	return main.exports;
+	main$1.exports.Dicer = Dicer;
+	return main$1.exports;
 }
 
 var constants$9;
@@ -82707,16 +82707,21 @@ async function getKey() {
     return "nix-store-default"; // Default key if all else fails
 }
 
-try {
+async function main() {
     // Get cache key
     const key = await getKey();
     // Restore cache to tmp
-    const restore = await cacheExports.restoreCache(["/tmp/nixcache"], key);
-    // If cache was restored, import it
-    if (restore) {
-        await execExports.exec("bash", ["-c", "nix-store --import < /tmp/nixcache"]);
-    }
+    const restore = await cacheExports.restoreCache(["/tmp/nix-cache"], key);
     coreExports.setOutput("cache-hit", restore ? "true" : "false");
+    if (!restore) {
+        coreExports.info("Cache not found, proceeding without restoring.");
+        return;
+    }
+    // If cache was restored, import it
+    await execExports.exec("nix", ["copy", "--all", "--from", "file:///tmp/nix-cache"]);
+}
+try {
+    await main();
 }
 catch (error) {
     if (error instanceof Error)
