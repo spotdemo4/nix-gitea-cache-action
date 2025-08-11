@@ -1,7 +1,7 @@
 import require$$0$3 from 'os';
 import require$$0$4 from 'crypto';
 import require$$1$1 from 'fs';
-import require$$1$6 from 'path';
+import require$$0$e from 'path';
 import require$$2 from 'http';
 import require$$1$2 from 'https';
 import require$$0$8 from 'net';
@@ -27,15 +27,15 @@ import require$$6 from 'string_decoder';
 import require$$0$d from 'diagnostics_channel';
 import require$$2$2 from 'child_process';
 import require$$6$1 from 'timers';
-import require$$1$7 from 'node:os';
+import require$$1$6 from 'node:os';
 import require$$2$3 from 'node:process';
-import require$$0$e from 'node:crypto';
-import require$$1$8 from 'node:http';
+import require$$0$f from 'node:crypto';
+import require$$1$7 from 'node:http';
 import require$$2$4 from 'node:https';
 import require$$3$1 from 'node:zlib';
-import require$$0$f from 'tty';
+import require$$0$g from 'tty';
 import require$$2$5 from 'node:buffer';
-import require$$1$9 from 'node:fs';
+import require$$1$8 from 'node:fs';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -25546,7 +25546,7 @@ function requirePathUtils () {
 	};
 	Object.defineProperty(pathUtils, "__esModule", { value: true });
 	pathUtils.toPlatformPath = pathUtils.toWin32Path = pathUtils.toPosixPath = void 0;
-	const path = __importStar(require$$1$6);
+	const path = __importStar(require$$0$e);
 	/**
 	 * toPosixPath converts the given path to the posix form. On Windows, \\ will be
 	 * replaced with /.
@@ -25633,7 +25633,7 @@ function requireIoUtil () {
 		Object.defineProperty(exports, "__esModule", { value: true });
 		exports.getCmdPath = exports.tryGetExecutablePath = exports.isRooted = exports.isDirectory = exports.exists = exports.READONLY = exports.UV_FS_O_EXLOCK = exports.IS_WINDOWS = exports.unlink = exports.symlink = exports.stat = exports.rmdir = exports.rm = exports.rename = exports.readlink = exports.readdir = exports.open = exports.mkdir = exports.lstat = exports.copyFile = exports.chmod = void 0;
 		const fs = __importStar(require$$1$1);
-		const path = __importStar(require$$1$6);
+		const path = __importStar(require$$0$e);
 		_a = fs.promises
 		// export const {open} = 'fs'
 		, exports.chmod = _a.chmod, exports.copyFile = _a.copyFile, exports.lstat = _a.lstat, exports.mkdir = _a.mkdir, exports.open = _a.open, exports.readdir = _a.readdir, exports.readlink = _a.readlink, exports.rename = _a.rename, exports.rm = _a.rm, exports.rmdir = _a.rmdir, exports.stat = _a.stat, exports.symlink = _a.symlink, exports.unlink = _a.unlink;
@@ -25823,7 +25823,7 @@ function requireIo () {
 	Object.defineProperty(io, "__esModule", { value: true });
 	io.findInPath = io.which = io.mkdirP = io.rmRF = io.mv = io.cp = void 0;
 	const assert_1 = require$$0$7;
-	const path = __importStar(require$$1$6);
+	const path = __importStar(require$$0$e);
 	const ioUtil = __importStar(requireIoUtil());
 	/**
 	 * Copies a file or folder.
@@ -26131,7 +26131,7 @@ function requireToolrunner () {
 	const os = __importStar(require$$0$3);
 	const events = __importStar(require$$0$6);
 	const child = __importStar(require$$2$2);
-	const path = __importStar(require$$1$6);
+	const path = __importStar(require$$0$e);
 	const io = __importStar(requireIo());
 	const ioUtil = __importStar(requireIoUtil());
 	const timers_1 = require$$6$1;
@@ -26975,7 +26975,7 @@ function requireCore () {
 		const file_command_1 = requireFileCommand();
 		const utils_1 = requireUtils$3();
 		const os = __importStar(require$$0$3);
-		const path = __importStar(require$$1$6);
+		const path = __importStar(require$$0$e);
 		const oidc_utils_1 = requireOidcUtils();
 		/**
 		 * The code to exit an action
@@ -27286,38 +27286,38 @@ function requireCore () {
 
 var cacheUtils = {};
 
-var glob = {};
+var glob$1 = {};
 
-var internalGlobber = {};
+var internalGlobber$1 = {};
 
-var internalGlobOptionsHelper = {};
+var internalGlobOptionsHelper$1 = {};
 
-var hasRequiredInternalGlobOptionsHelper;
+var hasRequiredInternalGlobOptionsHelper$1;
 
-function requireInternalGlobOptionsHelper () {
-	if (hasRequiredInternalGlobOptionsHelper) return internalGlobOptionsHelper;
-	hasRequiredInternalGlobOptionsHelper = 1;
-	var __createBinding = (internalGlobOptionsHelper && internalGlobOptionsHelper.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+function requireInternalGlobOptionsHelper$1 () {
+	if (hasRequiredInternalGlobOptionsHelper$1) return internalGlobOptionsHelper$1;
+	hasRequiredInternalGlobOptionsHelper$1 = 1;
+	var __createBinding = (internalGlobOptionsHelper$1 && internalGlobOptionsHelper$1.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 	    if (k2 === undefined) k2 = k;
 	    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 	}) : (function(o, m, k, k2) {
 	    if (k2 === undefined) k2 = k;
 	    o[k2] = m[k];
 	}));
-	var __setModuleDefault = (internalGlobOptionsHelper && internalGlobOptionsHelper.__setModuleDefault) || (Object.create ? (function(o, v) {
+	var __setModuleDefault = (internalGlobOptionsHelper$1 && internalGlobOptionsHelper$1.__setModuleDefault) || (Object.create ? (function(o, v) {
 	    Object.defineProperty(o, "default", { enumerable: true, value: v });
 	}) : function(o, v) {
 	    o["default"] = v;
 	});
-	var __importStar = (internalGlobOptionsHelper && internalGlobOptionsHelper.__importStar) || function (mod) {
+	var __importStar = (internalGlobOptionsHelper$1 && internalGlobOptionsHelper$1.__importStar) || function (mod) {
 	    if (mod && mod.__esModule) return mod;
 	    var result = {};
 	    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
 	    __setModuleDefault(result, mod);
 	    return result;
 	};
-	Object.defineProperty(internalGlobOptionsHelper, "__esModule", { value: true });
-	internalGlobOptionsHelper.getOptions = void 0;
+	Object.defineProperty(internalGlobOptionsHelper$1, "__esModule", { value: true });
+	internalGlobOptionsHelper$1.getOptions = void 0;
 	const core = __importStar(requireCore());
 	/**
 	 * Returns a copy with defaults filled in.
@@ -27344,45 +27344,45 @@ function requireInternalGlobOptionsHelper () {
 	    }
 	    return result;
 	}
-	internalGlobOptionsHelper.getOptions = getOptions;
+	internalGlobOptionsHelper$1.getOptions = getOptions;
 	
-	return internalGlobOptionsHelper;
+	return internalGlobOptionsHelper$1;
 }
 
-var internalPatternHelper = {};
+var internalPatternHelper$1 = {};
 
-var internalPathHelper = {};
+var internalPathHelper$1 = {};
 
-var hasRequiredInternalPathHelper;
+var hasRequiredInternalPathHelper$1;
 
-function requireInternalPathHelper () {
-	if (hasRequiredInternalPathHelper) return internalPathHelper;
-	hasRequiredInternalPathHelper = 1;
-	var __createBinding = (internalPathHelper && internalPathHelper.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+function requireInternalPathHelper$1 () {
+	if (hasRequiredInternalPathHelper$1) return internalPathHelper$1;
+	hasRequiredInternalPathHelper$1 = 1;
+	var __createBinding = (internalPathHelper$1 && internalPathHelper$1.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 	    if (k2 === undefined) k2 = k;
 	    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 	}) : (function(o, m, k, k2) {
 	    if (k2 === undefined) k2 = k;
 	    o[k2] = m[k];
 	}));
-	var __setModuleDefault = (internalPathHelper && internalPathHelper.__setModuleDefault) || (Object.create ? (function(o, v) {
+	var __setModuleDefault = (internalPathHelper$1 && internalPathHelper$1.__setModuleDefault) || (Object.create ? (function(o, v) {
 	    Object.defineProperty(o, "default", { enumerable: true, value: v });
 	}) : function(o, v) {
 	    o["default"] = v;
 	});
-	var __importStar = (internalPathHelper && internalPathHelper.__importStar) || function (mod) {
+	var __importStar = (internalPathHelper$1 && internalPathHelper$1.__importStar) || function (mod) {
 	    if (mod && mod.__esModule) return mod;
 	    var result = {};
 	    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
 	    __setModuleDefault(result, mod);
 	    return result;
 	};
-	var __importDefault = (internalPathHelper && internalPathHelper.__importDefault) || function (mod) {
+	var __importDefault = (internalPathHelper$1 && internalPathHelper$1.__importDefault) || function (mod) {
 	    return (mod && mod.__esModule) ? mod : { "default": mod };
 	};
-	Object.defineProperty(internalPathHelper, "__esModule", { value: true });
-	internalPathHelper.safeTrimTrailingSeparator = internalPathHelper.normalizeSeparators = internalPathHelper.hasRoot = internalPathHelper.hasAbsoluteRoot = internalPathHelper.ensureAbsoluteRoot = internalPathHelper.dirname = void 0;
-	const path = __importStar(require$$1$6);
+	Object.defineProperty(internalPathHelper$1, "__esModule", { value: true });
+	internalPathHelper$1.safeTrimTrailingSeparator = internalPathHelper$1.normalizeSeparators = internalPathHelper$1.hasRoot = internalPathHelper$1.hasAbsoluteRoot = internalPathHelper$1.ensureAbsoluteRoot = internalPathHelper$1.dirname = void 0;
+	const path = __importStar(require$$0$e);
 	const assert_1 = __importDefault(require$$0$7);
 	const IS_WINDOWS = process.platform === 'win32';
 	/**
@@ -27417,7 +27417,7 @@ function requireInternalPathHelper () {
 	    }
 	    return result;
 	}
-	internalPathHelper.dirname = dirname;
+	internalPathHelper$1.dirname = dirname;
 	/**
 	 * Roots the path if not already rooted. On Windows, relative roots like `\`
 	 * or `C:` are expanded based on the current working directory.
@@ -27472,7 +27472,7 @@ function requireInternalPathHelper () {
 	    }
 	    return root + itemPath;
 	}
-	internalPathHelper.ensureAbsoluteRoot = ensureAbsoluteRoot;
+	internalPathHelper$1.ensureAbsoluteRoot = ensureAbsoluteRoot;
 	/**
 	 * On Linux/macOS, true if path starts with `/`. On Windows, true for paths like:
 	 * `\\hello\share` and `C:\hello` (and using alternate separator).
@@ -27489,7 +27489,7 @@ function requireInternalPathHelper () {
 	    // E.g. /hello
 	    return itemPath.startsWith('/');
 	}
-	internalPathHelper.hasAbsoluteRoot = hasAbsoluteRoot;
+	internalPathHelper$1.hasAbsoluteRoot = hasAbsoluteRoot;
 	/**
 	 * On Linux/macOS, true if path starts with `/`. On Windows, true for paths like:
 	 * `\`, `\hello`, `\\hello\share`, `C:`, and `C:\hello` (and using alternate separator).
@@ -27507,7 +27507,7 @@ function requireInternalPathHelper () {
 	    // E.g. /hello
 	    return itemPath.startsWith('/');
 	}
-	internalPathHelper.hasRoot = hasRoot;
+	internalPathHelper$1.hasRoot = hasRoot;
 	/**
 	 * Removes redundant slashes and converts `/` to `\` on Windows
 	 */
@@ -27524,7 +27524,7 @@ function requireInternalPathHelper () {
 	    // Remove redundant slashes
 	    return p.replace(/\/\/+/g, '/');
 	}
-	internalPathHelper.normalizeSeparators = normalizeSeparators;
+	internalPathHelper$1.normalizeSeparators = normalizeSeparators;
 	/**
 	 * Normalizes the path separators and trims the trailing separator (when safe).
 	 * For example, `/foo/ => /foo` but `/ => /`
@@ -27551,18 +27551,18 @@ function requireInternalPathHelper () {
 	    // Otherwise trim trailing slash
 	    return p.substr(0, p.length - 1);
 	}
-	internalPathHelper.safeTrimTrailingSeparator = safeTrimTrailingSeparator;
+	internalPathHelper$1.safeTrimTrailingSeparator = safeTrimTrailingSeparator;
 	
-	return internalPathHelper;
+	return internalPathHelper$1;
 }
 
-var internalMatchKind = {};
+var internalMatchKind$1 = {};
 
-var hasRequiredInternalMatchKind;
+var hasRequiredInternalMatchKind$1;
 
-function requireInternalMatchKind () {
-	if (hasRequiredInternalMatchKind) return internalMatchKind;
-	hasRequiredInternalMatchKind = 1;
+function requireInternalMatchKind$1 () {
+	if (hasRequiredInternalMatchKind$1) return internalMatchKind$1;
+	hasRequiredInternalMatchKind$1 = 1;
 	(function (exports) {
 		Object.defineProperty(exports, "__esModule", { value: true });
 		exports.MatchKind = void 0;
@@ -27577,38 +27577,38 @@ function requireInternalMatchKind () {
 		    MatchKind[MatchKind["All"] = 3] = "All";
 		})(exports.MatchKind || (exports.MatchKind = {}));
 		
-	} (internalMatchKind));
-	return internalMatchKind;
+	} (internalMatchKind$1));
+	return internalMatchKind$1;
 }
 
-var hasRequiredInternalPatternHelper;
+var hasRequiredInternalPatternHelper$1;
 
-function requireInternalPatternHelper () {
-	if (hasRequiredInternalPatternHelper) return internalPatternHelper;
-	hasRequiredInternalPatternHelper = 1;
-	var __createBinding = (internalPatternHelper && internalPatternHelper.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+function requireInternalPatternHelper$1 () {
+	if (hasRequiredInternalPatternHelper$1) return internalPatternHelper$1;
+	hasRequiredInternalPatternHelper$1 = 1;
+	var __createBinding = (internalPatternHelper$1 && internalPatternHelper$1.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 	    if (k2 === undefined) k2 = k;
 	    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 	}) : (function(o, m, k, k2) {
 	    if (k2 === undefined) k2 = k;
 	    o[k2] = m[k];
 	}));
-	var __setModuleDefault = (internalPatternHelper && internalPatternHelper.__setModuleDefault) || (Object.create ? (function(o, v) {
+	var __setModuleDefault = (internalPatternHelper$1 && internalPatternHelper$1.__setModuleDefault) || (Object.create ? (function(o, v) {
 	    Object.defineProperty(o, "default", { enumerable: true, value: v });
 	}) : function(o, v) {
 	    o["default"] = v;
 	});
-	var __importStar = (internalPatternHelper && internalPatternHelper.__importStar) || function (mod) {
+	var __importStar = (internalPatternHelper$1 && internalPatternHelper$1.__importStar) || function (mod) {
 	    if (mod && mod.__esModule) return mod;
 	    var result = {};
 	    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
 	    __setModuleDefault(result, mod);
 	    return result;
 	};
-	Object.defineProperty(internalPatternHelper, "__esModule", { value: true });
-	internalPatternHelper.partialMatch = internalPatternHelper.match = internalPatternHelper.getSearchPaths = void 0;
-	const pathHelper = __importStar(requireInternalPathHelper());
-	const internal_match_kind_1 = requireInternalMatchKind();
+	Object.defineProperty(internalPatternHelper$1, "__esModule", { value: true });
+	internalPatternHelper$1.partialMatch = internalPatternHelper$1.match = internalPatternHelper$1.getSearchPaths = void 0;
+	const pathHelper = __importStar(requireInternalPathHelper$1());
+	const internal_match_kind_1 = requireInternalMatchKind$1();
 	const IS_WINDOWS = process.platform === 'win32';
 	/**
 	 * Given an array of patterns, returns an array of paths to search.
@@ -27654,7 +27654,7 @@ function requireInternalPatternHelper () {
 	    }
 	    return result;
 	}
-	internalPatternHelper.getSearchPaths = getSearchPaths;
+	internalPatternHelper$1.getSearchPaths = getSearchPaths;
 	/**
 	 * Matches the patterns against the path
 	 */
@@ -27670,19 +27670,19 @@ function requireInternalPatternHelper () {
 	    }
 	    return result;
 	}
-	internalPatternHelper.match = match;
+	internalPatternHelper$1.match = match;
 	/**
 	 * Checks whether to descend further into the directory
 	 */
 	function partialMatch(patterns, itemPath) {
 	    return patterns.some(x => !x.negate && x.partialMatch(itemPath));
 	}
-	internalPatternHelper.partialMatch = partialMatch;
+	internalPatternHelper$1.partialMatch = partialMatch;
 	
-	return internalPatternHelper;
+	return internalPatternHelper$1;
 }
 
-var internalPattern = {};
+var internalPattern$1 = {};
 
 var concatMap;
 var hasRequiredConcatMap;
@@ -28937,39 +28937,39 @@ function requireMinimatch () {
 	return minimatch_1;
 }
 
-var internalPath = {};
+var internalPath$1 = {};
 
-var hasRequiredInternalPath;
+var hasRequiredInternalPath$1;
 
-function requireInternalPath () {
-	if (hasRequiredInternalPath) return internalPath;
-	hasRequiredInternalPath = 1;
-	var __createBinding = (internalPath && internalPath.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+function requireInternalPath$1 () {
+	if (hasRequiredInternalPath$1) return internalPath$1;
+	hasRequiredInternalPath$1 = 1;
+	var __createBinding = (internalPath$1 && internalPath$1.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 	    if (k2 === undefined) k2 = k;
 	    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 	}) : (function(o, m, k, k2) {
 	    if (k2 === undefined) k2 = k;
 	    o[k2] = m[k];
 	}));
-	var __setModuleDefault = (internalPath && internalPath.__setModuleDefault) || (Object.create ? (function(o, v) {
+	var __setModuleDefault = (internalPath$1 && internalPath$1.__setModuleDefault) || (Object.create ? (function(o, v) {
 	    Object.defineProperty(o, "default", { enumerable: true, value: v });
 	}) : function(o, v) {
 	    o["default"] = v;
 	});
-	var __importStar = (internalPath && internalPath.__importStar) || function (mod) {
+	var __importStar = (internalPath$1 && internalPath$1.__importStar) || function (mod) {
 	    if (mod && mod.__esModule) return mod;
 	    var result = {};
 	    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
 	    __setModuleDefault(result, mod);
 	    return result;
 	};
-	var __importDefault = (internalPath && internalPath.__importDefault) || function (mod) {
+	var __importDefault = (internalPath$1 && internalPath$1.__importDefault) || function (mod) {
 	    return (mod && mod.__esModule) ? mod : { "default": mod };
 	};
-	Object.defineProperty(internalPath, "__esModule", { value: true });
-	internalPath.Path = void 0;
-	const path = __importStar(require$$1$6);
-	const pathHelper = __importStar(requireInternalPathHelper());
+	Object.defineProperty(internalPath$1, "__esModule", { value: true });
+	internalPath$1.Path = void 0;
+	const path = __importStar(require$$0$e);
+	const pathHelper = __importStar(requireInternalPathHelper$1());
 	const assert_1 = __importDefault(require$$0$7);
 	const IS_WINDOWS = process.platform === 'win32';
 	/**
@@ -29054,47 +29054,47 @@ function requireInternalPath () {
 	        return result;
 	    }
 	}
-	internalPath.Path = Path;
+	internalPath$1.Path = Path;
 	
-	return internalPath;
+	return internalPath$1;
 }
 
-var hasRequiredInternalPattern;
+var hasRequiredInternalPattern$1;
 
-function requireInternalPattern () {
-	if (hasRequiredInternalPattern) return internalPattern;
-	hasRequiredInternalPattern = 1;
-	var __createBinding = (internalPattern && internalPattern.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+function requireInternalPattern$1 () {
+	if (hasRequiredInternalPattern$1) return internalPattern$1;
+	hasRequiredInternalPattern$1 = 1;
+	var __createBinding = (internalPattern$1 && internalPattern$1.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 	    if (k2 === undefined) k2 = k;
 	    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 	}) : (function(o, m, k, k2) {
 	    if (k2 === undefined) k2 = k;
 	    o[k2] = m[k];
 	}));
-	var __setModuleDefault = (internalPattern && internalPattern.__setModuleDefault) || (Object.create ? (function(o, v) {
+	var __setModuleDefault = (internalPattern$1 && internalPattern$1.__setModuleDefault) || (Object.create ? (function(o, v) {
 	    Object.defineProperty(o, "default", { enumerable: true, value: v });
 	}) : function(o, v) {
 	    o["default"] = v;
 	});
-	var __importStar = (internalPattern && internalPattern.__importStar) || function (mod) {
+	var __importStar = (internalPattern$1 && internalPattern$1.__importStar) || function (mod) {
 	    if (mod && mod.__esModule) return mod;
 	    var result = {};
 	    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
 	    __setModuleDefault(result, mod);
 	    return result;
 	};
-	var __importDefault = (internalPattern && internalPattern.__importDefault) || function (mod) {
+	var __importDefault = (internalPattern$1 && internalPattern$1.__importDefault) || function (mod) {
 	    return (mod && mod.__esModule) ? mod : { "default": mod };
 	};
-	Object.defineProperty(internalPattern, "__esModule", { value: true });
-	internalPattern.Pattern = void 0;
+	Object.defineProperty(internalPattern$1, "__esModule", { value: true });
+	internalPattern$1.Pattern = void 0;
 	const os = __importStar(require$$0$3);
-	const path = __importStar(require$$1$6);
-	const pathHelper = __importStar(requireInternalPathHelper());
+	const path = __importStar(require$$0$e);
+	const pathHelper = __importStar(requireInternalPathHelper$1());
 	const assert_1 = __importDefault(require$$0$7);
 	const minimatch_1 = requireMinimatch();
-	const internal_match_kind_1 = requireInternalMatchKind();
-	const internal_path_1 = requireInternalPath();
+	const internal_match_kind_1 = requireInternalMatchKind$1();
+	const internal_path_1 = requireInternalPath$1();
 	const IS_WINDOWS = process.platform === 'win32';
 	class Pattern {
 	    constructor(patternOrNegate, isImplicitPattern = false, segments, homedir) {
@@ -29316,56 +29316,56 @@ function requireInternalPattern () {
 	        return s.replace(/[[\\^$.|?*+()]/g, '\\$&');
 	    }
 	}
-	internalPattern.Pattern = Pattern;
+	internalPattern$1.Pattern = Pattern;
 	
-	return internalPattern;
+	return internalPattern$1;
 }
 
-var internalSearchState = {};
+var internalSearchState$1 = {};
 
-var hasRequiredInternalSearchState;
+var hasRequiredInternalSearchState$1;
 
-function requireInternalSearchState () {
-	if (hasRequiredInternalSearchState) return internalSearchState;
-	hasRequiredInternalSearchState = 1;
-	Object.defineProperty(internalSearchState, "__esModule", { value: true });
-	internalSearchState.SearchState = void 0;
+function requireInternalSearchState$1 () {
+	if (hasRequiredInternalSearchState$1) return internalSearchState$1;
+	hasRequiredInternalSearchState$1 = 1;
+	Object.defineProperty(internalSearchState$1, "__esModule", { value: true });
+	internalSearchState$1.SearchState = void 0;
 	class SearchState {
 	    constructor(path, level) {
 	        this.path = path;
 	        this.level = level;
 	    }
 	}
-	internalSearchState.SearchState = SearchState;
+	internalSearchState$1.SearchState = SearchState;
 	
-	return internalSearchState;
+	return internalSearchState$1;
 }
 
-var hasRequiredInternalGlobber;
+var hasRequiredInternalGlobber$1;
 
-function requireInternalGlobber () {
-	if (hasRequiredInternalGlobber) return internalGlobber;
-	hasRequiredInternalGlobber = 1;
-	var __createBinding = (internalGlobber && internalGlobber.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+function requireInternalGlobber$1 () {
+	if (hasRequiredInternalGlobber$1) return internalGlobber$1;
+	hasRequiredInternalGlobber$1 = 1;
+	var __createBinding = (internalGlobber$1 && internalGlobber$1.__createBinding) || (Object.create ? (function(o, m, k, k2) {
 	    if (k2 === undefined) k2 = k;
 	    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 	}) : (function(o, m, k, k2) {
 	    if (k2 === undefined) k2 = k;
 	    o[k2] = m[k];
 	}));
-	var __setModuleDefault = (internalGlobber && internalGlobber.__setModuleDefault) || (Object.create ? (function(o, v) {
+	var __setModuleDefault = (internalGlobber$1 && internalGlobber$1.__setModuleDefault) || (Object.create ? (function(o, v) {
 	    Object.defineProperty(o, "default", { enumerable: true, value: v });
 	}) : function(o, v) {
 	    o["default"] = v;
 	});
-	var __importStar = (internalGlobber && internalGlobber.__importStar) || function (mod) {
+	var __importStar = (internalGlobber$1 && internalGlobber$1.__importStar) || function (mod) {
 	    if (mod && mod.__esModule) return mod;
 	    var result = {};
 	    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
 	    __setModuleDefault(result, mod);
 	    return result;
 	};
-	var __awaiter = (internalGlobber && internalGlobber.__awaiter) || function (thisArg, _arguments, P, generator) {
+	var __awaiter = (internalGlobber$1 && internalGlobber$1.__awaiter) || function (thisArg, _arguments, P, generator) {
 	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 	    return new (P || (P = Promise))(function (resolve, reject) {
 	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -29374,15 +29374,15 @@ function requireInternalGlobber () {
 	        step((generator = generator.apply(thisArg, _arguments || [])).next());
 	    });
 	};
-	var __asyncValues = (internalGlobber && internalGlobber.__asyncValues) || function (o) {
+	var __asyncValues = (internalGlobber$1 && internalGlobber$1.__asyncValues) || function (o) {
 	    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
 	    var m = o[Symbol.asyncIterator], i;
 	    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
 	    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
 	    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 	};
-	var __await = (internalGlobber && internalGlobber.__await) || function (v) { return this instanceof __await ? (this.v = v, this) : new __await(v); };
-	var __asyncGenerator = (internalGlobber && internalGlobber.__asyncGenerator) || function (thisArg, _arguments, generator) {
+	var __await = (internalGlobber$1 && internalGlobber$1.__await) || function (v) { return this instanceof __await ? (this.v = v, this) : new __await(v); };
+	var __asyncGenerator = (internalGlobber$1 && internalGlobber$1.__asyncGenerator) || function (thisArg, _arguments, generator) {
 	    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
 	    var g = generator.apply(thisArg, _arguments || []), i, q = [];
 	    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
@@ -29393,16 +29393,16 @@ function requireInternalGlobber () {
 	    function reject(value) { resume("throw", value); }
 	    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
 	};
-	Object.defineProperty(internalGlobber, "__esModule", { value: true });
-	internalGlobber.DefaultGlobber = void 0;
+	Object.defineProperty(internalGlobber$1, "__esModule", { value: true });
+	internalGlobber$1.DefaultGlobber = void 0;
 	const core = __importStar(requireCore());
 	const fs = __importStar(require$$1$1);
-	const globOptionsHelper = __importStar(requireInternalGlobOptionsHelper());
-	const path = __importStar(require$$1$6);
-	const patternHelper = __importStar(requireInternalPatternHelper());
-	const internal_match_kind_1 = requireInternalMatchKind();
-	const internal_pattern_1 = requireInternalPattern();
-	const internal_search_state_1 = requireInternalSearchState();
+	const globOptionsHelper = __importStar(requireInternalGlobOptionsHelper$1());
+	const path = __importStar(require$$0$e);
+	const patternHelper = __importStar(requireInternalPatternHelper$1());
+	const internal_match_kind_1 = requireInternalMatchKind$1();
+	const internal_pattern_1 = requireInternalPattern$1();
+	const internal_search_state_1 = requireInternalSearchState$1();
 	const IS_WINDOWS = process.platform === 'win32';
 	class DefaultGlobber {
 	    constructor(options) {
@@ -29578,17 +29578,17 @@ function requireInternalGlobber () {
 	        });
 	    }
 	}
-	internalGlobber.DefaultGlobber = DefaultGlobber;
+	internalGlobber$1.DefaultGlobber = DefaultGlobber;
 	
-	return internalGlobber;
+	return internalGlobber$1;
 }
 
-var hasRequiredGlob;
+var hasRequiredGlob$1;
 
-function requireGlob () {
-	if (hasRequiredGlob) return glob;
-	hasRequiredGlob = 1;
-	var __awaiter = (glob && glob.__awaiter) || function (thisArg, _arguments, P, generator) {
+function requireGlob$1 () {
+	if (hasRequiredGlob$1) return glob$1;
+	hasRequiredGlob$1 = 1;
+	var __awaiter = (glob$1 && glob$1.__awaiter) || function (thisArg, _arguments, P, generator) {
 	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 	    return new (P || (P = Promise))(function (resolve, reject) {
 	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -29597,9 +29597,9 @@ function requireGlob () {
 	        step((generator = generator.apply(thisArg, _arguments || [])).next());
 	    });
 	};
-	Object.defineProperty(glob, "__esModule", { value: true });
-	glob.create = void 0;
-	const internal_globber_1 = requireInternalGlobber();
+	Object.defineProperty(glob$1, "__esModule", { value: true });
+	glob$1.create = void 0;
+	const internal_globber_1 = requireInternalGlobber$1();
 	/**
 	 * Constructs a globber
 	 *
@@ -29611,9 +29611,9 @@ function requireGlob () {
 	        return yield internal_globber_1.DefaultGlobber.create(patterns, options);
 	    });
 	}
-	glob.create = create;
+	glob$1.create = create;
 	
-	return glob;
+	return glob$1;
 }
 
 var semver = {exports: {}};
@@ -31365,11 +31365,11 @@ function requireCacheUtils () {
 	cacheUtils.getRuntimeToken = cacheUtils.getCacheVersion = cacheUtils.assertDefined = cacheUtils.getGnuTarPathOnWindows = cacheUtils.getCacheFileName = cacheUtils.getCompressionMethod = cacheUtils.unlinkFile = cacheUtils.resolvePaths = cacheUtils.getArchiveFileSizeInBytes = cacheUtils.createTempDirectory = void 0;
 	const core = __importStar(requireCore());
 	const exec = __importStar(requireExec());
-	const glob = __importStar(requireGlob());
+	const glob = __importStar(requireGlob$1());
 	const io = __importStar(requireIo());
 	const crypto = __importStar(require$$0$4);
 	const fs = __importStar(require$$1$1);
-	const path = __importStar(require$$1$6);
+	const path = __importStar(require$$0$e);
 	const semver = __importStar(requireSemver());
 	const util = __importStar(require$$0$5);
 	const constants_1 = requireConstants$5();
@@ -32056,7 +32056,7 @@ function requireLog$5 () {
 	Object.defineProperty(log$5, "__esModule", { value: true });
 	log$5.log = log;
 	const tslib_1 = require$$0$2;
-	const node_os_1 = require$$1$7;
+	const node_os_1 = require$$1$6;
 	const node_util_1 = tslib_1.__importDefault(require$$1$4);
 	const process = tslib_1.__importStar(require$$2$3);
 	function log(message, ...args) {
@@ -32451,7 +32451,7 @@ function requireUuidUtils () {
 	var _a;
 	Object.defineProperty(uuidUtils, "__esModule", { value: true });
 	uuidUtils.randomUUID = randomUUID;
-	const node_crypto_1 = require$$0$e;
+	const node_crypto_1 = require$$0$f;
 	// NOTE: This is a workaround until we can use `globalThis.crypto.randomUUID` in Node.js 19+.
 	const uuidFunction = typeof ((_a = globalThis === null || globalThis === void 0 ? void 0 : globalThis.crypto) === null || _a === void 0 ? void 0 : _a.randomUUID) === "function"
 	    ? globalThis.crypto.randomUUID.bind(globalThis.crypto)
@@ -33157,7 +33157,7 @@ function requireNodeHttpClient () {
 	nodeHttpClient.getBodyLength = getBodyLength;
 	nodeHttpClient.createNodeHttpClient = createNodeHttpClient;
 	const tslib_1 = require$$0$2;
-	const http = tslib_1.__importStar(require$$1$8);
+	const http = tslib_1.__importStar(require$$1$7);
 	const https = tslib_1.__importStar(require$$2$4);
 	const zlib = tslib_1.__importStar(require$$3$1);
 	const node_stream_1 = require$$0$b;
@@ -33658,7 +33658,7 @@ function requireUserAgentPlatform$1 () {
 	userAgentPlatform$1.getHeaderName = getHeaderName;
 	userAgentPlatform$1.setPlatformSpecificData = setPlatformSpecificData;
 	const tslib_1 = require$$0$2;
-	const os = tslib_1.__importStar(require$$1$7);
+	const os = tslib_1.__importStar(require$$1$6);
 	const process = tslib_1.__importStar(require$$2$3);
 	/**
 	 * @internal
@@ -35223,7 +35223,7 @@ function requireNode () {
 	if (hasRequiredNode) return node.exports;
 	hasRequiredNode = 1;
 	(function (module, exports) {
-		const tty = require$$0$f;
+		const tty = require$$0$g;
 		const util = require$$0$5;
 
 		/**
@@ -38282,7 +38282,7 @@ function requireUserAgentPlatform () {
 	userAgentPlatform.getHeaderName = getHeaderName;
 	userAgentPlatform.setPlatformSpecificData = setPlatformSpecificData;
 	const tslib_1 = require$$0$2;
-	const os = tslib_1.__importStar(require$$1$7);
+	const os = tslib_1.__importStar(require$$1$6);
 	const process = tslib_1.__importStar(require$$2$3);
 	/**
 	 * @internal
@@ -38429,7 +38429,7 @@ function requireSha256 () {
 	Object.defineProperty(sha256, "__esModule", { value: true });
 	sha256.computeSha256Hmac = computeSha256Hmac;
 	sha256.computeSha256Hash = computeSha256Hash;
-	const node_crypto_1 = require$$0$e;
+	const node_crypto_1 = require$$0$f;
 	/**
 	 * Generates a SHA-256 HMAC signature.
 	 * @param key - The HMAC key represented as a base64 string, used to generate the cryptographic HMAC hash.
@@ -46070,7 +46070,7 @@ function requireStorageSharedKeyCredential$1 () {
 	// Licensed under the MIT License.
 	Object.defineProperty(StorageSharedKeyCredential$1, "__esModule", { value: true });
 	StorageSharedKeyCredential$1.StorageSharedKeyCredential = void 0;
-	const node_crypto_1 = require$$0$e;
+	const node_crypto_1 = require$$0$f;
 	const StorageSharedKeyCredentialPolicy_js_1 = requireStorageSharedKeyCredentialPolicy$1();
 	const Credential_js_1 = requireCredential$1();
 	/**
@@ -47925,7 +47925,7 @@ function requireStorageSharedKeyCredential () {
 	// Licensed under the MIT License.
 	Object.defineProperty(StorageSharedKeyCredential, "__esModule", { value: true });
 	StorageSharedKeyCredential.StorageSharedKeyCredential = void 0;
-	const node_crypto_1 = require$$0$e;
+	const node_crypto_1 = require$$0$f;
 	const StorageSharedKeyCredentialPolicy_js_1 = requireStorageSharedKeyCredentialPolicy();
 	const Credential_js_1 = requireCredential();
 	/**
@@ -48642,7 +48642,7 @@ function requireStorageSharedKeyCredentialPolicyV2$1 () {
 		Object.defineProperty(exports, "__esModule", { value: true });
 		exports.storageSharedKeyCredentialPolicyName = void 0;
 		exports.storageSharedKeyCredentialPolicy = storageSharedKeyCredentialPolicy;
-		const node_crypto_1 = require$$0$e;
+		const node_crypto_1 = require$$0$f;
 		const constants_js_1 = requireConstants$1();
 		const utils_common_js_1 = requireUtils_common$1();
 		const SharedKeyComparator_js_1 = requireSharedKeyComparator();
@@ -49052,7 +49052,7 @@ function requireStorageSharedKeyCredentialPolicyV2 () {
 		Object.defineProperty(exports, "__esModule", { value: true });
 		exports.storageSharedKeyCredentialPolicyName = void 0;
 		exports.storageSharedKeyCredentialPolicy = storageSharedKeyCredentialPolicy;
-		const node_crypto_1 = require$$0$e;
+		const node_crypto_1 = require$$0$f;
 		const constants_js_1 = requireConstants$2();
 		const utils_common_js_1 = requireUtils_common$2();
 		const SharedKeyComparator_js_1 = requireSharedKeyComparator$1();
@@ -63804,7 +63804,7 @@ function requireUserDelegationKeyCredential () {
 	// Licensed under the MIT License.
 	Object.defineProperty(UserDelegationKeyCredential, "__esModule", { value: true });
 	UserDelegationKeyCredential.UserDelegationKeyCredential = void 0;
-	const node_crypto_1 = require$$0$e;
+	const node_crypto_1 = require$$0$f;
 	/**
 	 * ONLY AVAILABLE IN NODE.JS RUNTIME.
 	 *
@@ -68813,7 +68813,7 @@ function requireUtils () {
 	utils.streamToBuffer3 = streamToBuffer3;
 	utils.readStreamToLocalFile = readStreamToLocalFile;
 	const tslib_1 = require$$0$2;
-	const node_fs_1 = tslib_1.__importDefault(require$$1$9);
+	const node_fs_1 = tslib_1.__importDefault(require$$1$8);
 	const node_util_1 = tslib_1.__importDefault(require$$1$4);
 	const constants_js_1 = requireConstants$2();
 	/**
@@ -81925,7 +81925,7 @@ function requireTar () {
 	const exec_1 = requireExec();
 	const io = __importStar(requireIo());
 	const fs_1 = require$$1$1;
-	const path = __importStar(require$$1$6);
+	const path = __importStar(require$$0$e);
 	const utils = __importStar(requireCacheUtils());
 	const constants_1 = requireConstants$5();
 	const IS_WINDOWS = process.platform === 'win32';
@@ -82200,7 +82200,7 @@ function requireCache () {
 	Object.defineProperty(cache$3, "__esModule", { value: true });
 	cache$3.saveCache = cache$3.restoreCache = cache$3.isFeatureAvailable = cache$3.ReserveCacheError = cache$3.ValidationError = void 0;
 	const core = __importStar(requireCore());
-	const path = __importStar(require$$1$6);
+	const path = __importStar(require$$0$e);
 	const utils = __importStar(requireCacheUtils());
 	const cacheHttpClient = __importStar(requireCacheHttpClient());
 	const cacheTwirpClient = __importStar(requireCacheTwirpClient());
@@ -82680,6 +82680,1259 @@ var coreExports = requireCore();
 
 var execExports = requireExec();
 
+var glob = {};
+
+var internalGlobber = {};
+
+var internalGlobOptionsHelper = {};
+
+var hasRequiredInternalGlobOptionsHelper;
+
+function requireInternalGlobOptionsHelper () {
+	if (hasRequiredInternalGlobOptionsHelper) return internalGlobOptionsHelper;
+	hasRequiredInternalGlobOptionsHelper = 1;
+	var __createBinding = (internalGlobOptionsHelper && internalGlobOptionsHelper.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    var desc = Object.getOwnPropertyDescriptor(m, k);
+	    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+	      desc = { enumerable: true, get: function() { return m[k]; } };
+	    }
+	    Object.defineProperty(o, k2, desc);
+	}) : (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    o[k2] = m[k];
+	}));
+	var __setModuleDefault = (internalGlobOptionsHelper && internalGlobOptionsHelper.__setModuleDefault) || (Object.create ? (function(o, v) {
+	    Object.defineProperty(o, "default", { enumerable: true, value: v });
+	}) : function(o, v) {
+	    o["default"] = v;
+	});
+	var __importStar = (internalGlobOptionsHelper && internalGlobOptionsHelper.__importStar) || function (mod) {
+	    if (mod && mod.__esModule) return mod;
+	    var result = {};
+	    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+	    __setModuleDefault(result, mod);
+	    return result;
+	};
+	Object.defineProperty(internalGlobOptionsHelper, "__esModule", { value: true });
+	internalGlobOptionsHelper.getOptions = void 0;
+	const core = __importStar(requireCore());
+	/**
+	 * Returns a copy with defaults filled in.
+	 */
+	function getOptions(copy) {
+	    const result = {
+	        followSymbolicLinks: true,
+	        implicitDescendants: true,
+	        matchDirectories: true,
+	        omitBrokenSymbolicLinks: true,
+	        excludeHiddenFiles: false
+	    };
+	    if (copy) {
+	        if (typeof copy.followSymbolicLinks === 'boolean') {
+	            result.followSymbolicLinks = copy.followSymbolicLinks;
+	            core.debug(`followSymbolicLinks '${result.followSymbolicLinks}'`);
+	        }
+	        if (typeof copy.implicitDescendants === 'boolean') {
+	            result.implicitDescendants = copy.implicitDescendants;
+	            core.debug(`implicitDescendants '${result.implicitDescendants}'`);
+	        }
+	        if (typeof copy.matchDirectories === 'boolean') {
+	            result.matchDirectories = copy.matchDirectories;
+	            core.debug(`matchDirectories '${result.matchDirectories}'`);
+	        }
+	        if (typeof copy.omitBrokenSymbolicLinks === 'boolean') {
+	            result.omitBrokenSymbolicLinks = copy.omitBrokenSymbolicLinks;
+	            core.debug(`omitBrokenSymbolicLinks '${result.omitBrokenSymbolicLinks}'`);
+	        }
+	        if (typeof copy.excludeHiddenFiles === 'boolean') {
+	            result.excludeHiddenFiles = copy.excludeHiddenFiles;
+	            core.debug(`excludeHiddenFiles '${result.excludeHiddenFiles}'`);
+	        }
+	    }
+	    return result;
+	}
+	internalGlobOptionsHelper.getOptions = getOptions;
+	
+	return internalGlobOptionsHelper;
+}
+
+var internalPatternHelper = {};
+
+var internalPathHelper = {};
+
+var hasRequiredInternalPathHelper;
+
+function requireInternalPathHelper () {
+	if (hasRequiredInternalPathHelper) return internalPathHelper;
+	hasRequiredInternalPathHelper = 1;
+	var __createBinding = (internalPathHelper && internalPathHelper.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    var desc = Object.getOwnPropertyDescriptor(m, k);
+	    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+	      desc = { enumerable: true, get: function() { return m[k]; } };
+	    }
+	    Object.defineProperty(o, k2, desc);
+	}) : (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    o[k2] = m[k];
+	}));
+	var __setModuleDefault = (internalPathHelper && internalPathHelper.__setModuleDefault) || (Object.create ? (function(o, v) {
+	    Object.defineProperty(o, "default", { enumerable: true, value: v });
+	}) : function(o, v) {
+	    o["default"] = v;
+	});
+	var __importStar = (internalPathHelper && internalPathHelper.__importStar) || function (mod) {
+	    if (mod && mod.__esModule) return mod;
+	    var result = {};
+	    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+	    __setModuleDefault(result, mod);
+	    return result;
+	};
+	var __importDefault = (internalPathHelper && internalPathHelper.__importDefault) || function (mod) {
+	    return (mod && mod.__esModule) ? mod : { "default": mod };
+	};
+	Object.defineProperty(internalPathHelper, "__esModule", { value: true });
+	internalPathHelper.safeTrimTrailingSeparator = internalPathHelper.normalizeSeparators = internalPathHelper.hasRoot = internalPathHelper.hasAbsoluteRoot = internalPathHelper.ensureAbsoluteRoot = internalPathHelper.dirname = void 0;
+	const path = __importStar(require$$0$e);
+	const assert_1 = __importDefault(require$$0$7);
+	const IS_WINDOWS = process.platform === 'win32';
+	/**
+	 * Similar to path.dirname except normalizes the path separators and slightly better handling for Windows UNC paths.
+	 *
+	 * For example, on Linux/macOS:
+	 * - `/               => /`
+	 * - `/hello          => /`
+	 *
+	 * For example, on Windows:
+	 * - `C:\             => C:\`
+	 * - `C:\hello        => C:\`
+	 * - `C:              => C:`
+	 * - `C:hello         => C:`
+	 * - `\               => \`
+	 * - `\hello          => \`
+	 * - `\\hello         => \\hello`
+	 * - `\\hello\world   => \\hello\world`
+	 */
+	function dirname(p) {
+	    // Normalize slashes and trim unnecessary trailing slash
+	    p = safeTrimTrailingSeparator(p);
+	    // Windows UNC root, e.g. \\hello or \\hello\world
+	    if (IS_WINDOWS && /^\\\\[^\\]+(\\[^\\]+)?$/.test(p)) {
+	        return p;
+	    }
+	    // Get dirname
+	    let result = path.dirname(p);
+	    // Trim trailing slash for Windows UNC root, e.g. \\hello\world\
+	    if (IS_WINDOWS && /^\\\\[^\\]+\\[^\\]+\\$/.test(result)) {
+	        result = safeTrimTrailingSeparator(result);
+	    }
+	    return result;
+	}
+	internalPathHelper.dirname = dirname;
+	/**
+	 * Roots the path if not already rooted. On Windows, relative roots like `\`
+	 * or `C:` are expanded based on the current working directory.
+	 */
+	function ensureAbsoluteRoot(root, itemPath) {
+	    (0, assert_1.default)(root, `ensureAbsoluteRoot parameter 'root' must not be empty`);
+	    (0, assert_1.default)(itemPath, `ensureAbsoluteRoot parameter 'itemPath' must not be empty`);
+	    // Already rooted
+	    if (hasAbsoluteRoot(itemPath)) {
+	        return itemPath;
+	    }
+	    // Windows
+	    if (IS_WINDOWS) {
+	        // Check for itemPath like C: or C:foo
+	        if (itemPath.match(/^[A-Z]:[^\\/]|^[A-Z]:$/i)) {
+	            let cwd = process.cwd();
+	            (0, assert_1.default)(cwd.match(/^[A-Z]:\\/i), `Expected current directory to start with an absolute drive root. Actual '${cwd}'`);
+	            // Drive letter matches cwd? Expand to cwd
+	            if (itemPath[0].toUpperCase() === cwd[0].toUpperCase()) {
+	                // Drive only, e.g. C:
+	                if (itemPath.length === 2) {
+	                    // Preserve specified drive letter case (upper or lower)
+	                    return `${itemPath[0]}:\\${cwd.substr(3)}`;
+	                }
+	                // Drive + path, e.g. C:foo
+	                else {
+	                    if (!cwd.endsWith('\\')) {
+	                        cwd += '\\';
+	                    }
+	                    // Preserve specified drive letter case (upper or lower)
+	                    return `${itemPath[0]}:\\${cwd.substr(3)}${itemPath.substr(2)}`;
+	                }
+	            }
+	            // Different drive
+	            else {
+	                return `${itemPath[0]}:\\${itemPath.substr(2)}`;
+	            }
+	        }
+	        // Check for itemPath like \ or \foo
+	        else if (normalizeSeparators(itemPath).match(/^\\$|^\\[^\\]/)) {
+	            const cwd = process.cwd();
+	            (0, assert_1.default)(cwd.match(/^[A-Z]:\\/i), `Expected current directory to start with an absolute drive root. Actual '${cwd}'`);
+	            return `${cwd[0]}:\\${itemPath.substr(1)}`;
+	        }
+	    }
+	    (0, assert_1.default)(hasAbsoluteRoot(root), `ensureAbsoluteRoot parameter 'root' must have an absolute root`);
+	    // Otherwise ensure root ends with a separator
+	    if (root.endsWith('/') || (IS_WINDOWS && root.endsWith('\\'))) ;
+	    else {
+	        // Append separator
+	        root += path.sep;
+	    }
+	    return root + itemPath;
+	}
+	internalPathHelper.ensureAbsoluteRoot = ensureAbsoluteRoot;
+	/**
+	 * On Linux/macOS, true if path starts with `/`. On Windows, true for paths like:
+	 * `\\hello\share` and `C:\hello` (and using alternate separator).
+	 */
+	function hasAbsoluteRoot(itemPath) {
+	    (0, assert_1.default)(itemPath, `hasAbsoluteRoot parameter 'itemPath' must not be empty`);
+	    // Normalize separators
+	    itemPath = normalizeSeparators(itemPath);
+	    // Windows
+	    if (IS_WINDOWS) {
+	        // E.g. \\hello\share or C:\hello
+	        return itemPath.startsWith('\\\\') || /^[A-Z]:\\/i.test(itemPath);
+	    }
+	    // E.g. /hello
+	    return itemPath.startsWith('/');
+	}
+	internalPathHelper.hasAbsoluteRoot = hasAbsoluteRoot;
+	/**
+	 * On Linux/macOS, true if path starts with `/`. On Windows, true for paths like:
+	 * `\`, `\hello`, `\\hello\share`, `C:`, and `C:\hello` (and using alternate separator).
+	 */
+	function hasRoot(itemPath) {
+	    (0, assert_1.default)(itemPath, `isRooted parameter 'itemPath' must not be empty`);
+	    // Normalize separators
+	    itemPath = normalizeSeparators(itemPath);
+	    // Windows
+	    if (IS_WINDOWS) {
+	        // E.g. \ or \hello or \\hello
+	        // E.g. C: or C:\hello
+	        return itemPath.startsWith('\\') || /^[A-Z]:/i.test(itemPath);
+	    }
+	    // E.g. /hello
+	    return itemPath.startsWith('/');
+	}
+	internalPathHelper.hasRoot = hasRoot;
+	/**
+	 * Removes redundant slashes and converts `/` to `\` on Windows
+	 */
+	function normalizeSeparators(p) {
+	    p = p || '';
+	    // Windows
+	    if (IS_WINDOWS) {
+	        // Convert slashes on Windows
+	        p = p.replace(/\//g, '\\');
+	        // Remove redundant slashes
+	        const isUnc = /^\\\\+[^\\]/.test(p); // e.g. \\hello
+	        return (isUnc ? '\\' : '') + p.replace(/\\\\+/g, '\\'); // preserve leading \\ for UNC
+	    }
+	    // Remove redundant slashes
+	    return p.replace(/\/\/+/g, '/');
+	}
+	internalPathHelper.normalizeSeparators = normalizeSeparators;
+	/**
+	 * Normalizes the path separators and trims the trailing separator (when safe).
+	 * For example, `/foo/ => /foo` but `/ => /`
+	 */
+	function safeTrimTrailingSeparator(p) {
+	    // Short-circuit if empty
+	    if (!p) {
+	        return '';
+	    }
+	    // Normalize separators
+	    p = normalizeSeparators(p);
+	    // No trailing slash
+	    if (!p.endsWith(path.sep)) {
+	        return p;
+	    }
+	    // Check '/' on Linux/macOS and '\' on Windows
+	    if (p === path.sep) {
+	        return p;
+	    }
+	    // On Windows check if drive root. E.g. C:\
+	    if (IS_WINDOWS && /^[A-Z]:\\$/i.test(p)) {
+	        return p;
+	    }
+	    // Otherwise trim trailing slash
+	    return p.substr(0, p.length - 1);
+	}
+	internalPathHelper.safeTrimTrailingSeparator = safeTrimTrailingSeparator;
+	
+	return internalPathHelper;
+}
+
+var internalMatchKind = {};
+
+var hasRequiredInternalMatchKind;
+
+function requireInternalMatchKind () {
+	if (hasRequiredInternalMatchKind) return internalMatchKind;
+	hasRequiredInternalMatchKind = 1;
+	Object.defineProperty(internalMatchKind, "__esModule", { value: true });
+	internalMatchKind.MatchKind = void 0;
+	/**
+	 * Indicates whether a pattern matches a path
+	 */
+	var MatchKind;
+	(function (MatchKind) {
+	    /** Not matched */
+	    MatchKind[MatchKind["None"] = 0] = "None";
+	    /** Matched if the path is a directory */
+	    MatchKind[MatchKind["Directory"] = 1] = "Directory";
+	    /** Matched if the path is a regular file */
+	    MatchKind[MatchKind["File"] = 2] = "File";
+	    /** Matched */
+	    MatchKind[MatchKind["All"] = 3] = "All";
+	})(MatchKind || (internalMatchKind.MatchKind = MatchKind = {}));
+	
+	return internalMatchKind;
+}
+
+var hasRequiredInternalPatternHelper;
+
+function requireInternalPatternHelper () {
+	if (hasRequiredInternalPatternHelper) return internalPatternHelper;
+	hasRequiredInternalPatternHelper = 1;
+	var __createBinding = (internalPatternHelper && internalPatternHelper.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    var desc = Object.getOwnPropertyDescriptor(m, k);
+	    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+	      desc = { enumerable: true, get: function() { return m[k]; } };
+	    }
+	    Object.defineProperty(o, k2, desc);
+	}) : (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    o[k2] = m[k];
+	}));
+	var __setModuleDefault = (internalPatternHelper && internalPatternHelper.__setModuleDefault) || (Object.create ? (function(o, v) {
+	    Object.defineProperty(o, "default", { enumerable: true, value: v });
+	}) : function(o, v) {
+	    o["default"] = v;
+	});
+	var __importStar = (internalPatternHelper && internalPatternHelper.__importStar) || function (mod) {
+	    if (mod && mod.__esModule) return mod;
+	    var result = {};
+	    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+	    __setModuleDefault(result, mod);
+	    return result;
+	};
+	Object.defineProperty(internalPatternHelper, "__esModule", { value: true });
+	internalPatternHelper.partialMatch = internalPatternHelper.match = internalPatternHelper.getSearchPaths = void 0;
+	const pathHelper = __importStar(requireInternalPathHelper());
+	const internal_match_kind_1 = requireInternalMatchKind();
+	const IS_WINDOWS = process.platform === 'win32';
+	/**
+	 * Given an array of patterns, returns an array of paths to search.
+	 * Duplicates and paths under other included paths are filtered out.
+	 */
+	function getSearchPaths(patterns) {
+	    // Ignore negate patterns
+	    patterns = patterns.filter(x => !x.negate);
+	    // Create a map of all search paths
+	    const searchPathMap = {};
+	    for (const pattern of patterns) {
+	        const key = IS_WINDOWS
+	            ? pattern.searchPath.toUpperCase()
+	            : pattern.searchPath;
+	        searchPathMap[key] = 'candidate';
+	    }
+	    const result = [];
+	    for (const pattern of patterns) {
+	        // Check if already included
+	        const key = IS_WINDOWS
+	            ? pattern.searchPath.toUpperCase()
+	            : pattern.searchPath;
+	        if (searchPathMap[key] === 'included') {
+	            continue;
+	        }
+	        // Check for an ancestor search path
+	        let foundAncestor = false;
+	        let tempKey = key;
+	        let parent = pathHelper.dirname(tempKey);
+	        while (parent !== tempKey) {
+	            if (searchPathMap[parent]) {
+	                foundAncestor = true;
+	                break;
+	            }
+	            tempKey = parent;
+	            parent = pathHelper.dirname(tempKey);
+	        }
+	        // Include the search pattern in the result
+	        if (!foundAncestor) {
+	            result.push(pattern.searchPath);
+	            searchPathMap[key] = 'included';
+	        }
+	    }
+	    return result;
+	}
+	internalPatternHelper.getSearchPaths = getSearchPaths;
+	/**
+	 * Matches the patterns against the path
+	 */
+	function match(patterns, itemPath) {
+	    let result = internal_match_kind_1.MatchKind.None;
+	    for (const pattern of patterns) {
+	        if (pattern.negate) {
+	            result &= ~pattern.match(itemPath);
+	        }
+	        else {
+	            result |= pattern.match(itemPath);
+	        }
+	    }
+	    return result;
+	}
+	internalPatternHelper.match = match;
+	/**
+	 * Checks whether to descend further into the directory
+	 */
+	function partialMatch(patterns, itemPath) {
+	    return patterns.some(x => !x.negate && x.partialMatch(itemPath));
+	}
+	internalPatternHelper.partialMatch = partialMatch;
+	
+	return internalPatternHelper;
+}
+
+var internalPattern = {};
+
+var internalPath = {};
+
+var hasRequiredInternalPath;
+
+function requireInternalPath () {
+	if (hasRequiredInternalPath) return internalPath;
+	hasRequiredInternalPath = 1;
+	var __createBinding = (internalPath && internalPath.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    var desc = Object.getOwnPropertyDescriptor(m, k);
+	    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+	      desc = { enumerable: true, get: function() { return m[k]; } };
+	    }
+	    Object.defineProperty(o, k2, desc);
+	}) : (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    o[k2] = m[k];
+	}));
+	var __setModuleDefault = (internalPath && internalPath.__setModuleDefault) || (Object.create ? (function(o, v) {
+	    Object.defineProperty(o, "default", { enumerable: true, value: v });
+	}) : function(o, v) {
+	    o["default"] = v;
+	});
+	var __importStar = (internalPath && internalPath.__importStar) || function (mod) {
+	    if (mod && mod.__esModule) return mod;
+	    var result = {};
+	    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+	    __setModuleDefault(result, mod);
+	    return result;
+	};
+	var __importDefault = (internalPath && internalPath.__importDefault) || function (mod) {
+	    return (mod && mod.__esModule) ? mod : { "default": mod };
+	};
+	Object.defineProperty(internalPath, "__esModule", { value: true });
+	internalPath.Path = void 0;
+	const path = __importStar(require$$0$e);
+	const pathHelper = __importStar(requireInternalPathHelper());
+	const assert_1 = __importDefault(require$$0$7);
+	const IS_WINDOWS = process.platform === 'win32';
+	/**
+	 * Helper class for parsing paths into segments
+	 */
+	class Path {
+	    /**
+	     * Constructs a Path
+	     * @param itemPath Path or array of segments
+	     */
+	    constructor(itemPath) {
+	        this.segments = [];
+	        // String
+	        if (typeof itemPath === 'string') {
+	            (0, assert_1.default)(itemPath, `Parameter 'itemPath' must not be empty`);
+	            // Normalize slashes and trim unnecessary trailing slash
+	            itemPath = pathHelper.safeTrimTrailingSeparator(itemPath);
+	            // Not rooted
+	            if (!pathHelper.hasRoot(itemPath)) {
+	                this.segments = itemPath.split(path.sep);
+	            }
+	            // Rooted
+	            else {
+	                // Add all segments, while not at the root
+	                let remaining = itemPath;
+	                let dir = pathHelper.dirname(remaining);
+	                while (dir !== remaining) {
+	                    // Add the segment
+	                    const basename = path.basename(remaining);
+	                    this.segments.unshift(basename);
+	                    // Truncate the last segment
+	                    remaining = dir;
+	                    dir = pathHelper.dirname(remaining);
+	                }
+	                // Remainder is the root
+	                this.segments.unshift(remaining);
+	            }
+	        }
+	        // Array
+	        else {
+	            // Must not be empty
+	            (0, assert_1.default)(itemPath.length > 0, `Parameter 'itemPath' must not be an empty array`);
+	            // Each segment
+	            for (let i = 0; i < itemPath.length; i++) {
+	                let segment = itemPath[i];
+	                // Must not be empty
+	                (0, assert_1.default)(segment, `Parameter 'itemPath' must not contain any empty segments`);
+	                // Normalize slashes
+	                segment = pathHelper.normalizeSeparators(itemPath[i]);
+	                // Root segment
+	                if (i === 0 && pathHelper.hasRoot(segment)) {
+	                    segment = pathHelper.safeTrimTrailingSeparator(segment);
+	                    (0, assert_1.default)(segment === pathHelper.dirname(segment), `Parameter 'itemPath' root segment contains information for multiple segments`);
+	                    this.segments.push(segment);
+	                }
+	                // All other segments
+	                else {
+	                    // Must not contain slash
+	                    (0, assert_1.default)(!segment.includes(path.sep), `Parameter 'itemPath' contains unexpected path separators`);
+	                    this.segments.push(segment);
+	                }
+	            }
+	        }
+	    }
+	    /**
+	     * Converts the path to it's string representation
+	     */
+	    toString() {
+	        // First segment
+	        let result = this.segments[0];
+	        // All others
+	        let skipSlash = result.endsWith(path.sep) || (IS_WINDOWS && /^[A-Z]:$/i.test(result));
+	        for (let i = 1; i < this.segments.length; i++) {
+	            if (skipSlash) {
+	                skipSlash = false;
+	            }
+	            else {
+	                result += path.sep;
+	            }
+	            result += this.segments[i];
+	        }
+	        return result;
+	    }
+	}
+	internalPath.Path = Path;
+	
+	return internalPath;
+}
+
+var hasRequiredInternalPattern;
+
+function requireInternalPattern () {
+	if (hasRequiredInternalPattern) return internalPattern;
+	hasRequiredInternalPattern = 1;
+	var __createBinding = (internalPattern && internalPattern.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    var desc = Object.getOwnPropertyDescriptor(m, k);
+	    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+	      desc = { enumerable: true, get: function() { return m[k]; } };
+	    }
+	    Object.defineProperty(o, k2, desc);
+	}) : (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    o[k2] = m[k];
+	}));
+	var __setModuleDefault = (internalPattern && internalPattern.__setModuleDefault) || (Object.create ? (function(o, v) {
+	    Object.defineProperty(o, "default", { enumerable: true, value: v });
+	}) : function(o, v) {
+	    o["default"] = v;
+	});
+	var __importStar = (internalPattern && internalPattern.__importStar) || function (mod) {
+	    if (mod && mod.__esModule) return mod;
+	    var result = {};
+	    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+	    __setModuleDefault(result, mod);
+	    return result;
+	};
+	var __importDefault = (internalPattern && internalPattern.__importDefault) || function (mod) {
+	    return (mod && mod.__esModule) ? mod : { "default": mod };
+	};
+	Object.defineProperty(internalPattern, "__esModule", { value: true });
+	internalPattern.Pattern = void 0;
+	const os = __importStar(require$$0$3);
+	const path = __importStar(require$$0$e);
+	const pathHelper = __importStar(requireInternalPathHelper());
+	const assert_1 = __importDefault(require$$0$7);
+	const minimatch_1 = requireMinimatch();
+	const internal_match_kind_1 = requireInternalMatchKind();
+	const internal_path_1 = requireInternalPath();
+	const IS_WINDOWS = process.platform === 'win32';
+	class Pattern {
+	    constructor(patternOrNegate, isImplicitPattern = false, segments, homedir) {
+	        /**
+	         * Indicates whether matches should be excluded from the result set
+	         */
+	        this.negate = false;
+	        // Pattern overload
+	        let pattern;
+	        if (typeof patternOrNegate === 'string') {
+	            pattern = patternOrNegate.trim();
+	        }
+	        // Segments overload
+	        else {
+	            // Convert to pattern
+	            segments = segments || [];
+	            (0, assert_1.default)(segments.length, `Parameter 'segments' must not empty`);
+	            const root = Pattern.getLiteral(segments[0]);
+	            (0, assert_1.default)(root && pathHelper.hasAbsoluteRoot(root), `Parameter 'segments' first element must be a root path`);
+	            pattern = new internal_path_1.Path(segments).toString().trim();
+	            if (patternOrNegate) {
+	                pattern = `!${pattern}`;
+	            }
+	        }
+	        // Negate
+	        while (pattern.startsWith('!')) {
+	            this.negate = !this.negate;
+	            pattern = pattern.substr(1).trim();
+	        }
+	        // Normalize slashes and ensures absolute root
+	        pattern = Pattern.fixupPattern(pattern, homedir);
+	        // Segments
+	        this.segments = new internal_path_1.Path(pattern).segments;
+	        // Trailing slash indicates the pattern should only match directories, not regular files
+	        this.trailingSeparator = pathHelper
+	            .normalizeSeparators(pattern)
+	            .endsWith(path.sep);
+	        pattern = pathHelper.safeTrimTrailingSeparator(pattern);
+	        // Search path (literal path prior to the first glob segment)
+	        let foundGlob = false;
+	        const searchSegments = this.segments
+	            .map(x => Pattern.getLiteral(x))
+	            .filter(x => !foundGlob && !(foundGlob = x === ''));
+	        this.searchPath = new internal_path_1.Path(searchSegments).toString();
+	        // Root RegExp (required when determining partial match)
+	        this.rootRegExp = new RegExp(Pattern.regExpEscape(searchSegments[0]), IS_WINDOWS ? 'i' : '');
+	        this.isImplicitPattern = isImplicitPattern;
+	        // Create minimatch
+	        const minimatchOptions = {
+	            dot: true,
+	            nobrace: true,
+	            nocase: IS_WINDOWS,
+	            nocomment: true,
+	            noext: true,
+	            nonegate: true
+	        };
+	        pattern = IS_WINDOWS ? pattern.replace(/\\/g, '/') : pattern;
+	        this.minimatch = new minimatch_1.Minimatch(pattern, minimatchOptions);
+	    }
+	    /**
+	     * Matches the pattern against the specified path
+	     */
+	    match(itemPath) {
+	        // Last segment is globstar?
+	        if (this.segments[this.segments.length - 1] === '**') {
+	            // Normalize slashes
+	            itemPath = pathHelper.normalizeSeparators(itemPath);
+	            // Append a trailing slash. Otherwise Minimatch will not match the directory immediately
+	            // preceding the globstar. For example, given the pattern `/foo/**`, Minimatch returns
+	            // false for `/foo` but returns true for `/foo/`. Append a trailing slash to handle that quirk.
+	            if (!itemPath.endsWith(path.sep) && this.isImplicitPattern === false) {
+	                // Note, this is safe because the constructor ensures the pattern has an absolute root.
+	                // For example, formats like C: and C:foo on Windows are resolved to an absolute root.
+	                itemPath = `${itemPath}${path.sep}`;
+	            }
+	        }
+	        else {
+	            // Normalize slashes and trim unnecessary trailing slash
+	            itemPath = pathHelper.safeTrimTrailingSeparator(itemPath);
+	        }
+	        // Match
+	        if (this.minimatch.match(itemPath)) {
+	            return this.trailingSeparator ? internal_match_kind_1.MatchKind.Directory : internal_match_kind_1.MatchKind.All;
+	        }
+	        return internal_match_kind_1.MatchKind.None;
+	    }
+	    /**
+	     * Indicates whether the pattern may match descendants of the specified path
+	     */
+	    partialMatch(itemPath) {
+	        // Normalize slashes and trim unnecessary trailing slash
+	        itemPath = pathHelper.safeTrimTrailingSeparator(itemPath);
+	        // matchOne does not handle root path correctly
+	        if (pathHelper.dirname(itemPath) === itemPath) {
+	            return this.rootRegExp.test(itemPath);
+	        }
+	        return this.minimatch.matchOne(itemPath.split(IS_WINDOWS ? /\\+/ : /\/+/), this.minimatch.set[0], true);
+	    }
+	    /**
+	     * Escapes glob patterns within a path
+	     */
+	    static globEscape(s) {
+	        return (IS_WINDOWS ? s : s.replace(/\\/g, '\\\\')) // escape '\' on Linux/macOS
+	            .replace(/(\[)(?=[^/]+\])/g, '[[]') // escape '[' when ']' follows within the path segment
+	            .replace(/\?/g, '[?]') // escape '?'
+	            .replace(/\*/g, '[*]'); // escape '*'
+	    }
+	    /**
+	     * Normalizes slashes and ensures absolute root
+	     */
+	    static fixupPattern(pattern, homedir) {
+	        // Empty
+	        (0, assert_1.default)(pattern, 'pattern cannot be empty');
+	        // Must not contain `.` segment, unless first segment
+	        // Must not contain `..` segment
+	        const literalSegments = new internal_path_1.Path(pattern).segments.map(x => Pattern.getLiteral(x));
+	        (0, assert_1.default)(literalSegments.every((x, i) => (x !== '.' || i === 0) && x !== '..'), `Invalid pattern '${pattern}'. Relative pathing '.' and '..' is not allowed.`);
+	        // Must not contain globs in root, e.g. Windows UNC path \\foo\b*r
+	        (0, assert_1.default)(!pathHelper.hasRoot(pattern) || literalSegments[0], `Invalid pattern '${pattern}'. Root segment must not contain globs.`);
+	        // Normalize slashes
+	        pattern = pathHelper.normalizeSeparators(pattern);
+	        // Replace leading `.` segment
+	        if (pattern === '.' || pattern.startsWith(`.${path.sep}`)) {
+	            pattern = Pattern.globEscape(process.cwd()) + pattern.substr(1);
+	        }
+	        // Replace leading `~` segment
+	        else if (pattern === '~' || pattern.startsWith(`~${path.sep}`)) {
+	            homedir = homedir || os.homedir();
+	            (0, assert_1.default)(homedir, 'Unable to determine HOME directory');
+	            (0, assert_1.default)(pathHelper.hasAbsoluteRoot(homedir), `Expected HOME directory to be a rooted path. Actual '${homedir}'`);
+	            pattern = Pattern.globEscape(homedir) + pattern.substr(1);
+	        }
+	        // Replace relative drive root, e.g. pattern is C: or C:foo
+	        else if (IS_WINDOWS &&
+	            (pattern.match(/^[A-Z]:$/i) || pattern.match(/^[A-Z]:[^\\]/i))) {
+	            let root = pathHelper.ensureAbsoluteRoot('C:\\dummy-root', pattern.substr(0, 2));
+	            if (pattern.length > 2 && !root.endsWith('\\')) {
+	                root += '\\';
+	            }
+	            pattern = Pattern.globEscape(root) + pattern.substr(2);
+	        }
+	        // Replace relative root, e.g. pattern is \ or \foo
+	        else if (IS_WINDOWS && (pattern === '\\' || pattern.match(/^\\[^\\]/))) {
+	            let root = pathHelper.ensureAbsoluteRoot('C:\\dummy-root', '\\');
+	            if (!root.endsWith('\\')) {
+	                root += '\\';
+	            }
+	            pattern = Pattern.globEscape(root) + pattern.substr(1);
+	        }
+	        // Otherwise ensure absolute root
+	        else {
+	            pattern = pathHelper.ensureAbsoluteRoot(Pattern.globEscape(process.cwd()), pattern);
+	        }
+	        return pathHelper.normalizeSeparators(pattern);
+	    }
+	    /**
+	     * Attempts to unescape a pattern segment to create a literal path segment.
+	     * Otherwise returns empty string.
+	     */
+	    static getLiteral(segment) {
+	        let literal = '';
+	        for (let i = 0; i < segment.length; i++) {
+	            const c = segment[i];
+	            // Escape
+	            if (c === '\\' && !IS_WINDOWS && i + 1 < segment.length) {
+	                literal += segment[++i];
+	                continue;
+	            }
+	            // Wildcard
+	            else if (c === '*' || c === '?') {
+	                return '';
+	            }
+	            // Character set
+	            else if (c === '[' && i + 1 < segment.length) {
+	                let set = '';
+	                let closed = -1;
+	                for (let i2 = i + 1; i2 < segment.length; i2++) {
+	                    const c2 = segment[i2];
+	                    // Escape
+	                    if (c2 === '\\' && !IS_WINDOWS && i2 + 1 < segment.length) {
+	                        set += segment[++i2];
+	                        continue;
+	                    }
+	                    // Closed
+	                    else if (c2 === ']') {
+	                        closed = i2;
+	                        break;
+	                    }
+	                    // Otherwise
+	                    else {
+	                        set += c2;
+	                    }
+	                }
+	                // Closed?
+	                if (closed >= 0) {
+	                    // Cannot convert
+	                    if (set.length > 1) {
+	                        return '';
+	                    }
+	                    // Convert to literal
+	                    if (set) {
+	                        literal += set;
+	                        i = closed;
+	                        continue;
+	                    }
+	                }
+	                // Otherwise fall thru
+	            }
+	            // Append
+	            literal += c;
+	        }
+	        return literal;
+	    }
+	    /**
+	     * Escapes regexp special characters
+	     * https://javascript.info/regexp-escaping
+	     */
+	    static regExpEscape(s) {
+	        return s.replace(/[[\\^$.|?*+()]/g, '\\$&');
+	    }
+	}
+	internalPattern.Pattern = Pattern;
+	
+	return internalPattern;
+}
+
+var internalSearchState = {};
+
+var hasRequiredInternalSearchState;
+
+function requireInternalSearchState () {
+	if (hasRequiredInternalSearchState) return internalSearchState;
+	hasRequiredInternalSearchState = 1;
+	Object.defineProperty(internalSearchState, "__esModule", { value: true });
+	internalSearchState.SearchState = void 0;
+	class SearchState {
+	    constructor(path, level) {
+	        this.path = path;
+	        this.level = level;
+	    }
+	}
+	internalSearchState.SearchState = SearchState;
+	
+	return internalSearchState;
+}
+
+var hasRequiredInternalGlobber;
+
+function requireInternalGlobber () {
+	if (hasRequiredInternalGlobber) return internalGlobber;
+	hasRequiredInternalGlobber = 1;
+	var __createBinding = (internalGlobber && internalGlobber.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    var desc = Object.getOwnPropertyDescriptor(m, k);
+	    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+	      desc = { enumerable: true, get: function() { return m[k]; } };
+	    }
+	    Object.defineProperty(o, k2, desc);
+	}) : (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    o[k2] = m[k];
+	}));
+	var __setModuleDefault = (internalGlobber && internalGlobber.__setModuleDefault) || (Object.create ? (function(o, v) {
+	    Object.defineProperty(o, "default", { enumerable: true, value: v });
+	}) : function(o, v) {
+	    o["default"] = v;
+	});
+	var __importStar = (internalGlobber && internalGlobber.__importStar) || function (mod) {
+	    if (mod && mod.__esModule) return mod;
+	    var result = {};
+	    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+	    __setModuleDefault(result, mod);
+	    return result;
+	};
+	var __awaiter = (internalGlobber && internalGlobber.__awaiter) || function (thisArg, _arguments, P, generator) {
+	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+	    return new (P || (P = Promise))(function (resolve, reject) {
+	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+	        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+	        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+	        step((generator = generator.apply(thisArg, _arguments || [])).next());
+	    });
+	};
+	var __asyncValues = (internalGlobber && internalGlobber.__asyncValues) || function (o) {
+	    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+	    var m = o[Symbol.asyncIterator], i;
+	    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+	    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+	    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+	};
+	var __await = (internalGlobber && internalGlobber.__await) || function (v) { return this instanceof __await ? (this.v = v, this) : new __await(v); };
+	var __asyncGenerator = (internalGlobber && internalGlobber.__asyncGenerator) || function (thisArg, _arguments, generator) {
+	    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+	    var g = generator.apply(thisArg, _arguments || []), i, q = [];
+	    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+	    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+	    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+	    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+	    function fulfill(value) { resume("next", value); }
+	    function reject(value) { resume("throw", value); }
+	    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+	};
+	Object.defineProperty(internalGlobber, "__esModule", { value: true });
+	internalGlobber.DefaultGlobber = void 0;
+	const core = __importStar(requireCore());
+	const fs = __importStar(require$$1$1);
+	const globOptionsHelper = __importStar(requireInternalGlobOptionsHelper());
+	const path = __importStar(require$$0$e);
+	const patternHelper = __importStar(requireInternalPatternHelper());
+	const internal_match_kind_1 = requireInternalMatchKind();
+	const internal_pattern_1 = requireInternalPattern();
+	const internal_search_state_1 = requireInternalSearchState();
+	const IS_WINDOWS = process.platform === 'win32';
+	class DefaultGlobber {
+	    constructor(options) {
+	        this.patterns = [];
+	        this.searchPaths = [];
+	        this.options = globOptionsHelper.getOptions(options);
+	    }
+	    getSearchPaths() {
+	        // Return a copy
+	        return this.searchPaths.slice();
+	    }
+	    glob() {
+	        var _a, e_1, _b, _c;
+	        return __awaiter(this, void 0, void 0, function* () {
+	            const result = [];
+	            try {
+	                for (var _d = true, _e = __asyncValues(this.globGenerator()), _f; _f = yield _e.next(), _a = _f.done, !_a; _d = true) {
+	                    _c = _f.value;
+	                    _d = false;
+	                    const itemPath = _c;
+	                    result.push(itemPath);
+	                }
+	            }
+	            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+	            finally {
+	                try {
+	                    if (!_d && !_a && (_b = _e.return)) yield _b.call(_e);
+	                }
+	                finally { if (e_1) throw e_1.error; }
+	            }
+	            return result;
+	        });
+	    }
+	    globGenerator() {
+	        return __asyncGenerator(this, arguments, function* globGenerator_1() {
+	            // Fill in defaults options
+	            const options = globOptionsHelper.getOptions(this.options);
+	            // Implicit descendants?
+	            const patterns = [];
+	            for (const pattern of this.patterns) {
+	                patterns.push(pattern);
+	                if (options.implicitDescendants &&
+	                    (pattern.trailingSeparator ||
+	                        pattern.segments[pattern.segments.length - 1] !== '**')) {
+	                    patterns.push(new internal_pattern_1.Pattern(pattern.negate, true, pattern.segments.concat('**')));
+	                }
+	            }
+	            // Push the search paths
+	            const stack = [];
+	            for (const searchPath of patternHelper.getSearchPaths(patterns)) {
+	                core.debug(`Search path '${searchPath}'`);
+	                // Exists?
+	                try {
+	                    // Intentionally using lstat. Detection for broken symlink
+	                    // will be performed later (if following symlinks).
+	                    yield __await(fs.promises.lstat(searchPath));
+	                }
+	                catch (err) {
+	                    if (err.code === 'ENOENT') {
+	                        continue;
+	                    }
+	                    throw err;
+	                }
+	                stack.unshift(new internal_search_state_1.SearchState(searchPath, 1));
+	            }
+	            // Search
+	            const traversalChain = []; // used to detect cycles
+	            while (stack.length) {
+	                // Pop
+	                const item = stack.pop();
+	                // Match?
+	                const match = patternHelper.match(patterns, item.path);
+	                const partialMatch = !!match || patternHelper.partialMatch(patterns, item.path);
+	                if (!match && !partialMatch) {
+	                    continue;
+	                }
+	                // Stat
+	                const stats = yield __await(DefaultGlobber.stat(item, options, traversalChain)
+	                // Broken symlink, or symlink cycle detected, or no longer exists
+	                );
+	                // Broken symlink, or symlink cycle detected, or no longer exists
+	                if (!stats) {
+	                    continue;
+	                }
+	                // Hidden file or directory?
+	                if (options.excludeHiddenFiles && path.basename(item.path).match(/^\./)) {
+	                    continue;
+	                }
+	                // Directory
+	                if (stats.isDirectory()) {
+	                    // Matched
+	                    if (match & internal_match_kind_1.MatchKind.Directory && options.matchDirectories) {
+	                        yield yield __await(item.path);
+	                    }
+	                    // Descend?
+	                    else if (!partialMatch) {
+	                        continue;
+	                    }
+	                    // Push the child items in reverse
+	                    const childLevel = item.level + 1;
+	                    const childItems = (yield __await(fs.promises.readdir(item.path))).map(x => new internal_search_state_1.SearchState(path.join(item.path, x), childLevel));
+	                    stack.push(...childItems.reverse());
+	                }
+	                // File
+	                else if (match & internal_match_kind_1.MatchKind.File) {
+	                    yield yield __await(item.path);
+	                }
+	            }
+	        });
+	    }
+	    /**
+	     * Constructs a DefaultGlobber
+	     */
+	    static create(patterns, options) {
+	        return __awaiter(this, void 0, void 0, function* () {
+	            const result = new DefaultGlobber(options);
+	            if (IS_WINDOWS) {
+	                patterns = patterns.replace(/\r\n/g, '\n');
+	                patterns = patterns.replace(/\r/g, '\n');
+	            }
+	            const lines = patterns.split('\n').map(x => x.trim());
+	            for (const line of lines) {
+	                // Empty or comment
+	                if (!line || line.startsWith('#')) {
+	                    continue;
+	                }
+	                // Pattern
+	                else {
+	                    result.patterns.push(new internal_pattern_1.Pattern(line));
+	                }
+	            }
+	            result.searchPaths.push(...patternHelper.getSearchPaths(result.patterns));
+	            return result;
+	        });
+	    }
+	    static stat(item, options, traversalChain) {
+	        return __awaiter(this, void 0, void 0, function* () {
+	            // Note:
+	            // `stat` returns info about the target of a symlink (or symlink chain)
+	            // `lstat` returns info about a symlink itself
+	            let stats;
+	            if (options.followSymbolicLinks) {
+	                try {
+	                    // Use `stat` (following symlinks)
+	                    stats = yield fs.promises.stat(item.path);
+	                }
+	                catch (err) {
+	                    if (err.code === 'ENOENT') {
+	                        if (options.omitBrokenSymbolicLinks) {
+	                            core.debug(`Broken symlink '${item.path}'`);
+	                            return undefined;
+	                        }
+	                        throw new Error(`No information found for the path '${item.path}'. This may indicate a broken symbolic link.`);
+	                    }
+	                    throw err;
+	                }
+	            }
+	            else {
+	                // Use `lstat` (not following symlinks)
+	                stats = yield fs.promises.lstat(item.path);
+	            }
+	            // Note, isDirectory() returns false for the lstat of a symlink
+	            if (stats.isDirectory() && options.followSymbolicLinks) {
+	                // Get the realpath
+	                const realPath = yield fs.promises.realpath(item.path);
+	                // Fixup the traversal chain to match the item level
+	                while (traversalChain.length >= item.level) {
+	                    traversalChain.pop();
+	                }
+	                // Test for a cycle
+	                if (traversalChain.some((x) => x === realPath)) {
+	                    core.debug(`Symlink cycle detected for path '${item.path}' and realpath '${realPath}'`);
+	                    return undefined;
+	                }
+	                // Update the traversal chain
+	                traversalChain.push(realPath);
+	            }
+	            return stats;
+	        });
+	    }
+	}
+	internalGlobber.DefaultGlobber = DefaultGlobber;
+	
+	return internalGlobber;
+}
+
+var internalHashFiles = {};
+
+var hasRequiredInternalHashFiles;
+
+function requireInternalHashFiles () {
+	if (hasRequiredInternalHashFiles) return internalHashFiles;
+	hasRequiredInternalHashFiles = 1;
+	var __createBinding = (internalHashFiles && internalHashFiles.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    var desc = Object.getOwnPropertyDescriptor(m, k);
+	    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+	      desc = { enumerable: true, get: function() { return m[k]; } };
+	    }
+	    Object.defineProperty(o, k2, desc);
+	}) : (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    o[k2] = m[k];
+	}));
+	var __setModuleDefault = (internalHashFiles && internalHashFiles.__setModuleDefault) || (Object.create ? (function(o, v) {
+	    Object.defineProperty(o, "default", { enumerable: true, value: v });
+	}) : function(o, v) {
+	    o["default"] = v;
+	});
+	var __importStar = (internalHashFiles && internalHashFiles.__importStar) || function (mod) {
+	    if (mod && mod.__esModule) return mod;
+	    var result = {};
+	    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+	    __setModuleDefault(result, mod);
+	    return result;
+	};
+	var __awaiter = (internalHashFiles && internalHashFiles.__awaiter) || function (thisArg, _arguments, P, generator) {
+	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+	    return new (P || (P = Promise))(function (resolve, reject) {
+	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+	        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+	        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+	        step((generator = generator.apply(thisArg, _arguments || [])).next());
+	    });
+	};
+	var __asyncValues = (internalHashFiles && internalHashFiles.__asyncValues) || function (o) {
+	    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+	    var m = o[Symbol.asyncIterator], i;
+	    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+	    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+	    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+	};
+	Object.defineProperty(internalHashFiles, "__esModule", { value: true });
+	internalHashFiles.hashFiles = void 0;
+	const crypto = __importStar(require$$0$4);
+	const core = __importStar(requireCore());
+	const fs = __importStar(require$$1$1);
+	const stream = __importStar(require$$0$9);
+	const util = __importStar(require$$0$5);
+	const path = __importStar(require$$0$e);
+	function hashFiles(globber, currentWorkspace, verbose = false) {
+	    var _a, e_1, _b, _c;
+	    var _d;
+	    return __awaiter(this, void 0, void 0, function* () {
+	        const writeDelegate = verbose ? core.info : core.debug;
+	        let hasMatch = false;
+	        const githubWorkspace = currentWorkspace
+	            ? currentWorkspace
+	            : (_d = process.env['GITHUB_WORKSPACE']) !== null && _d !== void 0 ? _d : process.cwd();
+	        const result = crypto.createHash('sha256');
+	        let count = 0;
+	        try {
+	            for (var _e = true, _f = __asyncValues(globber.globGenerator()), _g; _g = yield _f.next(), _a = _g.done, !_a; _e = true) {
+	                _c = _g.value;
+	                _e = false;
+	                const file = _c;
+	                writeDelegate(file);
+	                if (!file.startsWith(`${githubWorkspace}${path.sep}`)) {
+	                    writeDelegate(`Ignore '${file}' since it is not under GITHUB_WORKSPACE.`);
+	                    continue;
+	                }
+	                if (fs.statSync(file).isDirectory()) {
+	                    writeDelegate(`Skip directory '${file}'.`);
+	                    continue;
+	                }
+	                const hash = crypto.createHash('sha256');
+	                const pipeline = util.promisify(stream.pipeline);
+	                yield pipeline(fs.createReadStream(file), hash);
+	                result.write(hash.digest());
+	                count++;
+	                if (!hasMatch) {
+	                    hasMatch = true;
+	                }
+	            }
+	        }
+	        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+	        finally {
+	            try {
+	                if (!_e && !_a && (_b = _f.return)) yield _b.call(_f);
+	            }
+	            finally { if (e_1) throw e_1.error; }
+	        }
+	        result.end();
+	        if (hasMatch) {
+	            writeDelegate(`Found ${count} files to hash.`);
+	            return result.digest('hex');
+	        }
+	        else {
+	            writeDelegate(`No matches found for glob`);
+	            return '';
+	        }
+	    });
+	}
+	internalHashFiles.hashFiles = hashFiles;
+	
+	return internalHashFiles;
+}
+
+var hasRequiredGlob;
+
+function requireGlob () {
+	if (hasRequiredGlob) return glob;
+	hasRequiredGlob = 1;
+	var __awaiter = (glob && glob.__awaiter) || function (thisArg, _arguments, P, generator) {
+	    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+	    return new (P || (P = Promise))(function (resolve, reject) {
+	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+	        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+	        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+	        step((generator = generator.apply(thisArg, _arguments || [])).next());
+	    });
+	};
+	Object.defineProperty(glob, "__esModule", { value: true });
+	glob.hashFiles = glob.create = void 0;
+	const internal_globber_1 = requireInternalGlobber();
+	const internal_hash_files_1 = requireInternalHashFiles();
+	/**
+	 * Constructs a globber
+	 *
+	 * @param patterns  Patterns separated by newlines
+	 * @param options   Glob options
+	 */
+	function create(patterns, options) {
+	    return __awaiter(this, void 0, void 0, function* () {
+	        return yield internal_globber_1.DefaultGlobber.create(patterns, options);
+	    });
+	}
+	glob.create = create;
+	/**
+	 * Computes the sha256 hash of a glob
+	 *
+	 * @param patterns  Patterns separated by newlines
+	 * @param currentWorkspace  Workspace used when matching files
+	 * @param options   Glob options
+	 * @param verbose   Enables verbose logging
+	 */
+	function hashFiles(patterns, currentWorkspace = '', options, verbose = false) {
+	    return __awaiter(this, void 0, void 0, function* () {
+	        let followSymbolicLinks = true;
+	        if (options && typeof options.followSymbolicLinks === 'boolean') {
+	            followSymbolicLinks = options.followSymbolicLinks;
+	        }
+	        const globber = yield create(patterns, { followSymbolicLinks });
+	        return (0, internal_hash_files_1.hashFiles)(globber, currentWorkspace, verbose);
+	    });
+	}
+	glob.hashFiles = hashFiles;
+	
+	return glob;
+}
+
+var globExports = requireGlob();
+
 async function getKey() {
     try {
         // Get cache key from input
@@ -82717,15 +83970,28 @@ async function main() {
         coreExports.info("Cache not found, proceeding without restoring.");
         return;
     }
-    // If cache was restored, import it
-    await execExports.exec("nix", [
-        "copy",
-        "--all",
-        "--from",
-        "file:///tmp/nix-cache",
-        "--no-check-sigs",
-        "--repair",
-    ]);
+    // Get all nar files in the cache directory
+    const globber = await globExports.create("/tmp/nix-cache/*.narinfo");
+    const narFiles = await globber.glob();
+    // If no nar files found, exit early
+    if (narFiles.length === 0) {
+        coreExports.info("No nar files found in the cache, exiting.");
+        return;
+    }
+    // Log the number of nar files found
+    coreExports.info(`Found ${narFiles.length} nar files in the cache.`);
+    // Import all nar files from the cache
+    // Necessary until https://github.com/NixOS/nix/issues/9052 is resolved
+    for (const narFile of narFiles) {
+        await execExports.exec("nix", [
+            "copy",
+            narFile,
+            "--from",
+            "file:///tmp/nix-cache",
+            "--no-check-sigs",
+            "--offline",
+        ]);
+    }
 }
 try {
     await main();
