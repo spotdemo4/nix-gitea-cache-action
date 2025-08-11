@@ -22,6 +22,7 @@ async function main() {
 		"--from",
 		"file:///tmp/nix-cache",
 		"--no-check-sigs",
+		"--repair",
 	]);
 }
 
