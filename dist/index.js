@@ -1,11 +1,13 @@
+import * as require$$1$1 from 'node:fs';
+import require$$1__default from 'node:fs';
 import require$$0$3 from 'os';
 import require$$0$4 from 'crypto';
-import require$$1$1 from 'fs';
+import require$$1$2 from 'fs';
 import require$$0$e from 'path';
 import require$$2 from 'http';
-import require$$1$2 from 'https';
+import require$$1$3 from 'https';
 import require$$0$8 from 'net';
-import require$$1$3 from 'tls';
+import require$$1$4 from 'tls';
 import require$$0$6 from 'events';
 import require$$0$7 from 'assert';
 import require$$0$5 from 'util';
@@ -14,28 +16,27 @@ import require$$7 from 'buffer';
 import require$$8 from 'querystring';
 import require$$14 from 'stream/web';
 import require$$0$b from 'node:stream';
-import require$$1$4 from 'node:util';
+import require$$1$5 from 'node:util';
 import require$$0$a from 'node:events';
 import require$$0$c from 'worker_threads';
 import require$$2$1 from 'perf_hooks';
 import require$$5 from 'util/types';
 import require$$4 from 'async_hooks';
-import require$$1$5 from 'console';
+import require$$1$6 from 'console';
 import require$$5$1 from 'url';
 import require$$3 from 'zlib';
 import require$$6 from 'string_decoder';
 import require$$0$d from 'diagnostics_channel';
 import require$$2$2 from 'child_process';
 import require$$6$1 from 'timers';
-import require$$1$6 from 'node:os';
+import require$$1$7 from 'node:os';
 import require$$2$3 from 'node:process';
 import require$$0$f from 'node:crypto';
-import require$$1$7 from 'node:http';
+import require$$1$8 from 'node:http';
 import require$$2$4 from 'node:https';
 import require$$3$1 from 'node:zlib';
 import require$$0$g from 'tty';
 import require$$2$5 from 'node:buffer';
-import require$$1$8 from 'node:fs';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -262,7 +263,7 @@ function requireFileCommand () {
 	// We use any as a valid input type
 	/* eslint-disable @typescript-eslint/no-explicit-any */
 	const crypto = __importStar(require$$0$4);
-	const fs = __importStar(require$$1$1);
+	const fs = __importStar(require$$1$2);
 	const os = __importStar(require$$0$3);
 	const utils_1 = requireUtils$3();
 	function issueFileCommand(command, message) {
@@ -412,9 +413,9 @@ var hasRequiredTunnel$1;
 function requireTunnel$1 () {
 	if (hasRequiredTunnel$1) return tunnel$1;
 	hasRequiredTunnel$1 = 1;
-	var tls = require$$1$3;
+	var tls = require$$1$4;
 	var http = require$$2;
-	var https = require$$1$2;
+	var https = require$$1$3;
 	var events = require$$0$6;
 	var util = require$$0$5;
 
@@ -1794,7 +1795,7 @@ function requireSbmh () {
 	 * by Hongli Lai at: https://github.com/FooBarWidget/boyer-moore-horspool
 	 */
 	const EventEmitter = require$$0$a.EventEmitter;
-	const inherits = require$$1$4.inherits;
+	const inherits = require$$1$5.inherits;
 
 	function SBMH (needle) {
 	  if (typeof needle === 'string') {
@@ -2003,7 +2004,7 @@ function requirePartStream () {
 	if (hasRequiredPartStream) return PartStream_1;
 	hasRequiredPartStream = 1;
 
-	const inherits = require$$1$4.inherits;
+	const inherits = require$$1$5.inherits;
 	const ReadableStream = require$$0$b.Readable;
 
 	function PartStream (opts) {
@@ -2049,7 +2050,7 @@ function requireHeaderParser () {
 	hasRequiredHeaderParser = 1;
 
 	const EventEmitter = require$$0$a.EventEmitter;
-	const inherits = require$$1$4.inherits;
+	const inherits = require$$1$5.inherits;
 	const getLimit = requireGetLimit();
 
 	const StreamSearch = requireSbmh();
@@ -2157,7 +2158,7 @@ function requireDicer () {
 	hasRequiredDicer = 1;
 
 	const WritableStream = require$$0$b.Writable;
-	const inherits = require$$1$4.inherits;
+	const inherits = require$$1$5.inherits;
 
 	const StreamSearch = requireSbmh();
 
@@ -2734,7 +2735,7 @@ function requireMultipart$1 () {
 	//     -- this will require modifications to utils.parseParams
 
 	const { Readable } = require$$0$b;
-	const { inherits } = require$$1$4;
+	const { inherits } = require$$1$5;
 
 	const Dicer = requireDicer();
 
@@ -3300,7 +3301,7 @@ function requireMain () {
 	hasRequiredMain = 1;
 
 	const WritableStream = require$$0$b.Writable;
-	const { inherits } = require$$1$4;
+	const { inherits } = require$$1$5;
 	const Dicer = requireDicer();
 
 	const MultipartParser = requireMultipart$1();
@@ -8124,7 +8125,7 @@ function requireConnect () {
 	    let socket;
 	    if (protocol === 'https:') {
 	      if (!tls) {
-	        tls = require$$1$3;
+	        tls = require$$1$4;
 	      }
 	      servername = servername || options.servername || util.getServerName(host) || null;
 
@@ -14148,7 +14149,7 @@ function requirePendingInterceptorsFormatter () {
 	hasRequiredPendingInterceptorsFormatter = 1;
 
 	const { Transform } = require$$0$9;
-	const { Console } = require$$1$5;
+	const { Console } = require$$1$6;
 
 	/**
 	 * Gets the output of `console.table(…)` as a string.
@@ -24428,7 +24429,7 @@ function requireLib () {
 	Object.defineProperty(lib, "__esModule", { value: true });
 	lib.HttpClient = lib.isHttps = lib.HttpClientResponse = lib.HttpClientError = lib.getProxyUrl = lib.MediaTypes = lib.Headers = lib.HttpCodes = void 0;
 	const http = __importStar(require$$2);
-	const https = __importStar(require$$1$2);
+	const https = __importStar(require$$1$3);
 	const pm = __importStar(requireProxy());
 	const tunnel = __importStar(requireTunnel());
 	const undici_1 = requireUndici();
@@ -25240,7 +25241,7 @@ function requireSummary () {
 		Object.defineProperty(exports, "__esModule", { value: true });
 		exports.summary = exports.markdownSummary = exports.SUMMARY_DOCS_URL = exports.SUMMARY_ENV_VAR = void 0;
 		const os_1 = require$$0$3;
-		const fs_1 = require$$1$1;
+		const fs_1 = require$$1$2;
 		const { access, appendFile, writeFile } = fs_1.promises;
 		exports.SUMMARY_ENV_VAR = 'GITHUB_STEP_SUMMARY';
 		exports.SUMMARY_DOCS_URL = 'https://docs.github.com/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary';
@@ -25632,7 +25633,7 @@ function requireIoUtil () {
 		var _a;
 		Object.defineProperty(exports, "__esModule", { value: true });
 		exports.getCmdPath = exports.tryGetExecutablePath = exports.isRooted = exports.isDirectory = exports.exists = exports.READONLY = exports.UV_FS_O_EXLOCK = exports.IS_WINDOWS = exports.unlink = exports.symlink = exports.stat = exports.rmdir = exports.rm = exports.rename = exports.readlink = exports.readdir = exports.open = exports.mkdir = exports.lstat = exports.copyFile = exports.chmod = void 0;
-		const fs = __importStar(require$$1$1);
+		const fs = __importStar(require$$1$2);
 		const path = __importStar(require$$0$e);
 		_a = fs.promises
 		// export const {open} = 'fs'
@@ -29396,7 +29397,7 @@ function requireInternalGlobber$1 () {
 	Object.defineProperty(internalGlobber$1, "__esModule", { value: true });
 	internalGlobber$1.DefaultGlobber = void 0;
 	const core = __importStar(requireCore());
-	const fs = __importStar(require$$1$1);
+	const fs = __importStar(require$$1$2);
 	const globOptionsHelper = __importStar(requireInternalGlobOptionsHelper$1());
 	const path = __importStar(require$$0$e);
 	const patternHelper = __importStar(requireInternalPatternHelper$1());
@@ -31368,7 +31369,7 @@ function requireCacheUtils () {
 	const glob = __importStar(requireGlob$1());
 	const io = __importStar(requireIo());
 	const crypto = __importStar(require$$0$4);
-	const fs = __importStar(require$$1$1);
+	const fs = __importStar(require$$1$2);
 	const path = __importStar(require$$0$e);
 	const semver = __importStar(requireSemver());
 	const util = __importStar(require$$0$5);
@@ -32056,8 +32057,8 @@ function requireLog$5 () {
 	Object.defineProperty(log$5, "__esModule", { value: true });
 	log$5.log = log;
 	const tslib_1 = require$$0$2;
-	const node_os_1 = require$$1$6;
-	const node_util_1 = tslib_1.__importDefault(require$$1$4);
+	const node_os_1 = require$$1$7;
+	const node_util_1 = tslib_1.__importDefault(require$$1$5);
 	const process = tslib_1.__importStar(require$$2$3);
 	function log(message, ...args) {
 	    process.stderr.write(`${node_util_1.default.format(message, ...args)}${node_os_1.EOL}`);
@@ -32856,7 +32857,7 @@ function requireInspect () {
 	// Licensed under the MIT License.
 	Object.defineProperty(inspect, "__esModule", { value: true });
 	inspect.custom = void 0;
-	const node_util_1 = require$$1$4;
+	const node_util_1 = require$$1$5;
 	inspect.custom = node_util_1.inspect.custom;
 	
 	return inspect;
@@ -33157,7 +33158,7 @@ function requireNodeHttpClient () {
 	nodeHttpClient.getBodyLength = getBodyLength;
 	nodeHttpClient.createNodeHttpClient = createNodeHttpClient;
 	const tslib_1 = require$$0$2;
-	const http = tslib_1.__importStar(require$$1$7);
+	const http = tslib_1.__importStar(require$$1$8);
 	const https = tslib_1.__importStar(require$$2$4);
 	const zlib = tslib_1.__importStar(require$$3$1);
 	const node_stream_1 = require$$0$b;
@@ -33658,7 +33659,7 @@ function requireUserAgentPlatform$1 () {
 	userAgentPlatform$1.getHeaderName = getHeaderName;
 	userAgentPlatform$1.setPlatformSpecificData = setPlatformSpecificData;
 	const tslib_1 = require$$0$2;
-	const os = tslib_1.__importStar(require$$1$6);
+	const os = tslib_1.__importStar(require$$1$7);
 	const process = tslib_1.__importStar(require$$2$3);
 	/**
 	 * @internal
@@ -35539,7 +35540,7 @@ function requireHelpers () {
 	Object.defineProperty(helpers, "__esModule", { value: true });
 	helpers.req = helpers.json = helpers.toBuffer = void 0;
 	const http = __importStar(require$$2);
-	const https = __importStar(require$$1$2);
+	const https = __importStar(require$$1$3);
 	async function toBuffer(stream) {
 	    let length = 0;
 	    const chunks = [];
@@ -35617,7 +35618,7 @@ function requireDist$2 () {
 		exports.Agent = void 0;
 		const net = __importStar(require$$0$8);
 		const http = __importStar(require$$2);
-		const https_1 = require$$1$2;
+		const https_1 = require$$1$3;
 		__exportStar(requireHelpers(), exports);
 		const INTERNAL = Symbol('AgentBaseInternalState');
 		class Agent extends http.Agent {
@@ -35912,7 +35913,7 @@ function requireDist$1 () {
 	Object.defineProperty(dist$2, "__esModule", { value: true });
 	dist$2.HttpsProxyAgent = void 0;
 	const net = __importStar(require$$0$8);
-	const tls = __importStar(require$$1$3);
+	const tls = __importStar(require$$1$4);
 	const assert_1 = __importDefault(require$$0$7);
 	const debug_1 = __importDefault(requireSrc$1());
 	const agent_base_1 = requireDist$2();
@@ -36101,7 +36102,7 @@ function requireDist () {
 	Object.defineProperty(dist, "__esModule", { value: true });
 	dist.HttpProxyAgent = void 0;
 	const net = __importStar(require$$0$8);
-	const tls = __importStar(require$$1$3);
+	const tls = __importStar(require$$1$4);
 	const debug_1 = __importDefault(requireSrc$1());
 	const events_1 = require$$0$6;
 	const agent_base_1 = requireDist$2();
@@ -38282,7 +38283,7 @@ function requireUserAgentPlatform () {
 	userAgentPlatform.getHeaderName = getHeaderName;
 	userAgentPlatform.setPlatformSpecificData = setPlatformSpecificData;
 	const tslib_1 = require$$0$2;
-	const os = tslib_1.__importStar(require$$1$6);
+	const os = tslib_1.__importStar(require$$1$7);
 	const process = tslib_1.__importStar(require$$2$3);
 	/**
 	 * @internal
@@ -68813,8 +68814,8 @@ function requireUtils () {
 	utils.streamToBuffer3 = streamToBuffer3;
 	utils.readStreamToLocalFile = readStreamToLocalFile;
 	const tslib_1 = require$$0$2;
-	const node_fs_1 = tslib_1.__importDefault(require$$1$8);
-	const node_util_1 = tslib_1.__importDefault(require$$1$4);
+	const node_fs_1 = tslib_1.__importDefault(require$$1__default);
+	const node_util_1 = tslib_1.__importDefault(require$$1$5);
 	const constants_js_1 = requireConstants$2();
 	/**
 	 * Reads a readable stream into buffer. Fill the buffer from offset to end.
@@ -75871,7 +75872,7 @@ function requireDownloadUtils () {
 	const http_client_1 = requireLib();
 	const storage_blob_1 = /*@__PURE__*/ requireCommonjs();
 	const buffer = __importStar(require$$7);
-	const fs = __importStar(require$$1$1);
+	const fs = __importStar(require$$1$2);
 	const stream = __importStar(require$$0$9);
 	const util = __importStar(require$$0$5);
 	const utils = __importStar(requireCacheUtils());
@@ -76453,7 +76454,7 @@ function requireCacheHttpClient () {
 	const core = __importStar(requireCore());
 	const http_client_1 = requireLib();
 	const auth_1 = requireAuth();
-	const fs = __importStar(require$$1$1);
+	const fs = __importStar(require$$1$2);
 	const url_1 = require$$5$1;
 	const utils = __importStar(requireCacheUtils());
 	const uploadUtils_1 = requireUploadUtils();
@@ -81924,7 +81925,7 @@ function requireTar () {
 	tar.createTar = tar.extractTar = tar.listTar = void 0;
 	const exec_1 = requireExec();
 	const io = __importStar(requireIo());
-	const fs_1 = require$$1$1;
+	const fs_1 = require$$1$2;
 	const path = __importStar(require$$0$e);
 	const utils = __importStar(requireCacheUtils());
 	const constants_1 = requireConstants$5();
@@ -83573,7 +83574,7 @@ function requireInternalGlobber () {
 	Object.defineProperty(internalGlobber, "__esModule", { value: true });
 	internalGlobber.DefaultGlobber = void 0;
 	const core = __importStar(requireCore());
-	const fs = __importStar(require$$1$1);
+	const fs = __importStar(require$$1$2);
 	const globOptionsHelper = __importStar(requireInternalGlobOptionsHelper());
 	const path = __importStar(require$$0$e);
 	const patternHelper = __importStar(requireInternalPatternHelper());
@@ -83816,7 +83817,7 @@ function requireInternalHashFiles () {
 	internalHashFiles.hashFiles = void 0;
 	const crypto = __importStar(require$$0$4);
 	const core = __importStar(requireCore());
-	const fs = __importStar(require$$1$1);
+	const fs = __importStar(require$$1$2);
 	const stream = __importStar(require$$0$9);
 	const util = __importStar(require$$0$5);
 	const path = __importStar(require$$0$e);
@@ -83983,14 +83984,26 @@ async function main() {
     // Import all nar files from the cache
     // Necessary until https://github.com/NixOS/nix/issues/9052 is resolved
     for (const narFile of narFiles) {
+        const path = await getStorePath(narFile);
+        if (!path) {
+            coreExports.warning(`Could not extract store path from ${narFile}, skipping.`);
+            continue;
+        }
         await execExports.exec("nix", [
             "copy",
-            narFile,
+            path,
             "--from",
             "file:///tmp/nix-cache",
             "--no-check-sigs",
             "--offline",
         ]);
+    }
+}
+async function getStorePath(pathToFile) {
+    const fileContent = require$$1$1.readFileSync(pathToFile, "utf-8");
+    const storePath = fileContent.match(/^StorePath: (.+)$/m)?.at(1);
+    if (storePath) {
+        return storePath;
     }
 }
 try {
