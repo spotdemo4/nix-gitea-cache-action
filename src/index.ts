@@ -18,13 +18,13 @@ async function main() {
 	const badPaths: string[] = [];
 	while (true) {
 		// If cache was restored, import it
-		const out = await exec.getExecOutput("nix", [
-			"copy",
-			"--all",
-			"--from",
-			"file:///tmp/nix-cache",
-			"--no-check-sigs",
-		]);
+		const out = await exec.getExecOutput(
+			"nix",
+			["copy", "--all", "--from", "file:///tmp/nix-cache", "--no-check-sigs"],
+			{
+				ignoreReturnCode: true,
+			},
+		);
 
 		if (out.exitCode === 0) break;
 

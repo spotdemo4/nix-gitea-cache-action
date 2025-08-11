@@ -82720,13 +82720,9 @@ async function main() {
     const badPaths = [];
     while (true) {
         // If cache was restored, import it
-        const out = await execExports.getExecOutput("nix", [
-            "copy",
-            "--all",
-            "--from",
-            "file:///tmp/nix-cache",
-            "--no-check-sigs",
-        ]);
+        const out = await execExports.getExecOutput("nix", ["copy", "--all", "--from", "file:///tmp/nix-cache", "--no-check-sigs"], {
+            ignoreReturnCode: true,
+        });
         if (out.exitCode === 0)
             break;
         // If the path is not valid, retry
