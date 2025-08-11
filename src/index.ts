@@ -1,3 +1,4 @@
+import * as fs from "node:fs";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
@@ -32,14 +33,28 @@ async function main() {
 	// Import all nar files from the cache
 	// Necessary until https://github.com/NixOS/nix/issues/9052 is resolved
 	for (const narFile of narFiles) {
+		const path = await getStorePath(narFile);
+		if (!path) {
+			core.warning(`Could not extract store path from ${narFile}, skipping.`);
+			continue;
+		}
+
 		await exec.exec("nix", [
 			"copy",
-			narFile,
+			path,
 			"--from",
 			"file:///tmp/nix-cache",
 			"--no-check-sigs",
 			"--offline",
 		]);
+	}
+}
+
+async function getStorePath(pathToFile: string) {
+	const fileContent = fs.readFileSync(pathToFile, "utf-8");
+	const storePath = fileContent.match(/^StorePath: (.+)$/m)?.at(1);
+	if (storePath) {
+		return storePath;
 	}
 }
 
