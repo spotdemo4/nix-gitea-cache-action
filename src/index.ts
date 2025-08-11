@@ -18,6 +18,7 @@ async function main() {
 	}
 
 	// Get all nar files in the cache directory
+	// This is necessary until https://github.com/NixOS/nix/issues/9052 is resolved
 	const globber = await glob.create("/tmp/nix-cache/*.narinfo");
 	const narFiles = await globber.glob();
 
@@ -27,7 +28,6 @@ async function main() {
 		return;
 	}
 
-	// Log the number of nar files found
 	core.info(`Found ${narFiles.length} nar files in the cache.`);
 
 	// Get all paths in each nar file
@@ -39,9 +39,9 @@ async function main() {
 		}
 	}
 
-	// Log the number of unique paths found
 	core.info(`Found ${paths.size} unique store paths in the cache.`);
 
+	// Copy each path from the cache
 	const out = await exec.getExecOutput(
 		"nix",
 		[
