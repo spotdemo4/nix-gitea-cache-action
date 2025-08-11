@@ -1,4 +1,4 @@
-name: Simple Nix Cache Action
+name: Nix Simple Cache Action
 description: Imports/exports the nix store to/from the actions cache
 author: Trev
 branding:
