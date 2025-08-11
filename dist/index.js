@@ -83991,17 +83991,19 @@ async function main() {
     }
     // Log the number of unique paths found
     coreExports.info(`Found ${paths.size} unique store paths in the cache.`);
-    // Import all paths
-    await Promise.all(Array.from(paths).map((path) => execExports.exec("nix", [
+    const out = await execExports.getExecOutput("nix", [
         "copy",
-        path,
         "--from",
         "file:///tmp/nix-cache",
         "--no-check-sigs",
         "--offline",
+        ...paths,
     ], {
         ignoreReturnCode: true,
-    })));
+    });
+    if (out.exitCode !== 0) {
+        coreExports.warning("Failed to copy some paths from the cache");
+    }
 }
 async function getStorePath(pathToFile) {
     const fileContent = require$$1$1.readFileSync(pathToFile, "utf-8");

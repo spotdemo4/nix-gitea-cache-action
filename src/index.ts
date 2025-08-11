@@ -42,25 +42,24 @@ async function main() {
 	// Log the number of unique paths found
 	core.info(`Found ${paths.size} unique store paths in the cache.`);
 
-	// Import all paths
-	await Promise.all(
-		Array.from(paths).map((path) =>
-			exec.exec(
-				"nix",
-				[
-					"copy",
-					path,
-					"--from",
-					"file:///tmp/nix-cache",
-					"--no-check-sigs",
-					"--offline",
-				],
-				{
-					ignoreReturnCode: true,
-				},
-			),
-		),
+	const out = await exec.getExecOutput(
+		"nix",
+		[
+			"copy",
+			"--from",
+			"file:///tmp/nix-cache",
+			"--no-check-sigs",
+			"--offline",
+			...paths,
+		],
+		{
+			ignoreReturnCode: true,
+		},
 	);
+
+	if (out.exitCode !== 0) {
+		core.warning("Failed to copy some paths from the cache");
+	}
 }
 
 async function getStorePath(pathToFile: string) {
