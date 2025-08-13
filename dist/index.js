@@ -83940,17 +83940,29 @@ async function getKey() {
         const key = coreExports.getInput("key");
         if (key)
             return key;
-        // If no key is provided, generate one from flake.lock hash
-        let hash = "";
-        await execExports.exec("nix", ["hash", "file", "flake.lock"], {
-            listeners: {
-                stdout: (data) => {
-                    hash += data.toString().trim();
-                },
-            },
+        // Try to get narHash from nixpkgs flake input
+        const metadata = await execExports.getExecOutput("nix", ["flake", "metadata", "--json"], {
+            ignoreReturnCode: true,
         });
-        if (hash) {
-            return `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}-${hash}`;
+        if (metadata.exitCode === 0) {
+            const json = JSON.parse(metadata.stdout);
+            const rootName = json?.locks?.nodes?.root?.inputs?.nixpkgs;
+            if (rootName) {
+                const narHash = json?.locks?.nodes[rootName]?.locked?.narHash;
+                if (narHash) {
+                    return `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}-${narHash}`;
+                }
+            }
+        }
+        // Try to hash flake.lock
+        const lockHash = await execExports.getExecOutput("nix", ["hash", "file", "flake.lock"], {
+            ignoreReturnCode: true,
+        });
+        if (lockHash.exitCode === 0) {
+            const hash = lockHash.stdout.trim();
+            if (hash) {
+                return `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}-${hash}`;
+            }
         }
         // Fallback if flake.lock is not available
         return `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}`;
@@ -83972,6 +83984,7 @@ async function main() {
         return;
     }
     // Get all nar files in the cache directory
+    // This is necessary until https://github.com/NixOS/nix/issues/9052 is resolved
     const globber = await globExports.create("/tmp/nix-cache/*.narinfo");
     const narFiles = await globber.glob();
     // If no nar files found, exit early
@@ -83979,7 +83992,6 @@ async function main() {
         coreExports.info("No nar files found in the cache, exiting.");
         return;
     }
-    // Log the number of nar files found
     coreExports.info(`Found ${narFiles.length} nar files in the cache.`);
     // Get all paths in each nar file
     const paths = new Set();
@@ -83989,8 +84001,8 @@ async function main() {
             paths.add(path);
         }
     }
-    // Log the number of unique paths found
     coreExports.info(`Found ${paths.size} unique store paths in the cache.`);
+    // Copy each path from the cache
     const out = await execExports.getExecOutput("nix", [
         "copy",
         "--from",
