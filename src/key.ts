@@ -7,17 +7,40 @@ export async function getKey(): Promise<string> {
 		const key = core.getInput("key");
 		if (key) return key;
 
-		// If no key is provided, generate one from flake.lock hash
-		let hash = "";
-		await exec.exec("nix", ["hash", "file", "flake.lock"], {
-			listeners: {
-				stdout: (data) => {
-					hash += data.toString().trim();
-				},
+		// Try to get narHash from nixpkgs flake input
+		const metadata = await exec.getExecOutput(
+			"nix",
+			["flake", "metadata", "--json"],
+			{
+				ignoreReturnCode: true,
 			},
-		});
-		if (hash) {
-			return `nix-store-${core.platform.platform}-${core.platform.arch}-${hash}`;
+		);
+		if (metadata.exitCode === 0) {
+			const json = JSON.parse(metadata.stdout);
+			const rootName: string | undefined =
+				json?.locks?.nodes?.root?.inputs?.nixpkgs;
+			if (rootName) {
+				const narHash: string | undefined =
+					json?.locks?.nodes[rootName]?.locked?.narHash;
+				if (narHash) {
+					return `nix-store-${core.platform.platform}-${core.platform.arch}-${narHash}`;
+				}
+			}
+		}
+
+		// Try to hash flake.lock
+		const lockHash = await exec.getExecOutput(
+			"nix",
+			["hash", "file", "flake.lock"],
+			{
+				ignoreReturnCode: true,
+			},
+		);
+		if (lockHash.exitCode === 0) {
+			const hash = lockHash.stdout.trim();
+			if (hash) {
+				return `nix-store-${core.platform.platform}-${core.platform.arch}-${hash}`;
+			}
 		}
 
 		// Fallback if flake.lock is not available

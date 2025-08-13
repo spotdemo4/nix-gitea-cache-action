@@ -13,7 +13,7 @@ Any action that installs Nix ([DeterminateSystems/nix-installer-action](https://
 
 ### `key`
 
-An explicit key for the cache entry. Defaults to a hash of `flake.lock`, if it exists.
+An explicit key for the cache entry. Defaults to the narHash of the nixpkgs flake input.
 
 ## Outputs
 
