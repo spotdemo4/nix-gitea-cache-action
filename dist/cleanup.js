@@ -82684,11 +82684,11 @@ async function main() {
     // Copy to cache
     await execExports.exec("nix", [
         "copy",
-        "--all",
+        "--from",
+        "/nix/store",
         "--to",
         "/tmp/nix-cache",
         "--no-check-sigs",
-        "--offline",
     ]);
     // Optimise the cache
     await execExports.exec("nix", ["store", "optimise", "--store", "/tmp/nix-cache"]);
