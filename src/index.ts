@@ -50,7 +50,13 @@ async function main() {
 	// Copy nix store to daemon
 	if (!restore) {
 		core.info("Copying nix store to daemon.");
-		await exec.exec("nix", ["copy", "--all", "--to", "unix:///tmp/nix-socket"]);
+		await exec.exec("nix", [
+			"copy",
+			"--all",
+			"--to",
+			"unix:///tmp/nix-socket",
+			"--no-check-sigs",
+		]);
 	}
 	// Verify nix store integrity
 	// const verify = await exec.exec("nix", [
