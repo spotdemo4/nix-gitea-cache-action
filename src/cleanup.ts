@@ -7,10 +7,11 @@ async function main() {
 	await exec.exec("nix", [
 		"copy",
 		"--from",
-		"/nix/store",
+		"/",
 		"--to",
 		"/tmp/nix-cache",
 		"--no-check-sigs",
+		"--offline",
 	]);
 
 	// Optimise the cache
