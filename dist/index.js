@@ -82700,6 +82700,28 @@ async function main() {
             "--no-check-sigs",
         ]);
     }
+    // Verify nix store integrity
+    const verify = await execExports.exec("nix", [
+        "store",
+        "verify",
+        "--all",
+        "--no-trust",
+        "--store",
+        "/tmp/nix-cache",
+    ]);
+    if (verify !== 0) {
+        coreExports.warning("Nix store verification failed. Attempting repair.");
+        const repair = await execExports.exec("nix", [
+            "store",
+            "repair",
+            "--all",
+            "--store",
+            "/tmp/nix-cache",
+        ]);
+        if (repair !== 0) {
+            throw new Error("Nix store verification and repair failed");
+        }
+    }
     // Set nix store path
     coreExports.exportVariable("NIX_CONFIG", "store = /tmp/nix-cache");
 }
