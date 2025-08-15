@@ -82699,9 +82699,15 @@ async function main() {
     // Create nix daemon
     const daemon = spawn("bash", [
         "-c",
-        "NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nohup nix daemon --store /tmp/nix-cache &",
+        "NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nohup nix daemon --force-trusted --store /tmp/nix-cache &",
     ], { detached: true, stdio: "ignore" });
     daemon.unref();
+    coreExports.info("Nix daemon started.");
+    // Copy nix store to daemon
+    if (!restore) {
+        coreExports.info("Copying nix store to daemon.");
+        await execExports.exec("nix", ["copy", "--all", "--to", "unix:///tmp/nix-socket"]);
+    }
     // Verify nix store integrity
     // const verify = await exec.exec("nix", [
     // 	"store",
