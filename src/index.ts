@@ -26,7 +26,7 @@ async function main() {
 		"bash",
 		[
 			"-c",
-			"NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nohup nix daemon --force-trusted --store /tmp/nix-cache &",
+			"NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nix daemon --store /tmp/nix-cache",
 		],
 		{ detached: true, stdio: "ignore" },
 	);
