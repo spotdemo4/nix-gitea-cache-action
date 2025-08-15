@@ -6,13 +6,14 @@ branding:
   color: yellow
 
 inputs:
-  key:
-    description: An explicit key for the cache entry.
+  max-size:
+    description: Maximum size of the cache in bytes.
+    default: 5000000000 # 5GB
     required: false
 
 outputs:
   cache-hit:
-    description: A string value to indicate an exact match was found for the key.
+    description: A string value to indicate if the cache was found.
     value: ${{ steps.nix-cache.outputs.cache-hit }}
 
 runs:
