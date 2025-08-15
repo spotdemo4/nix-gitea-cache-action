@@ -25,6 +25,30 @@ async function main() {
 		]);
 	}
 
+	// Verify nix store integrity
+	const verify = await exec.exec("nix", [
+		"store",
+		"verify",
+		"--all",
+		"--no-trust",
+		"--store",
+		"/tmp/nix-cache",
+	]);
+	if (verify !== 0) {
+		core.warning("Nix store verification failed. Attempting repair.");
+
+		const repair = await exec.exec("nix", [
+			"store",
+			"repair",
+			"--all",
+			"--store",
+			"/tmp/nix-cache",
+		]);
+		if (repair !== 0) {
+			throw new Error("Nix store verification and repair failed");
+		}
+	}
+
 	// Set nix store path
 	core.exportVariable("NIX_CONFIG", "store = /tmp/nix-cache");
 }

@@ -9,7 +9,7 @@ async function main() {
 	// Get size of nix store
 	const sizeOutput = await exec.getExecOutput("bash", [
 		"-c",
-		"nix store path-info --json --all | jq 'map(.narSize) | add'",
+		"nix path-info --json --all | jq 'map(.narSize) | add'",
 	]);
 	const size = parseInt(sizeOutput.stdout.trim(), 10);
 	core.info(`Nix store size: ${size} bytes`);
