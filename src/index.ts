@@ -14,6 +14,28 @@ async function main() {
 	const versionOutput = await exec.getExecOutput("nix", ["--version"]);
 	core.info(`Nix version: ${versionOutput.stdout.trim()}`);
 
+	// Get nix conf
+	const nixConfOutput = await exec.getExecOutput("nix", ["config", "show"]);
+	const nixConf = nixConfOutput.stdout
+		.trim()
+		.split("\n")
+		.map((line) => line.trim());
+	core.info(`Nix configuration: ${nixConf.join("\n")}`);
+
+	// Create conf for nix daemon
+	const nixDaemonConf = nixConf.map((line) => {
+		if (line.startsWith("store =")) {
+			return "store = /tmp/nix-cache";
+		}
+	});
+
+	// Create conf for nix clients
+	const nixClientConf = nixConf.map((line) => {
+		if (line.startsWith("store =")) {
+			return "store = unix:///tmp/nix-socket";
+		}
+	});
+
 	// Restore cache to tmp
 	const restore = await cache.restoreCache(["/tmp/nix-cache"], "nix-store");
 	core.setOutput("cache-hit", restore ? "true" : "false");
@@ -26,7 +48,7 @@ async function main() {
 		"bash",
 		[
 			"-c",
-			"NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nix daemon --store /tmp/nix-cache --force-trusted --extra-experimental-features daemon-trust-override",
+			`NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket NIX_CONFIG="${nixDaemonConf.join("\n")}" nix daemon`,
 		],
 		{ detached: true, stdio: "ignore" },
 	);
@@ -48,25 +70,25 @@ async function main() {
 	}
 
 	// Copy nix store to daemon
-	if (!restore) {
-		core.info("Copying nix store to daemon.");
-		await exec.exec("nix", [
-			"copy",
-			"--all",
-			"--to",
-			"unix:///tmp/nix-socket",
-			"--no-check-sigs",
-		]);
-	}
+	// if (!restore) {
+	// 	core.info("Copying nix store to daemon.");
+	// 	await exec.exec("nix", [
+	// 		"copy",
+	// 		"--all",
+	// 		"--to",
+	// 		"unix:///tmp/nix-socket",
+	// 		"--no-check-sigs",
+	// 	]);
+	// }
 
-	// Verify nix store
-	await exec.exec("nix-store", [
-		"--verify",
-		"--check-contents",
-		"--repair",
-		"--store",
-		"unix:///tmp/nix-socket",
-	]);
+	// // Verify nix store
+	// await exec.exec("nix-store", [
+	// 	"--verify",
+	// 	"--check-contents",
+	// 	"--repair",
+	// 	"--store",
+	// 	"unix:///tmp/nix-socket",
+	// ]);
 
 	// Prefetch local flake?
 	// await exec.exec("nix", [
@@ -121,17 +143,7 @@ async function main() {
 	// }
 
 	// Set nix store path
-	core.exportVariable(
-		"NIX_CONFIG",
-		`
-		store = unix:///tmp/nix-socket
-		substituters = https://cache.nixos.org/
-		trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
-		experimental-features = nix-command flakes
-		allowed-users = *
-		trusted-users = root
-	`,
-	);
+	core.exportVariable("NIX_CONFIG", nixClientConf.join("\n"));
 	// core.exportVariable("NIX_STORE_DIR", "/tmp/nix-cache/nix/store");
 	// core.exportVariable("NIX_STATE_DIR", "/tmp/nix-cache/nix/var/nix");
 	// core.exportVariable("NIX_LOG_DIR", "/tmp/nix-cache/nix/var/log/nix");
