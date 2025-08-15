@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { writeFileSync } from "node:fs";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
@@ -6,43 +7,49 @@ import * as exec from "@actions/exec";
 async function main() {
 	// make sure caching is available
 	if (!cache.isFeatureAvailable()) {
-		core.warning("Cache action is not available");
+		core.warning("cache is not available");
 		return;
 	}
 
 	// print nix version
-	const versionOutput = await exec.getExecOutput("nix", ["--version"]);
-	core.info(`Nix version: ${versionOutput.stdout.trim()}`);
+	const version = (
+		await exec.getExecOutput("nix", ["--version"])
+	).stdout.trim();
+	core.info(`nix version: ${version}`);
 
 	// restore cache to tmp
 	const restore = await cache.restoreCache(
-		["/tmp/nix-cache", "/tmp/privkey.pem", "/tmp/pubkey.pem"],
+		["/tmp/nix-cache", "/tmp/.secret-key"],
 		"nix-store",
 	);
 	core.setOutput("cache-hit", restore ? "true" : "false");
 	if (!restore) {
-		core.info("Cache not found. Generating keypair.");
+		core.info("cache not found, generating keypair...");
 
-		// generate keypair
-		await exec.exec("nix-store", [
-			"--generate-binary-cache-key",
-			"simple.cache.action-1",
-			"/tmp/privkey.pem",
-			"/tmp/pubkey.pem",
-		]);
+		// generate store secret key
+		const secretKey = (
+			await exec.getExecOutput(
+				"nix",
+				["key", "generate-secret", "--key-name", "simple.cache.action-1"],
+				{ silent: true },
+			)
+		).stdout.trim();
+
+		// write to file
+		writeFileSync("/tmp/.secret-key", secretKey);
 
 		return;
 	}
 
-	// Create nix daemon
-	const daemon = spawn("node", ["./dist/proxy.js"], {
+	// create HTTP binary cache proxy server
+	core.info("starting binary cache proxy server");
+	const proxy = spawn("node", ["./dist/proxy.js"], {
 		detached: true,
 		stdio: "ignore",
 	});
-	daemon.unref();
-	core.info("proxy server starting...");
+	proxy.unref();
 
-	// Wait for the proxy server to start
+	// wait for the proxy server to start
 	let ping = 1;
 	while (ping !== 0) {
 		ping = await exec.exec(
@@ -51,38 +58,28 @@ async function main() {
 			{ ignoreReturnCode: true, silent: true },
 		);
 		if (ping !== 0) {
-			core.info("Waiting for daemon to start...");
+			core.info("waiting for proxy server to start...");
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 		}
 	}
 
 	// get public key
-	const pubkey = (
-		await exec.getExecOutput("cat", ["/tmp/pubkey.pem"])
+	const publicKey = (
+		await exec.getExecOutput(
+			"bash",
+			["-c", "cat /tmp/.secret-key | nix key convert-secret-to-public"],
+			{
+				silent: true,
+			},
+		)
 	).stdout.trim();
-
-	// get substituters and trusted keys
-	const substituters = (
-		await exec.getExecOutput("nix", ["config", "show", "substituters"], {
-			ignoreReturnCode: true,
-		})
-	).stdout
-		.trim()
-		.split(" ");
-	const trustedKeys = (
-		await exec.getExecOutput("nix", ["config", "show", "trusted-public-keys"], {
-			ignoreReturnCode: true,
-		})
-	).stdout
-		.trim()
-		.split(" ");
 
 	// add cache as a substituter
 	core.exportVariable(
 		"NIX_CONFIG",
 		`
-			substituters = http://127.0.0.1:5001 ${substituters.join(" ")}
-			trusted-public-keys = ${pubkey} ${trustedKeys.join(" ")}
+			extra-substituters = http://127.0.0.1:5001?priority=10
+			extra-trusted-public-keys = ${publicKey}
 		`,
 	);
 }

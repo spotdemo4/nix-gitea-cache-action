@@ -1,8 +1,15 @@
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
+import * as io from "@actions/io";
 
 async function main() {
+	// make sure caching is available
+	if (!cache.isFeatureAvailable()) {
+		core.warning("cache is not available");
+		return;
+	}
+
 	// optimise
 	await exec.exec("nix", ["store", "optimise"]);
 
@@ -12,32 +19,31 @@ async function main() {
 		"sign",
 		"--all",
 		"--key-file",
-		"/tmp/privkey.pem",
+		"/tmp/.secret-key",
 	]);
 
 	// verify
-	await exec.exec("nix", ["store", "verify", "--all", "--repair"]);
+	await exec.exec("nix", ["store", "verify", "--all", "--repair"], {
+		silent: true,
+	});
 
 	// get size of cache
-	const sizeOutput = await exec.getExecOutput("du", ["-sb", "/tmp/nix-cache"], {
+	let size = 0;
+	const du = await exec.getExecOutput("du", ["-sb", "/tmp/nix-cache"], {
 		ignoreReturnCode: true,
 	});
-	let size = 0;
-	if (sizeOutput.exitCode === 0) {
-		size = parseInt(sizeOutput.stdout.trim(), 10);
-		core.info(`Nix cache size: ${size} bytes`);
+	if (du.exitCode === 0) {
+		size = parseInt(du.stdout.trim(), 10);
 	}
+	core.info(`nix cache size: ${size} bytes`);
 
-	// collect garbage if size exceeds max-size
-	const maxSizeInput = core.getInput("max-size") || "5000000000"; // default to 5GB
-	const maxSize = parseInt(maxSizeInput, 10);
-	if (size > maxSize) {
-		core.info(
-			`Nix store size exceeds max-size (${maxSize} bytes). Running garbage collection.`,
-		);
+	// purge if size exceeds max-size
+	const max = parseInt(core.getInput("max-size") || "5000000000", 10); // default to 5GB
+	if (size > max) {
+		core.info(`nix store size exceeds max-size (${max} bytes), purging...`);
 
-		// run garbage collection
-		await exec.exec("rm", ["-rf", "/tmp/nix-cache/*"]);
+		// purge cache
+		await io.rmRF("/tmp/nix-cache");
 	}
 
 	// copy to cache
@@ -50,10 +56,7 @@ async function main() {
 	);
 
 	// save cache
-	await cache.saveCache(
-		["/tmp/nix-cache", "/tmp/privkey.pem", "/tmp/pubkey.pem"],
-		"nix-store",
-	);
+	await cache.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], "nix-store");
 }
 
 try {
