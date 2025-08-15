@@ -82852,7 +82852,7 @@ async function main() {
     // 	}
     // }
     // Add cache as a substituter
-    coreExports.exportVariable("NIX_CONFIG", "extra-substituters = /tmp/nix-cache");
+    coreExports.exportVariable("NIX_CONFIG", "extra-substituters = file:///tmp/nix-cache");
 }
 try {
     await main();
