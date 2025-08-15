@@ -77,8 +77,16 @@ async function main() {
 		}
 	}
 
-	// run build
 	core.info("Nix daemon started.");
+
+	// update channels
+	await exec.exec("nix-channel", [
+		"--update",
+		"--store",
+		"unix:///tmp/nix-socket",
+	]);
+
+	// run build
 	await exec.exec("nix", ["build", "--store", "unix:///tmp/nix-socket"]);
 
 	// run check

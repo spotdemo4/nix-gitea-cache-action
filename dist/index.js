@@ -82741,8 +82741,14 @@ async function main() {
             await new Promise((resolve) => setTimeout(resolve, 1000));
         }
     }
-    // run build
     coreExports.info("Nix daemon started.");
+    // update channels
+    await execExports.exec("nix-channel", [
+        "--update",
+        "--store",
+        "unix:///tmp/nix-socket",
+    ]);
+    // run build
     await execExports.exec("nix", ["build", "--store", "unix:///tmp/nix-socket"]);
     // run check
     await execExports.exec("nix", [
