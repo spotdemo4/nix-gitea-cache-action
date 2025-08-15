@@ -82699,7 +82699,7 @@ async function main() {
     // Create nix daemon
     const daemon = spawn("bash", [
         "-c",
-        "NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nix daemon --store /tmp/nix-cache",
+        "NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nix daemon --force-trusted --store /tmp/nix-cache",
     ], { detached: true, stdio: "ignore" });
     daemon.unref();
     coreExports.info("Nix daemon starting...");
@@ -82732,7 +82732,7 @@ async function main() {
         "unix:///tmp/nix-socket",
     ]);
     // Do git add for some reason?
-    await execExports.exec("git", ["add", "."]);
+    // await exec.exec("git", ["add", "."]);
     // Delete old cache
     //await exec.exec("rm", ["-rf", "~/.cache/nix"]);
     // Verify nix store integrity
