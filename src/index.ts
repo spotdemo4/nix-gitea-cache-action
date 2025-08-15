@@ -69,29 +69,29 @@ async function main() {
 	]);
 
 	// Prefetch local flake?
-	await exec.exec("nix", [
-		"flake",
-		"prefetch",
-		"--store",
-		"unix:///tmp/nix-socket",
-	]);
+	// await exec.exec("nix", [
+	// 	"flake",
+	// 	"prefetch",
+	// 	"--store",
+	// 	"unix:///tmp/nix-socket",
+	// ]);
 
-	// Archive local flake??
-	await exec.exec("nix", [
-		"flake",
-		"archive",
-		"--to",
-		"unix:///tmp/nix-socket",
-	]);
+	// // Archive local flake??
+	// await exec.exec("nix", [
+	// 	"flake",
+	// 	"archive",
+	// 	"--to",
+	// 	"unix:///tmp/nix-socket",
+	// ]);
 
-	const metadata = await exec.getExecOutput("nix", [
-		"flake",
-		"metadata",
-		"--json",
-		"--store",
-		"unix:///tmp/nix-socket",
-	]);
-	core.info(`Nix metadata: ${metadata.stdout.trim()}`);
+	// const metadata = await exec.getExecOutput("nix", [
+	// 	"flake",
+	// 	"metadata",
+	// 	"--json",
+	// 	"--store",
+	// 	"unix:///tmp/nix-socket",
+	// ]);
+	// core.info(`Nix metadata: ${metadata.stdout.trim()}`);
 
 	// Delete old cache
 	//await exec.exec("rm", ["-rf", "~/.cache/nix"]);
@@ -121,7 +121,17 @@ async function main() {
 	// }
 
 	// Set nix store path
-	core.exportVariable("NIX_CONFIG", "store = unix:///tmp/nix-socket");
+	core.exportVariable(
+		"NIX_CONFIG",
+		`
+		store = unix:///tmp/nix-socket
+		substituters = https://cache.nixos.org/
+		trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+		experimental-features = nix-command flakes
+		allowed-users = *
+		trusted-users = root
+	`,
+	);
 	// core.exportVariable("NIX_STORE_DIR", "/tmp/nix-cache/nix/store");
 	// core.exportVariable("NIX_STATE_DIR", "/tmp/nix-cache/nix/var/nix");
 	// core.exportVariable("NIX_LOG_DIR", "/tmp/nix-cache/nix/var/log/nix");
