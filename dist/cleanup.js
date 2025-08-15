@@ -82694,9 +82694,14 @@ async function main() {
     // verify
     await execExports.exec("nix", ["store", "verify", "--all", "--repair"]);
     // get size of cache
-    const sizeOutput = await execExports.getExecOutput("du", ["-sb", "/tmp/nix-cache"]);
-    const size = parseInt(sizeOutput.stdout.trim(), 10);
-    coreExports.info(`Nix cache size: ${size} bytes`);
+    const sizeOutput = await execExports.getExecOutput("du", ["-sb", "/tmp/nix-cache"], {
+        ignoreReturnCode: true,
+    });
+    let size = 0;
+    if (sizeOutput.exitCode === 0) {
+        size = parseInt(sizeOutput.stdout.trim(), 10);
+        coreExports.info(`Nix cache size: ${size} bytes`);
+    }
     // collect garbage if size exceeds max-size
     const maxSizeInput = coreExports.getInput("max-size") || "5000000000"; // default to 5GB
     const maxSize = parseInt(maxSizeInput, 10);
