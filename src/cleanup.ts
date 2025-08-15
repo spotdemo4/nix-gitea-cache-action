@@ -22,19 +22,33 @@ async function main() {
 		"/tmp/.secret-key",
 	]);
 
+	// get public key
+	const publicKey = (
+		await exec.getExecOutput(
+			"bash",
+			["-c", "cat /tmp/.secret-key | nix key convert-secret-to-public"],
+			{
+				silent: true,
+			},
+		)
+	).stdout.trim();
+
 	// verify
 	core.info("verifying nix store");
-	await exec.exec("nix", ["store", "verify", "--all", "--repair"], {
-		silent: true,
-		listeners: {
-			stderr: (data: Buffer) => {
-				const message = data.toString().trim();
-				if (message) {
-					core.warning(`nix store verify: ${message}`);
-				}
-			},
+	await exec.exec(
+		"nix",
+		[
+			"store",
+			"verify",
+			"--all",
+			"--repair",
+			"--trusted-public-keys",
+			publicKey,
+		],
+		{
+			silent: true,
 		},
-	});
+	);
 
 	// get size of cache
 	let size = 0;

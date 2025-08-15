@@ -82698,18 +82698,21 @@ async function main() {
         "--key-file",
         "/tmp/.secret-key",
     ]);
+    // get public key
+    const publicKey = (await execExports.getExecOutput("bash", ["-c", "cat /tmp/.secret-key | nix key convert-secret-to-public"], {
+        silent: true,
+    })).stdout.trim();
     // verify
     coreExports.info("verifying nix store");
-    await execExports.exec("nix", ["store", "verify", "--all", "--repair"], {
+    await execExports.exec("nix", [
+        "store",
+        "verify",
+        "--all",
+        "--repair",
+        "--trusted-public-keys",
+        publicKey,
+    ], {
         silent: true,
-        listeners: {
-            stderr: (data) => {
-                const message = data.toString().trim();
-                if (message) {
-                    coreExports.warning(`nix store verify: ${message}`);
-                }
-            },
-        },
     });
     // get size of cache
     let size = 0;
