@@ -68,6 +68,9 @@ async function main() {
 		"unix:///tmp/nix-socket",
 	]);
 
+	// Do git add for some reason?
+	await exec.exec("git", ["add", "."]);
+
 	// Delete old cache
 	//await exec.exec("rm", ["-rf", "~/.cache/nix"]);
 

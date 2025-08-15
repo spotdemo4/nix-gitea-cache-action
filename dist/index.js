@@ -82731,6 +82731,8 @@ async function main() {
         "--store",
         "unix:///tmp/nix-socket",
     ]);
+    // Do git add for some reason?
+    await execExports.exec("git", ["add", "."]);
     // Delete old cache
     //await exec.exec("rm", ["-rf", "~/.cache/nix"]);
     // Verify nix store integrity
