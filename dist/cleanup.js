@@ -82680,61 +82680,11 @@ var coreExports = requireCore();
 
 var execExports = requireExec();
 
-async function getKey() {
-    try {
-        // Get cache key from input
-        const key = coreExports.getInput("key");
-        if (key)
-            return key;
-        // Try to get narHash from nixpkgs flake input
-        const metadata = await execExports.getExecOutput("nix", ["flake", "metadata", "--json"], {
-            ignoreReturnCode: true,
-        });
-        if (metadata.exitCode === 0) {
-            const json = JSON.parse(metadata.stdout);
-            const rootName = json?.locks?.nodes?.root?.inputs?.nixpkgs;
-            if (rootName) {
-                const narHash = json?.locks?.nodes[rootName]?.locked?.narHash;
-                if (narHash) {
-                    return `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}-${narHash}`;
-                }
-            }
-        }
-        // Try to hash flake.lock
-        const lockHash = await execExports.getExecOutput("nix", ["hash", "file", "flake.lock"], {
-            ignoreReturnCode: true,
-        });
-        if (lockHash.exitCode === 0) {
-            const hash = lockHash.stdout.trim();
-            if (hash) {
-                return `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}-${hash}`;
-            }
-        }
-        // Fallback if flake.lock is not available
-        return `nix-store-${coreExports.platform.platform}-${coreExports.platform.arch}`;
-    }
-    catch (error) {
-        console.error("Failed to generate cache key:", error);
-    }
-    return "nix-store-default"; // Default key if all else fails
-}
-
 async function main() {
     // Optimise the nix store
     await execExports.exec("nix", ["store", "optimise"]);
-    // Export nix store
-    await execExports.exec("nix", [
-        "copy",
-        "--all",
-        "--to",
-        "file:///tmp/nix-cache",
-        "--no-check-sigs",
-        "--repair",
-    ]);
-    // Get cache key
-    const key = await getKey();
     // Save nix store to cache
-    await cacheExports.saveCache(["/tmp/nix-cache"], key);
+    await cacheExports.saveCache(["/tmp/nix-cache"], "nix-store");
 }
 try {
     await main();
