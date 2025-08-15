@@ -82721,8 +82721,16 @@ async function main() {
     const daemon = spawn("bash", [
         "-c",
         `NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket NIX_CONFIG="${nixDaemonConf.join("\n")}" nix daemon`,
-    ], { detached: true, stdio: "ignore" });
-    daemon.unref();
+    ]);
+    daemon.stdout.on("data", (data) => {
+        coreExports.info(`Nix daemon: ${data}`);
+    });
+    daemon.stderr.on("data", (data) => {
+        coreExports.error(`Nix daemon error: ${data}`);
+    });
+    daemon.on("close", (code) => {
+        coreExports.info(`Nix daemon exited with code ${code}`);
+    });
     coreExports.info("Nix daemon starting...");
     // Wait for the daemon to start
     let ping = 1;
@@ -82733,6 +82741,18 @@ async function main() {
             await new Promise((resolve) => setTimeout(resolve, 1000));
         }
     }
+    // run build
+    coreExports.info("Nix daemon started.");
+    await execExports.exec("nix", ["build", "--store", "unix:///tmp/nix-socket"]);
+    // run check
+    await execExports.exec("nix", [
+        "flake",
+        "check",
+        "-L",
+        "--accept-flake-config",
+        "--store",
+        "unix:///tmp/nix-socket",
+    ]);
     // Copy nix store to daemon
     // if (!restore) {
     // 	core.info("Copying nix store to daemon.");

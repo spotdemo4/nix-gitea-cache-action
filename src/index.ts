@@ -48,15 +48,19 @@ async function main() {
 	}
 
 	// Create nix daemon
-	const daemon = spawn(
-		"bash",
-		[
-			"-c",
-			`NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket NIX_CONFIG="${nixDaemonConf.join("\n")}" nix daemon`,
-		],
-		{ detached: true, stdio: "ignore" },
-	);
-	daemon.unref();
+	const daemon = spawn("bash", [
+		"-c",
+		`NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket NIX_CONFIG="${nixDaemonConf.join("\n")}" nix daemon`,
+	]);
+	daemon.stdout.on("data", (data) => {
+		core.info(`Nix daemon: ${data}`);
+	});
+	daemon.stderr.on("data", (data) => {
+		core.error(`Nix daemon error: ${data}`);
+	});
+	daemon.on("close", (code) => {
+		core.info(`Nix daemon exited with code ${code}`);
+	});
 	core.info("Nix daemon starting...");
 
 	// Wait for the daemon to start
@@ -72,6 +76,20 @@ async function main() {
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 		}
 	}
+
+	// run build
+	core.info("Nix daemon started.");
+	await exec.exec("nix", ["build", "--store", "unix:///tmp/nix-socket"]);
+
+	// run check
+	await exec.exec("nix", [
+		"flake",
+		"check",
+		"-L",
+		"--accept-flake-config",
+		"--store",
+		"unix:///tmp/nix-socket",
+	]);
 
 	// Copy nix store to daemon
 	// if (!restore) {
