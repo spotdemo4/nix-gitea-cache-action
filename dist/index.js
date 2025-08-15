@@ -82725,10 +82725,11 @@ async function main() {
             throw new Error("Nix store verification and repair failed");
         }
     }
-    // Bind mount the cache
-    await execExports.exec("mount", ["--bind", "/tmp/nix-cache/nix", "/nix"]);
     // Set nix store path
     coreExports.exportVariable("NIX_CONFIG", "store = /tmp/nix-cache");
+    coreExports.exportVariable("NIX_STORE_DIR", "/tmp/nix-cache/nix/store");
+    coreExports.exportVariable("NIX_STATE_DIR", "/tmp/nix-cache/nix/var/nix");
+    coreExports.exportVariable("NIX_LOG_DIR", "/tmp/nix-cache/nix/var/log/nix");
 }
 try {
     await main();
