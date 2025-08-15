@@ -40,6 +40,21 @@ async function main() {
 	daemon.unref();
 	core.info("Nix daemon starting...");
 
+	// Wait for the daemon to start
+	let ping = 1;
+	while (ping !== 0) {
+		ping = await exec.exec("nix", [
+			"store",
+			"info",
+			"--store",
+			"http://127.0.0.1:5001",
+		]);
+		if (ping !== 0) {
+			core.info("Waiting for daemon to start...");
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+		}
+	}
+
 	// get public key
 	const pubkey = await exec.getExecOutput("cat", ["/tmp/pubkey.pem"]);
 
@@ -47,7 +62,7 @@ async function main() {
 	core.exportVariable(
 		"NIX_CONFIG",
 		`
-			extra-substituters = http://localhost:5001
+			extra-substituters = http://127.0.0.1:5001
 			extra-trusted-public-keys = ${pubkey.stdout.trim()}
 		`,
 	);
