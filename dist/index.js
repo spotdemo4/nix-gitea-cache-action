@@ -1,3 +1,4 @@
+import { spawn } from 'node:child_process';
 import require$$0$3 from 'os';
 import require$$0$4 from 'crypto';
 import require$$1$1 from 'fs';
@@ -82696,10 +82697,11 @@ async function main() {
         coreExports.info("Cache not found.");
     }
     // Create nix daemon
-    await execExports.exec("bash", [
+    const daemon = spawn("bash", [
         "-c",
         "NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nohup nix daemon --store /tmp/nix-cache &",
-    ]);
+    ], { detached: true, stdio: "ignore" });
+    daemon.unref();
     // Verify nix store integrity
     // const verify = await exec.exec("nix", [
     // 	"store",

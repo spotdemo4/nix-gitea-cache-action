@@ -1,3 +1,4 @@
+import { spawn } from "node:child_process";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
@@ -21,10 +22,15 @@ async function main() {
 	}
 
 	// Create nix daemon
-	await exec.exec("bash", [
-		"-c",
-		"NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nohup nix daemon --store /tmp/nix-cache &",
-	]);
+	const daemon = spawn(
+		"bash",
+		[
+			"-c",
+			"NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nohup nix daemon --store /tmp/nix-cache &",
+		],
+		{ detached: true, stdio: "ignore" },
+	);
+	daemon.unref();
 
 	// Verify nix store integrity
 	// const verify = await exec.exec("nix", [
