@@ -82746,7 +82746,7 @@ async function main() {
     await execExports.exec("nix-channel", [
         "--add",
         "https://nixos.org/channels/nixpkgs-unstable",
-        "nixpkgs-unstable",
+        "nixpkgs",
         "--store",
         "unix:///tmp/nix-socket",
     ]);
