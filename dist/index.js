@@ -82686,6 +82686,9 @@ async function main() {
         coreExports.warning("Cache action is not available");
         return;
     }
+    // Print nix version
+    const versionOutput = await execExports.getExecOutput("nix", ["--version"]);
+    coreExports.info(`Nix version: ${versionOutput.stdout.trim()}`);
     // Restore cache to tmp
     const restore = await cacheExports.restoreCache(["/tmp/nix-cache"], "nix-store");
     coreExports.setOutput("cache-hit", restore ? "true" : "false");
