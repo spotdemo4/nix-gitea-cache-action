@@ -82683,14 +82683,6 @@ var execExports = requireExec();
 async function main() {
     // optimise
     await execExports.exec("nix", ["store", "optimise"]);
-    // verify
-    await execExports.exec("nix", [
-        "store",
-        "verify",
-        "--all",
-        "--no-trust",
-        "--repair",
-    ]);
     // sign
     await execExports.exec("nix", [
         "store",
@@ -82699,6 +82691,8 @@ async function main() {
         "--key-file",
         "/tmp/privkey.pem",
     ]);
+    // verify
+    await execExports.exec("nix", ["store", "verify", "--all", "--repair"]);
     // get size of cache
     const sizeOutput = await execExports.getExecOutput("du", ["-sb", "/tmp/nix-cache"]);
     const size = parseInt(sizeOutput.stdout.trim(), 10);
