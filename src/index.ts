@@ -53,6 +53,9 @@ async function main() {
 		}
 	}
 
+	// Bind mount the cache
+	await exec.exec("mount", ["--bind", "/tmp/nix-cache/nix", "/nix"]);
+
 	// Set nix store path
 	core.exportVariable("NIX_CONFIG", "store = /tmp/nix-cache");
 }
