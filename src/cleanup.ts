@@ -10,6 +10,7 @@ async function main() {
 		"--to",
 		"/tmp/nix-cache",
 		"--no-check-sigs",
+		"--offline",
 	]);
 
 	// Optimise the cache
