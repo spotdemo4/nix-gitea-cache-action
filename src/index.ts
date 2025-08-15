@@ -26,7 +26,7 @@ async function main() {
 		"bash",
 		[
 			"-c",
-			"NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nix daemon --store /tmp/nix-cache",
+			"NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nix daemon --force-trusted --store /tmp/nix-cache",
 		],
 		{ detached: true, stdio: "ignore" },
 	);
@@ -69,7 +69,7 @@ async function main() {
 	]);
 
 	// Do git add for some reason?
-	await exec.exec("git", ["add", "."]);
+	// await exec.exec("git", ["add", "."]);
 
 	// Delete old cache
 	//await exec.exec("rm", ["-rf", "~/.cache/nix"]);
