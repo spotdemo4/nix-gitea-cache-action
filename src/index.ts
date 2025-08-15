@@ -31,7 +31,22 @@ async function main() {
 		{ detached: true, stdio: "ignore" },
 	);
 	daemon.unref();
-	core.info("Nix daemon started.");
+	core.info("Nix daemon starting...");
+
+	// Wait for the daemon to start
+	let ping = 1;
+	while (ping !== 0) {
+		ping = await exec.exec("nix", [
+			"store",
+			"ping",
+			"--store",
+			"unix:///tmp/nix-socket",
+		]);
+		if (ping !== 0) {
+			core.info("Waiting for Nix daemon to start...");
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+		}
+	}
 
 	// Copy nix store to daemon
 	if (!restore) {

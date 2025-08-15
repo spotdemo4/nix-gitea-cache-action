@@ -82702,7 +82702,21 @@ async function main() {
         "NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nohup nix daemon --force-trusted --store /tmp/nix-cache &",
     ], { detached: true, stdio: "ignore" });
     daemon.unref();
-    coreExports.info("Nix daemon started.");
+    coreExports.info("Nix daemon starting...");
+    // Wait for the daemon to start
+    let ping = 1;
+    while (ping !== 0) {
+        ping = await execExports.exec("nix", [
+            "store",
+            "ping",
+            "--store",
+            "unix:///tmp/nix-socket",
+        ]);
+        if (ping !== 0) {
+            coreExports.info("Waiting for Nix daemon to start...");
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+    }
     // Copy nix store to daemon
     if (!restore) {
         coreExports.info("Copying nix store to daemon.");
