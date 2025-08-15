@@ -82681,8 +82681,16 @@ var coreExports = requireCore();
 var execExports = requireExec();
 
 async function main() {
-    // Unset substitutions
-    coreExports.exportVariable("NIX_CONFIG", "");
+    // Optimize
+    await execExports.exec("nix", ["store", "optimize"]);
+    // Verify
+    await execExports.exec("nix", [
+        "store",
+        "verify",
+        "--all",
+        "--no-trust",
+        "--repair",
+    ]);
     const nixconf = await execExports.getExecOutput("nix", ["config", "show"]);
     coreExports.info(`Nix config: ${nixconf.stdout.trim()}`);
     // Get size of cache
