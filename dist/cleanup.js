@@ -82704,8 +82704,10 @@ async function main() {
         "--to",
         "file:///tmp/nix-cache",
         "--no-check-sigs",
-        "--offline",
-    ]);
+        "--keep-going",
+    ], {
+        ignoreReturnCode: true,
+    });
     // Save cache
     await cacheExports.saveCache(["/tmp/nix-cache"], "nix-store");
 }

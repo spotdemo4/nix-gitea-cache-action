@@ -27,14 +27,20 @@ async function main() {
 	}
 
 	// Copy to cache
-	await exec.exec("nix", [
-		"copy",
-		"--all",
-		"--to",
-		"file:///tmp/nix-cache",
-		"--no-check-sigs",
-		"--offline",
-	]);
+	await exec.exec(
+		"nix",
+		[
+			"copy",
+			"--all",
+			"--to",
+			"file:///tmp/nix-cache",
+			"--no-check-sigs",
+			"--keep-going",
+		],
+		{
+			ignoreReturnCode: true,
+		},
+	);
 
 	// Save cache
 	await cache.saveCache(["/tmp/nix-cache"], "nix-store");
