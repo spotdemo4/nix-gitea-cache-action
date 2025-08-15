@@ -82699,8 +82699,6 @@ async function main() {
         "--key-file",
         "/tmp/privkey.pem",
     ]);
-    const nixconf = await execExports.getExecOutput("nix", ["config", "show"]);
-    coreExports.info(`Nix config: ${nixconf.stdout.trim()}`);
     // get size of cache
     const sizeOutput = await execExports.getExecOutput("du", ["-sb", "/tmp/nix-cache"]);
     const size = parseInt(sizeOutput.stdout.trim(), 10);
@@ -82725,7 +82723,7 @@ async function main() {
         ignoreReturnCode: true,
     });
     // save cache
-    await cacheExports.saveCache(["/tmp/nix-cache"], "nix-store");
+    await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/privkey.pem", "/tmp/pubkey.pem"], "nix-store");
 }
 try {
     await main();

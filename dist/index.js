@@ -82697,13 +82697,19 @@ async function main() {
         // generate keypair
         await execExports.exec("nix-store", [
             "--generate-binary-cache-key",
-            "simple.cache.action",
+            "simple.cache.action-1",
             "/tmp/privkey.pem",
             "/tmp/pubkey.pem",
         ]);
     }
+    // get public key
+    const pubkey = await execExports.getExecOutput("cat", ["/tmp/pubkey.pem"]);
+    coreExports.info(`Public key: ${pubkey.stdout.trim()}`);
     // add cache as a substituter
-    coreExports.exportVariable("NIX_CONFIG", "extra-substituters = file:///tmp/nix-cache");
+    coreExports.exportVariable("NIX_CONFIG", `
+			extra-substituters = file:///tmp/nix-cache
+			extra-trusted-public-keys = simple.cache.action-1:${pubkey.stdout.trim()}
+		`);
 }
 try {
     await main();
