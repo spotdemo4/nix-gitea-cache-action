@@ -68,8 +68,13 @@ async function main() {
 		"unix:///tmp/nix-socket",
 	]);
 
-	// Do git add for some reason?
-	// await exec.exec("git", ["add", "."]);
+	// Prefetch local flake?
+	await exec.exec("nix", [
+		"flake",
+		"prefetch",
+		"--store",
+		"unix:///tmp/nix-socket",
+	]);
 
 	// Delete old cache
 	//await exec.exec("rm", ["-rf", "~/.cache/nix"]);
