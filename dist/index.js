@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import 'node:child_process';
 import require$$0$3 from 'os';
 import require$$0$4 from 'crypto';
 import require$$1$1 from 'fs';
@@ -82690,58 +82690,63 @@ async function main() {
     // Print nix version
     const versionOutput = await execExports.getExecOutput("nix", ["--version"]);
     coreExports.info(`Nix version: ${versionOutput.stdout.trim()}`);
+    await execExports.exec("nix", ["flake", "check", "--store", "/tmp/testing"]);
     // Get nix conf
-    const nixConfOutput = await execExports.getExecOutput("nix", ["config", "show"]);
-    const nixConf = nixConfOutput.stdout
-        .trim()
-        .split("\n")
-        .map((line) => line.trim());
-    coreExports.info(`Nix configuration: ${nixConf.join("\n")}`);
-    // Create conf for nix daemon
-    const nixDaemonConf = nixConf.map((line) => {
-        if (line.startsWith("store =")) {
-            return "store = /tmp/nix-cache";
-        }
-        return line;
-    });
-    // Create conf for nix clients
-    const nixClientConf = nixConf.map((line) => {
-        if (line.startsWith("store =")) {
-            return "store = /tmp/nix-cache";
-        }
-        return line;
-    });
+    // const nixConfOutput = await exec.getExecOutput("nix", ["config", "show"]);
+    // const nixConf = nixConfOutput.stdout
+    // 	.trim()
+    // 	.split("\n")
+    // 	.map((line) => line.trim());
+    // core.info(`Nix configuration: ${nixConf.join("\n")}`);
+    // // Create conf for nix daemon
+    // const nixDaemonConf = nixConf.map((line) => {
+    // 	if (line.startsWith("store =")) {
+    // 		return "store = /tmp/nix-cache";
+    // 	}
+    // 	return line;
+    // });
+    // // Create conf for nix clients
+    // const nixClientConf = nixConf.map((line) => {
+    // 	if (line.startsWith("store =")) {
+    // 		return "store = /tmp/nix-cache";
+    // 	}
+    // 	return line;
+    // });
     // Restore cache to tmp
-    const restore = await cacheExports.restoreCache(["/tmp/nix-cache"], "nix-store");
-    coreExports.setOutput("cache-hit", restore ? "true" : "false");
-    if (!restore) {
-        coreExports.info("Cache not found.");
-    }
-    // Create nix daemon
-    const daemon = spawn("bash", [
-        "-c",
-        `NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket NIX_CONFIG="${nixDaemonConf.join("\n")}" nix daemon`,
-    ]);
-    daemon.stdout.on("data", (data) => {
-        coreExports.info(`Nix daemon: ${data}`);
-    });
-    daemon.stderr.on("data", (data) => {
-        coreExports.error(`Nix daemon error: ${data}`);
-    });
-    daemon.on("close", (code) => {
-        coreExports.info(`Nix daemon exited with code ${code}`);
-    });
-    coreExports.info("Nix daemon starting...");
-    // Wait for the daemon to start
-    let ping = 1;
-    while (ping !== 0) {
-        ping = await execExports.exec("nix", ["store", "info", "--store", "unix:///tmp/nix-socket"], { ignoreReturnCode: true });
-        if (ping !== 0) {
-            coreExports.info("Waiting for Nix daemon to start...");
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-    }
-    coreExports.info("Nix daemon started.");
+    // const restore = await cache.restoreCache(["/tmp/nix-cache"], "nix-store");
+    // core.setOutput("cache-hit", restore ? "true" : "false");
+    // if (!restore) {
+    // 	core.info("Cache not found.");
+    // }
+    // // Create nix daemon
+    // const daemon = spawn("bash", [
+    // 	"-c",
+    // 	`NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket NIX_CONFIG="${nixDaemonConf.join("\n")}" nix daemon`,
+    // ]);
+    // daemon.stdout.on("data", (data) => {
+    // 	core.info(`Nix daemon: ${data}`);
+    // });
+    // daemon.stderr.on("data", (data) => {
+    // 	core.error(`Nix daemon error: ${data}`);
+    // });
+    // daemon.on("close", (code) => {
+    // 	core.info(`Nix daemon exited with code ${code}`);
+    // });
+    // core.info("Nix daemon starting...");
+    // // Wait for the daemon to start
+    // let ping = 1;
+    // while (ping !== 0) {
+    // 	ping = await exec.exec(
+    // 		"nix",
+    // 		["store", "info", "--store", "unix:///tmp/nix-socket"],
+    // 		{ ignoreReturnCode: true },
+    // 	);
+    // 	if (ping !== 0) {
+    // 		core.info("Waiting for Nix daemon to start...");
+    // 		await new Promise((resolve) => setTimeout(resolve, 1000));
+    // 	}
+    // }
+    // core.info("Nix daemon started.");
     // // add nix channels
     // await exec.exec("nix-channel", [
     // 	"--add",
@@ -82757,10 +82762,10 @@ async function main() {
     // 	"unix:///tmp/nix-socket",
     // ]);
     // run build
-    await execExports.exec("bash", [
-        "-c",
-        "NIX_REMOTE=unix:///tmp/nix-socket nix build .# --store unix:///tmp/nix-socket",
-    ]);
+    // await exec.exec("bash", [
+    // 	"-c",
+    // 	"NIX_REMOTE=unix:///tmp/nix-socket nix build .# --store unix:///tmp/nix-socket",
+    // ]);
     // // run check
     // await exec.exec("nix", [
     // 	"flake",
@@ -82836,7 +82841,7 @@ async function main() {
     // 	}
     // }
     // Set nix store path
-    coreExports.exportVariable("NIX_CONFIG", nixClientConf.join("\n"));
+    // core.exportVariable("NIX_CONFIG", nixClientConf.join("\n"));
     // core.exportVariable("NIX_STORE_DIR", "/tmp/nix-cache/nix/store");
     // core.exportVariable("NIX_STATE_DIR", "/tmp/nix-cache/nix/var/nix");
     // core.exportVariable("NIX_LOG_DIR", "/tmp/nix-cache/nix/var/log/nix");
