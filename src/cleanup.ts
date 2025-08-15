@@ -6,6 +6,18 @@ async function main() {
 	// Unset substitutions
 	core.exportVariable("NIX_CONFIG", "");
 
+	// Optimize
+	await exec.exec("nix", ["store", "optimize"]);
+
+	// Verify
+	await exec.exec("nix", [
+		"store",
+		"verify",
+		"--all",
+		"--no-trust",
+		"--repair",
+	]);
+
 	const nixconf = await exec.getExecOutput("nix", ["config", "show"]);
 	core.info(`Nix config: ${nixconf.stdout.trim()}`);
 
