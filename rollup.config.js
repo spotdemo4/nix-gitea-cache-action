@@ -35,4 +35,20 @@ const cleanup = {
 	],
 };
 
-export default [index, cleanup];
+const proxy = {
+	input: "src/proxy.ts",
+	output: {
+		esModule: true,
+		file: "dist/proxy.js",
+		format: "es",
+		sourcemap: true,
+	},
+	plugins: [
+		typescript(),
+		commonjs(),
+		json(),
+		nodeResolve({ preferBuiltins: true }),
+	],
+};
+
+export default [index, cleanup, proxy];

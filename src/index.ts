@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import path from "node:path";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
@@ -30,23 +31,25 @@ async function main() {
 			"/tmp/privkey.pem",
 			"/tmp/pubkey.pem",
 		]);
+
+		return;
 	}
 
 	// Create nix daemon
-	const daemon = spawn("./harmonia.sh", {
+	const daemon = spawn("node", [path.join(__dirname, "proxy.js")], {
 		detached: true,
 		stdio: "ignore",
 	});
 	daemon.unref();
-	core.info("Nix daemon starting...");
+	core.info("proxy server starting...");
 
-	// Wait for the daemon to start
+	// Wait for the proxy server to start
 	let ping = 1;
 	while (ping !== 0) {
 		ping = await exec.exec(
 			"nix",
 			["store", "info", "--store", "http://127.0.0.1:5001"],
-			{ ignoreReturnCode: true },
+			{ ignoreReturnCode: true, silent: true },
 		);
 		if (ping !== 0) {
 			core.info("Waiting for daemon to start...");
@@ -55,14 +58,32 @@ async function main() {
 	}
 
 	// get public key
-	const pubkey = await exec.getExecOutput("cat", ["/tmp/pubkey.pem"]);
+	const pubkey = (
+		await exec.getExecOutput("cat", ["/tmp/pubkey.pem"])
+	).stdout.trim();
+
+	// get substituters and trusted keys
+	const substituters = (
+		await exec.getExecOutput("nix", ["config", "show", "substituters"], {
+			ignoreReturnCode: true,
+		})
+	).stdout
+		.trim()
+		.split(" ");
+	const trustedKeys = (
+		await exec.getExecOutput("nix", ["config", "show", "trusted-public-keys"], {
+			ignoreReturnCode: true,
+		})
+	).stdout
+		.trim()
+		.split(" ");
 
 	// add cache as a substituter
 	core.exportVariable(
 		"NIX_CONFIG",
 		`
-			extra-substituters = http://127.0.0.1:5001
-			extra-trusted-public-keys = ${pubkey.stdout.trim()}
+			substituters = http://127.0.0.1:5001 ${substituters.join(" ")}
+			trusted-public-keys = ${pubkey} ${trustedKeys.join(" ")}
 		`,
 	);
 }

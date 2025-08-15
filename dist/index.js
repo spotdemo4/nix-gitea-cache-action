@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import path from 'node:path';
 import require$$0$3 from 'os';
 import require$$0$4 from 'crypto';
 import require$$1$1 from 'fs';
@@ -82702,29 +82703,41 @@ async function main() {
             "/tmp/privkey.pem",
             "/tmp/pubkey.pem",
         ]);
+        return;
     }
     // Create nix daemon
-    const daemon = spawn("./harmonia.sh", {
+    const daemon = spawn("node", [path.join(__dirname, "proxy.js")], {
         detached: true,
         stdio: "ignore",
     });
     daemon.unref();
-    coreExports.info("Nix daemon starting...");
-    // Wait for the daemon to start
+    coreExports.info("proxy server starting...");
+    // Wait for the proxy server to start
     let ping = 1;
     while (ping !== 0) {
-        ping = await execExports.exec("nix", ["store", "info", "--store", "http://127.0.0.1:5001"], { ignoreReturnCode: true });
+        ping = await execExports.exec("nix", ["store", "info", "--store", "http://127.0.0.1:5001"], { ignoreReturnCode: true, silent: true });
         if (ping !== 0) {
             coreExports.info("Waiting for daemon to start...");
             await new Promise((resolve) => setTimeout(resolve, 1000));
         }
     }
     // get public key
-    const pubkey = await execExports.getExecOutput("cat", ["/tmp/pubkey.pem"]);
+    const pubkey = (await execExports.getExecOutput("cat", ["/tmp/pubkey.pem"])).stdout.trim();
+    // get substituters and trusted keys
+    const substituters = (await execExports.getExecOutput("nix", ["config", "show", "substituters"], {
+        ignoreReturnCode: true,
+    })).stdout
+        .trim()
+        .split(" ");
+    const trustedKeys = (await execExports.getExecOutput("nix", ["config", "show", "trusted-public-keys"], {
+        ignoreReturnCode: true,
+    })).stdout
+        .trim()
+        .split(" ");
     // add cache as a substituter
     coreExports.exportVariable("NIX_CONFIG", `
-			extra-substituters = http://127.0.0.1:5001
-			extra-trusted-public-keys = ${pubkey.stdout.trim()}
+			substituters = http://127.0.0.1:5001 ${substituters.join(" ")}
+			trusted-public-keys = ${pubkey} ${trustedKeys.join(" ")}
 		`);
 }
 try {
