@@ -11,21 +11,30 @@ Any action that installs Nix ([DeterminateSystems/nix-installer-action](https://
 
 ## Inputs
 
-### `key`
+### `max-size`
 
-An explicit key for the cache entry. Defaults to the narHash of the nixpkgs flake input.
+Maximum size of the cache in bytes. If the cache grows greater than this amount, it will be re-created with only the latest run's store. Defaults to 5GB.
 
 ## Outputs
 
 ### `cache-hit`
 
-A string value to indicate an exact match was found for the key. `"true"` or `"false"`.
+A string value to indicate if the cache exists. `"true"` or `"false"`.
 
 ## Example usage
 
+Gitea/Forgejo:
+
 ```yaml
 uses: https://github.com/DeterminateSystems/nix-installer-action@main
-uses: https://github.com/spotdemo4/nix-simple-cache-action@main
+uses: https://github.com/spotdemo4/nix-simple-cache-action@v1.2.0
+```
+
+GitHub:
+
+```yaml
+uses: DeterminateSystems/nix-installer-action@main
+uses: spotdemo4/nix-simple-cache-action@v1.2.0
 ```
 
 ## Alternatives
