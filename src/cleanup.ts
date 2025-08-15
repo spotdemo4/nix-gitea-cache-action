@@ -1,27 +1,13 @@
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
-import { getKey } from "./key.js";
 
 async function main() {
 	// Optimise the nix store
 	await exec.exec("nix", ["store", "optimise"]);
 
-	// Export nix store
-	await exec.exec("nix", [
-		"copy",
-		"--all",
-		"--to",
-		"file:///tmp/nix-cache",
-		"--no-check-sigs",
-		"--repair",
-	]);
-
-	// Get cache key
-	const key = await getKey();
-
 	// Save nix store to cache
-	await cache.saveCache(["/tmp/nix-cache"], key);
+	await cache.saveCache(["/tmp/nix-cache"], "nix-store");
 }
 
 try {
