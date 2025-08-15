@@ -6,15 +6,6 @@ async function main() {
 	// optimise
 	await exec.exec("nix", ["store", "optimise"]);
 
-	// verify
-	await exec.exec("nix", [
-		"store",
-		"verify",
-		"--all",
-		"--no-trust",
-		"--repair",
-	]);
-
 	// sign
 	await exec.exec("nix", [
 		"store",
@@ -23,6 +14,9 @@ async function main() {
 		"--key-file",
 		"/tmp/privkey.pem",
 	]);
+
+	// verify
+	await exec.exec("nix", ["store", "verify", "--all", "--repair"]);
 
 	// get size of cache
 	const sizeOutput = await exec.getExecOutput("du", ["-sb", "/tmp/nix-cache"]);
