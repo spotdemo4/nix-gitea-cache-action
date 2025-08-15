@@ -82690,10 +82690,17 @@ async function main() {
     const versionOutput = await execExports.getExecOutput("nix", ["--version"]);
     coreExports.info(`Nix version: ${versionOutput.stdout.trim()}`);
     // restore cache to tmp
-    const restore = await cacheExports.restoreCache(["/tmp/nix-cache"], "nix-store");
+    const restore = await cacheExports.restoreCache(["/tmp/nix-cache", "/tmp/privkey.pem", "/tmp/pubkey.pem"], "nix-store");
     coreExports.setOutput("cache-hit", restore ? "true" : "false");
     if (!restore) {
-        coreExports.info("Cache not found.");
+        coreExports.info("Cache not found. Generating keypair.");
+        // generate keypair
+        await execExports.exec("nix-store", [
+            "--generate-binary-cache-key",
+            "simple.cache.action",
+            "/tmp/privkey.pem",
+            "/tmp/pubkey.pem",
+        ]);
     }
     // add cache as a substituter
     coreExports.exportVariable("NIX_CONFIG", "extra-substituters = file:///tmp/nix-cache");

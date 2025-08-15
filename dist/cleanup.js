@@ -82691,6 +82691,14 @@ async function main() {
         "--no-trust",
         "--repair",
     ]);
+    // sign
+    await execExports.exec("nix", [
+        "store",
+        "sign",
+        "--all",
+        "--key-file",
+        "/tmp/privkey.pem",
+    ]);
     const nixconf = await execExports.getExecOutput("nix", ["config", "show"]);
     coreExports.info(`Nix config: ${nixconf.stdout.trim()}`);
     // get size of cache

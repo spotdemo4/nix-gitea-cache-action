@@ -15,8 +15,14 @@ async function main() {
 		"--repair",
 	]);
 
-	const nixconf = await exec.getExecOutput("nix", ["config", "show"]);
-	core.info(`Nix config: ${nixconf.stdout.trim()}`);
+	// sign
+	await exec.exec("nix", [
+		"store",
+		"sign",
+		"--all",
+		"--key-file",
+		"/tmp/privkey.pem",
+	]);
 
 	// get size of cache
 	const sizeOutput = await exec.getExecOutput("du", ["-sb", "/tmp/nix-cache"]);
@@ -52,7 +58,10 @@ async function main() {
 	);
 
 	// save cache
-	await cache.saveCache(["/tmp/nix-cache"], "nix-store");
+	await cache.saveCache(
+		["/tmp/nix-cache", "/tmp/privkey.pem", "/tmp/pubkey.pem"],
+		"nix-store",
+	);
 }
 
 try {
