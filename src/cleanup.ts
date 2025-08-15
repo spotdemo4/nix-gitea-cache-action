@@ -30,6 +30,7 @@ async function main() {
 		"--to",
 		"file:///tmp/nix-cache",
 		"--no-check-sigs",
+		"--offline",
 	]);
 
 	// Save cache
