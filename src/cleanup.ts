@@ -6,6 +6,9 @@ async function main() {
 	// Unset substitutions
 	core.exportVariable("NIX_CONFIG", "");
 
+	const nixconf = await exec.getExecOutput("nix", ["config", "show"]);
+	core.info(`Nix config: ${nixconf.stdout.trim()}`);
+
 	// Get size of cache
 	const sizeOutput = await exec.getExecOutput("du", ["-sb", "/tmp/nix-cache"]);
 	const size = parseInt(sizeOutput.stdout.trim(), 10);
