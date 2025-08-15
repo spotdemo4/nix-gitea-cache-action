@@ -58,6 +58,10 @@ async function main() {
 			"--no-check-sigs",
 		]);
 	}
+
+	// Delete old cache
+	await exec.exec("rm", ["-rf", "~/.cache/nix"]);
+
 	// Verify nix store integrity
 	// const verify = await exec.exec("nix", [
 	// 	"store",
