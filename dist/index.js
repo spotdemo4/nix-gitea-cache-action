@@ -82678,12 +82678,27 @@ var cacheExports = requireCache();
 
 var coreExports = requireCore();
 
+var execExports = requireExec();
+
 async function main() {
+    // Make sure caching is available
+    if (!cacheExports.isFeatureAvailable()) {
+        coreExports.warning("Cache action is not available");
+        return;
+    }
     // Restore cache to tmp
     const restore = await cacheExports.restoreCache(["/tmp/nix-cache"], "nix-store");
     coreExports.setOutput("cache-hit", restore ? "true" : "false");
     if (!restore) {
-        coreExports.info("Cache not found.");
+        coreExports.info("Cache not found. Creating initial store.");
+        // Export nix store
+        await execExports.exec("nix", [
+            "copy",
+            "--all",
+            "--to",
+            "/tmp/nix-cache",
+            "--no-check-sigs",
+        ]);
     }
     // Set nix store path
     coreExports.exportVariable("NIX_CONFIG", "store = /tmp/nix-cache");

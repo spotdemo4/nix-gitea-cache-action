@@ -82683,6 +82683,23 @@ var execExports = requireExec();
 async function main() {
     // Optimise the nix store
     await execExports.exec("nix", ["store", "optimise"]);
+    // Get size of nix store
+    const sizeOutput = await execExports.getExecOutput("bash", [
+        "-c",
+        "nix store path-info --json --all | jq 'map(.narSize) | add'",
+    ]);
+    const size = parseInt(sizeOutput.stdout.trim(), 10);
+    coreExports.info(`Nix store size: ${size} bytes`);
+    // Collect garbage if size exceeds max-size
+    const maxSizeInput = coreExports.getInput("max-size") || "5000000000"; // Default to 5GB
+    const maxSize = parseInt(maxSizeInput, 10);
+    if (size > maxSize) {
+        coreExports.info(`Nix store size exceeds max-size (${maxSize} bytes). Running garbage collection.`);
+        await execExports.exec("nix", ["store", "gc"]);
+    }
+    else {
+        coreExports.info(`Nix store size is within limits (${size} bytes <= ${maxSize} bytes). No garbage collection needed.`);
+    }
     // Save nix store to cache
     await cacheExports.saveCache(["/tmp/nix-cache"], "nix-store");
 }
