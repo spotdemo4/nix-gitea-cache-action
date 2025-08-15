@@ -27,6 +27,8 @@ async function main() {
 		if (line.startsWith("store =")) {
 			return "store = /tmp/nix-cache";
 		}
+
+		return line;
 	});
 
 	// Create conf for nix clients
@@ -34,6 +36,8 @@ async function main() {
 		if (line.startsWith("store =")) {
 			return "store = unix:///tmp/nix-socket";
 		}
+
+		return line;
 	});
 
 	// Restore cache to tmp

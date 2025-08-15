@@ -82702,12 +82702,14 @@ async function main() {
         if (line.startsWith("store =")) {
             return "store = /tmp/nix-cache";
         }
+        return line;
     });
     // Create conf for nix clients
     const nixClientConf = nixConf.map((line) => {
         if (line.startsWith("store =")) {
             return "store = unix:///tmp/nix-socket";
         }
+        return line;
     });
     // Restore cache to tmp
     const restore = await cacheExports.restoreCache(["/tmp/nix-cache"], "nix-store");
