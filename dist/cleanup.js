@@ -82681,9 +82681,9 @@ var coreExports = requireCore();
 var execExports = requireExec();
 
 async function main() {
-    // Optimize
-    await execExports.exec("nix", ["store", "optimize"]);
-    // Verify
+    // optimise
+    await execExports.exec("nix", ["store", "optimise"]);
+    // verify
     await execExports.exec("nix", [
         "store",
         "verify",
@@ -82693,19 +82693,19 @@ async function main() {
     ]);
     const nixconf = await execExports.getExecOutput("nix", ["config", "show"]);
     coreExports.info(`Nix config: ${nixconf.stdout.trim()}`);
-    // Get size of cache
+    // get size of cache
     const sizeOutput = await execExports.getExecOutput("du", ["-sb", "/tmp/nix-cache"]);
     const size = parseInt(sizeOutput.stdout.trim(), 10);
     coreExports.info(`Nix cache size: ${size} bytes`);
-    // Collect garbage if size exceeds max-size
-    const maxSizeInput = coreExports.getInput("max-size") || "5000000000"; // Default to 5GB
+    // collect garbage if size exceeds max-size
+    const maxSizeInput = coreExports.getInput("max-size") || "5000000000"; // default to 5GB
     const maxSize = parseInt(maxSizeInput, 10);
     if (size > maxSize) {
         coreExports.info(`Nix store size exceeds max-size (${maxSize} bytes). Running garbage collection.`);
-        // Run garbage collection
+        // run garbage collection
         await execExports.exec("rm", ["-rf", "/tmp/nix-cache/*"]);
     }
-    // Copy to cache
+    // copy to cache
     await execExports.exec("nix", [
         "copy",
         "--all",
@@ -82716,7 +82716,7 @@ async function main() {
     ], {
         ignoreReturnCode: true,
     });
-    // Save cache
+    // save cache
     await cacheExports.saveCache(["/tmp/nix-cache"], "nix-store");
 }
 try {

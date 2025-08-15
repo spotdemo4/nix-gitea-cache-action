@@ -1,201 +1,26 @@
-// import { spawn } from "node:child_process";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 
 async function main() {
-	// Make sure caching is available
+	// make sure caching is available
 	if (!cache.isFeatureAvailable()) {
 		core.warning("Cache action is not available");
 		return;
 	}
 
-	// Print nix version
+	// print nix version
 	const versionOutput = await exec.getExecOutput("nix", ["--version"]);
 	core.info(`Nix version: ${versionOutput.stdout.trim()}`);
 
-	// await exec.exec("nix", ["flake", "check", "--store", "/tmp/testing"], {
-	// 	failOnStdErr: false,
-	// 	ignoreReturnCode: true,
-	// });
-
-	// const out = await exec.getExecOutput("ls", [
-	// 	"-la",
-	// 	"/nix/store/gkwbw9nzbkbz298njbn3577zmrnglbbi-bash-5.3p0/bin/",
-	// ]);
-	// core.info(`Bash directory contents: ${out.stdout.trim()}`);
-
-	// Get nix conf
-	// const nixConfOutput = await exec.getExecOutput("nix", ["config", "show"]);
-	// const nixConf = nixConfOutput.stdout
-	// 	.trim()
-	// 	.split("\n")
-	// 	.map((line) => line.trim());
-	// core.info(`Nix configuration: ${nixConf.join("\n")}`);
-
-	// // Create conf for nix daemon
-	// const nixDaemonConf = nixConf.map((line) => {
-	// 	if (line.startsWith("store =")) {
-	// 		return "store = /tmp/nix-cache";
-	// 	}
-
-	// 	return line;
-	// });
-
-	// // Create conf for nix clients
-	// const nixClientConf = nixConf.map((line) => {
-	// 	if (line.startsWith("store =")) {
-	// 		return "store = /tmp/nix-cache";
-	// 	}
-
-	// 	return line;
-	// });
-
-	// Restore cache to tmp
+	// restore cache to tmp
 	const restore = await cache.restoreCache(["/tmp/nix-cache"], "nix-store");
 	core.setOutput("cache-hit", restore ? "true" : "false");
 	if (!restore) {
 		core.info("Cache not found.");
 	}
 
-	// // Create nix daemon
-	// const daemon = spawn("bash", [
-	// 	"-c",
-	// 	`NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket NIX_CONFIG="${nixDaemonConf.join("\n")}" nix daemon`,
-	// ]);
-	// daemon.stdout.on("data", (data) => {
-	// 	core.info(`Nix daemon: ${data}`);
-	// });
-	// daemon.stderr.on("data", (data) => {
-	// 	core.error(`Nix daemon error: ${data}`);
-	// });
-	// daemon.on("close", (code) => {
-	// 	core.info(`Nix daemon exited with code ${code}`);
-	// });
-	// core.info("Nix daemon starting...");
-
-	// // Wait for the daemon to start
-	// let ping = 1;
-	// while (ping !== 0) {
-	// 	ping = await exec.exec(
-	// 		"nix",
-	// 		["store", "info", "--store", "unix:///tmp/nix-socket"],
-	// 		{ ignoreReturnCode: true },
-	// 	);
-	// 	if (ping !== 0) {
-	// 		core.info("Waiting for Nix daemon to start...");
-	// 		await new Promise((resolve) => setTimeout(resolve, 1000));
-	// 	}
-	// }
-
-	// core.info("Nix daemon started.");
-
-	// // add nix channels
-	// await exec.exec("nix-channel", [
-	// 	"--add",
-	// 	"https://nixos.org/channels/nixpkgs-unstable",
-	// 	"nixpkgs",
-	// 	"--store",
-	// 	"unix:///tmp/nix-socket",
-	// ]);
-
-	// // update channels
-	// await exec.exec("nix-channel", [
-	// 	"--update",
-	// 	"--store",
-	// 	"unix:///tmp/nix-socket",
-	// ]);
-
-	// run build
-	// await exec.exec("bash", [
-	// 	"-c",
-	// 	"NIX_REMOTE=unix:///tmp/nix-socket nix build .# --store unix:///tmp/nix-socket",
-	// ]);
-
-	// // run check
-	// await exec.exec("nix", [
-	// 	"flake",
-	// 	"check",
-	// 	"-L",
-	// 	"--accept-flake-config",
-	// 	"--store",
-	// 	"unix:///tmp/nix-socket",
-	// ]);
-
-	// Copy nix store to daemon
-	// if (!restore) {
-	// 	core.info("Copying nix store to daemon.");
-	// 	await exec.exec("nix", [
-	// 		"copy",
-	// 		"--all",
-	// 		"--to",
-	// 		"unix:///tmp/nix-socket",
-	// 		"--no-check-sigs",
-	// 	]);
-	// }
-
-	// // Verify nix store
-	// await exec.exec("nix-store", [
-	// 	"--verify",
-	// 	"--check-contents",
-	// 	"--repair",
-	// 	"--store",
-	// 	"unix:///tmp/nix-socket",
-	// ]);
-
-	// Prefetch local flake?
-	// await exec.exec("nix", [
-	// 	"flake",
-	// 	"prefetch",
-	// 	"--store",
-	// 	"unix:///tmp/nix-socket",
-	// ]);
-
-	// // Archive local flake??
-	// await exec.exec("nix", [
-	// 	"flake",
-	// 	"archive",
-	// 	"--to",
-	// 	"unix:///tmp/nix-socket",
-	// ]);
-
-	// const metadata = await exec.getExecOutput("nix", [
-	// 	"flake",
-	// 	"metadata",
-	// 	"--json",
-	// 	"--store",
-	// 	"unix:///tmp/nix-socket",
-	// ]);
-	// core.info(`Nix metadata: ${metadata.stdout.trim()}`);
-
-	// Delete old cache
-	//await exec.exec("rm", ["-rf", "~/.cache/nix"]);
-
-	// Verify nix store integrity
-	// const verify = await exec.exec("nix", [
-	// 	"store",
-	// 	"verify",
-	// 	"--all",
-	// 	"--no-trust",
-	// 	"--store",
-	// 	"/tmp/nix-cache",
-	// ]);
-	// if (verify !== 0) {
-	// 	core.warning("Nix store verification failed. Attempting repair.");
-
-	// 	const repair = await exec.exec("nix", [
-	// 		"store",
-	// 		"repair",
-	// 		"--all",
-	// 		"--store",
-	// 		"/tmp/nix-cache",
-	// 	]);
-	// 	if (repair !== 0) {
-	// 		throw new Error("Nix store verification and repair failed");
-	// 	}
-	// }
-
-	// Add cache as a substituter
+	// add cache as a substituter
 	core.exportVariable(
 		"NIX_CONFIG",
 		"extra-substituters = file:///tmp/nix-cache",
