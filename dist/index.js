@@ -82693,43 +82693,40 @@ async function main() {
     const restore = await cacheExports.restoreCache(["/tmp/nix-cache"], "nix-store");
     coreExports.setOutput("cache-hit", restore ? "true" : "false");
     if (!restore) {
-        coreExports.info("Cache not found. Creating initial store.");
-        // Export nix store
-        await execExports.exec("nix", [
-            "copy",
-            "--all",
-            "--to",
-            "/tmp/nix-cache",
-            "--no-check-sigs",
-        ]);
+        coreExports.info("Cache not found.");
     }
-    // Verify nix store integrity
-    const verify = await execExports.exec("nix", [
-        "store",
-        "verify",
-        "--all",
-        "--no-trust",
-        "--store",
-        "/tmp/nix-cache",
+    // Create nix daemon
+    await execExports.exec("bash", [
+        "-c",
+        "nohup NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nix daemon --store /tmp/nix-cache &",
     ]);
-    if (verify !== 0) {
-        coreExports.warning("Nix store verification failed. Attempting repair.");
-        const repair = await execExports.exec("nix", [
-            "store",
-            "repair",
-            "--all",
-            "--store",
-            "/tmp/nix-cache",
-        ]);
-        if (repair !== 0) {
-            throw new Error("Nix store verification and repair failed");
-        }
-    }
+    // Verify nix store integrity
+    // const verify = await exec.exec("nix", [
+    // 	"store",
+    // 	"verify",
+    // 	"--all",
+    // 	"--no-trust",
+    // 	"--store",
+    // 	"/tmp/nix-cache",
+    // ]);
+    // if (verify !== 0) {
+    // 	core.warning("Nix store verification failed. Attempting repair.");
+    // 	const repair = await exec.exec("nix", [
+    // 		"store",
+    // 		"repair",
+    // 		"--all",
+    // 		"--store",
+    // 		"/tmp/nix-cache",
+    // 	]);
+    // 	if (repair !== 0) {
+    // 		throw new Error("Nix store verification and repair failed");
+    // 	}
+    // }
     // Set nix store path
-    coreExports.exportVariable("NIX_CONFIG", "store = /tmp/nix-cache");
-    coreExports.exportVariable("NIX_STORE_DIR", "/tmp/nix-cache/nix/store");
-    coreExports.exportVariable("NIX_STATE_DIR", "/tmp/nix-cache/nix/var/nix");
-    coreExports.exportVariable("NIX_LOG_DIR", "/tmp/nix-cache/nix/var/log/nix");
+    coreExports.exportVariable("NIX_CONFIG", "store = unix:///tmp/nix-socket");
+    // core.exportVariable("NIX_STORE_DIR", "/tmp/nix-cache/nix/store");
+    // core.exportVariable("NIX_STATE_DIR", "/tmp/nix-cache/nix/var/nix");
+    // core.exportVariable("NIX_LOG_DIR", "/tmp/nix-cache/nix/var/log/nix");
 }
 try {
     await main();
