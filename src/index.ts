@@ -91,6 +91,9 @@ async function main() {
 	// core.exportVariable("NIX_STORE_DIR", "/tmp/nix-cache/nix/store");
 	// core.exportVariable("NIX_STATE_DIR", "/tmp/nix-cache/nix/var/nix");
 	// core.exportVariable("NIX_LOG_DIR", "/tmp/nix-cache/nix/var/log/nix");
+
+	const currentDir = await exec.getExecOutput("ls", ["-la", "."]);
+	core.info(`Current directory: ${currentDir.stdout.trim()}`);
 }
 
 try {
