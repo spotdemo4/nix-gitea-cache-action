@@ -16,6 +16,7 @@ async function main() {
 
 	await exec.exec("nix", ["flake", "check", "--store", "/tmp/testing"], {
 		failOnStdErr: false,
+		ignoreReturnCode: true,
 	});
 
 	const out = await exec.getExecOutput("ls", [

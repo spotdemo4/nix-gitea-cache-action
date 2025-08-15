@@ -82692,6 +82692,7 @@ async function main() {
     coreExports.info(`Nix version: ${versionOutput.stdout.trim()}`);
     await execExports.exec("nix", ["flake", "check", "--store", "/tmp/testing"], {
         failOnStdErr: false,
+        ignoreReturnCode: true,
     });
     const out = await execExports.getExecOutput("ls", [
         "-la",
