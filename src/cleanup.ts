@@ -3,9 +3,6 @@ import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 
 async function main() {
-	// Unset substitutions
-	core.exportVariable("NIX_CONFIG", "");
-
 	// Optimize
 	await exec.exec("nix", ["store", "optimize"]);
 
