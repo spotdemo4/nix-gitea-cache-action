@@ -82706,12 +82706,7 @@ async function main() {
     // Wait for the daemon to start
     let ping = 1;
     while (ping !== 0) {
-        ping = await execExports.exec("nix", [
-            "store",
-            "ping",
-            "--store",
-            "unix:///tmp/nix-socket",
-        ]);
+        ping = await execExports.exec("nix", ["store", "info", "--store", "unix:///tmp/nix-socket"], { ignoreReturnCode: true });
         if (ping !== 0) {
             coreExports.info("Waiting for Nix daemon to start...");
             await new Promise((resolve) => setTimeout(resolve, 1000));
