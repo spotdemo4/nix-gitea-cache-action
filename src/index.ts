@@ -1,3 +1,4 @@
+import { spawn } from "node:child_process";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
@@ -31,6 +32,14 @@ async function main() {
 		]);
 	}
 
+	// Create nix daemon
+	const daemon = spawn("./harmonia.sh", {
+		detached: true,
+		stdio: "ignore",
+	});
+	daemon.unref();
+	core.info("Nix daemon starting...");
+
 	// get public key
 	const pubkey = await exec.getExecOutput("cat", ["/tmp/pubkey.pem"]);
 
@@ -38,7 +47,7 @@ async function main() {
 	core.exportVariable(
 		"NIX_CONFIG",
 		`
-			extra-substituters = file:///tmp/nix-cache
+			extra-substituters = http://localhost:5001
 			extra-trusted-public-keys = ${pubkey.stdout.trim()}
 		`,
 	);

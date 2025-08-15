@@ -38,14 +38,7 @@ async function main() {
 	// copy to cache
 	await exec.exec(
 		"nix",
-		[
-			"copy",
-			"--all",
-			"--to",
-			"file:///tmp/nix-cache",
-			"--no-check-sigs",
-			"--keep-going",
-		],
+		["copy", "--all", "--to", "file:///tmp/nix-cache", "--keep-going"],
 		{
 			ignoreReturnCode: true,
 		},
