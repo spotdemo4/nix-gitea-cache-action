@@ -3,13 +3,22 @@ import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 
 async function main() {
-	// Optimise the nix store
-	await exec.exec("nix", ["store", "optimise"]);
+	// Copy to cache
+	await exec.exec("nix", [
+		"copy",
+		"--all",
+		"--to",
+		"/tmp/nix-cache",
+		"--no-check-sigs",
+	]);
+
+	// Optimise the cache
+	await exec.exec("nix", ["store", "optimise", "--store", "/tmp/nix-cache"]);
 
 	// Get size of nix store
 	const sizeOutput = await exec.getExecOutput("bash", [
 		"-c",
-		"nix path-info --json --all | jq 'map(.narSize) | add'",
+		"nix path-info --store /tmp/nix-cache --json --all | jq 'map(.narSize) | add'",
 	]);
 	const size = parseInt(sizeOutput.stdout.trim(), 10);
 	core.info(`Nix store size: ${size} bytes`);
@@ -21,14 +30,14 @@ async function main() {
 		core.info(
 			`Nix store size exceeds max-size (${maxSize} bytes). Running garbage collection.`,
 		);
-		await exec.exec("nix", ["store", "gc"]);
+		await exec.exec("nix", ["store", "gc", "--store", "/tmp/nix-cache"]);
 	} else {
 		core.info(
 			`Nix store size is within limits (${size} bytes <= ${maxSize} bytes). No garbage collection needed.`,
 		);
 	}
 
-	// Save nix store to cache
+	// Save cache
 	await cache.saveCache(["/tmp/nix-cache"], "nix-store");
 }
 

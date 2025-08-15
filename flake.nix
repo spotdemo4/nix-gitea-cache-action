@@ -67,6 +67,7 @@
             ];
             checkPhase = ''
               biome check .
+
               prettier --check .
               alejandra -c .
               renovate-config-validator

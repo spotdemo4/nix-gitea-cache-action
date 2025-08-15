@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+// import { spawn } from "node:child_process";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
@@ -14,16 +14,16 @@ async function main() {
 	const versionOutput = await exec.getExecOutput("nix", ["--version"]);
 	core.info(`Nix version: ${versionOutput.stdout.trim()}`);
 
-	await exec.exec("nix", ["flake", "check", "--store", "/tmp/testing"], {
-		failOnStdErr: false,
-		ignoreReturnCode: true,
-	});
+	// await exec.exec("nix", ["flake", "check", "--store", "/tmp/testing"], {
+	// 	failOnStdErr: false,
+	// 	ignoreReturnCode: true,
+	// });
 
-	const out = await exec.getExecOutput("ls", [
-		"-la",
-		"/nix/store/gkwbw9nzbkbz298njbn3577zmrnglbbi-bash-5.3p0/bin/",
-	]);
-	core.info(`Bash directory contents: ${out.stdout.trim()}`);
+	// const out = await exec.getExecOutput("ls", [
+	// 	"-la",
+	// 	"/nix/store/gkwbw9nzbkbz298njbn3577zmrnglbbi-bash-5.3p0/bin/",
+	// ]);
+	// core.info(`Bash directory contents: ${out.stdout.trim()}`);
 
 	// Get nix conf
 	// const nixConfOutput = await exec.getExecOutput("nix", ["config", "show"]);
@@ -52,11 +52,20 @@ async function main() {
 	// });
 
 	// Restore cache to tmp
-	// const restore = await cache.restoreCache(["/tmp/nix-cache"], "nix-store");
-	// core.setOutput("cache-hit", restore ? "true" : "false");
-	// if (!restore) {
-	// 	core.info("Cache not found.");
-	// }
+	const restore = await cache.restoreCache(["/tmp/nix-cache"], "nix-store");
+	core.setOutput("cache-hit", restore ? "true" : "false");
+	if (!restore) {
+		core.info("Cache not found.");
+
+		// initialize the cache directory
+		await exec.exec("nix", [
+			"copy",
+			"--all",
+			"--to",
+			"/tmp/nix-cache",
+			"--no-check-sigs",
+		]);
+	}
 
 	// // Create nix daemon
 	// const daemon = spawn("bash", [
@@ -195,14 +204,8 @@ async function main() {
 	// 	}
 	// }
 
-	// Set nix store path
-	// core.exportVariable("NIX_CONFIG", nixClientConf.join("\n"));
-	// core.exportVariable("NIX_STORE_DIR", "/tmp/nix-cache/nix/store");
-	// core.exportVariable("NIX_STATE_DIR", "/tmp/nix-cache/nix/var/nix");
-	// core.exportVariable("NIX_LOG_DIR", "/tmp/nix-cache/nix/var/log/nix");
-
-	// const currentDir = await exec.getExecOutput("ls", ["-la", "."]);
-	// core.info(`Current directory: ${currentDir.stdout.trim()}`);
+	// Add cache as a substituter
+	core.exportVariable("NIX_CONFIG", "extra-substituters = /tmp/nix-cache");
 }
 
 try {
