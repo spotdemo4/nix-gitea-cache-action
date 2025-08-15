@@ -1,5 +1,4 @@
 import { spawn } from 'node:child_process';
-import path from 'node:path';
 import require$$0$3 from 'os';
 import require$$0$4 from 'crypto';
 import require$$1$1 from 'fs';
@@ -82706,7 +82705,7 @@ async function main() {
         return;
     }
     // Create nix daemon
-    const daemon = spawn("node", [path.join(__dirname, "proxy.js")], {
+    const daemon = spawn("node", ["./dist/proxy.js"], {
         detached: true,
         stdio: "ignore",
     });
