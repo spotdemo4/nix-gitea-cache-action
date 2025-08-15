@@ -98,7 +98,7 @@ async function main() {
 	// run build
 	await exec.exec("bash", [
 		"-c",
-		"NIX_REMOTE=daemon nix build .# --store unix:///tmp/nix-socket",
+		"NIX_REMOTE=unix:///tmp/nix-socket nix build .# --store unix:///tmp/nix-socket",
 	]);
 
 	// // run check
