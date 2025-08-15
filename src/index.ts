@@ -9,6 +9,10 @@ async function main() {
 		return;
 	}
 
+	// Print nix version
+	const versionOutput = await exec.getExecOutput("nix", ["--version"]);
+	core.info(`Nix version: ${versionOutput.stdout.trim()}`);
+
 	// Restore cache to tmp
 	const restore = await cache.restoreCache(["/tmp/nix-cache"], "nix-store");
 	core.setOutput("cache-hit", restore ? "true" : "false");
