@@ -1,5 +1,4 @@
 import { spawn } from "node:child_process";
-import path from "node:path";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
@@ -36,7 +35,7 @@ async function main() {
 	}
 
 	// Create nix daemon
-	const daemon = spawn("node", [path.join(__dirname, "proxy.js")], {
+	const daemon = spawn("node", ["./dist/proxy.js"], {
 		detached: true,
 		stdio: "ignore",
 	});
