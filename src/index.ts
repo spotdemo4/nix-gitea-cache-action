@@ -79,6 +79,15 @@ async function main() {
 
 	core.info("Nix daemon started.");
 
+	// add nix channels
+	await exec.exec("nix-channel", [
+		"--add",
+		"https://nixos.org/channels/nixpkgs-unstable",
+		"nixpkgs-unstable",
+		"--store",
+		"unix:///tmp/nix-socket",
+	]);
+
 	// update channels
 	await exec.exec("nix-channel", [
 		"--update",

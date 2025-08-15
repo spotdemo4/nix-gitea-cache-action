@@ -82742,6 +82742,14 @@ async function main() {
         }
     }
     coreExports.info("Nix daemon started.");
+    // add nix channels
+    await execExports.exec("nix-channel", [
+        "--add",
+        "https://nixos.org/channels/nixpkgs-unstable",
+        "nixpkgs-unstable",
+        "--store",
+        "unix:///tmp/nix-socket",
+    ]);
     // update channels
     await execExports.exec("nix-channel", [
         "--update",
