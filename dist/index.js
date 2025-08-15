@@ -82704,11 +82704,10 @@ async function main() {
     }
     // get public key
     const pubkey = await execExports.getExecOutput("cat", ["/tmp/pubkey.pem"]);
-    coreExports.info(`Public key: ${pubkey.stdout.trim()}`);
     // add cache as a substituter
     coreExports.exportVariable("NIX_CONFIG", `
 			extra-substituters = file:///tmp/nix-cache
-			extra-trusted-public-keys = simple.cache.action-1:${pubkey.stdout.trim()}
+			extra-trusted-public-keys = ${pubkey.stdout.trim()}
 		`);
 }
 try {

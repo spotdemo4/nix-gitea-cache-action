@@ -33,14 +33,13 @@ async function main() {
 
 	// get public key
 	const pubkey = await exec.getExecOutput("cat", ["/tmp/pubkey.pem"]);
-	core.info(`Public key: ${pubkey.stdout.trim()}`);
 
 	// add cache as a substituter
 	core.exportVariable(
 		"NIX_CONFIG",
 		`
 			extra-substituters = file:///tmp/nix-cache
-			extra-trusted-public-keys = simple.cache.action-1:${pubkey.stdout.trim()}
+			extra-trusted-public-keys = ${pubkey.stdout.trim()}
 		`,
 	);
 }
