@@ -82706,14 +82706,7 @@ async function main() {
         await execExports.exec("rm", ["-rf", "/tmp/nix-cache/*"]);
     }
     // copy to cache
-    await execExports.exec("nix", [
-        "copy",
-        "--all",
-        "--to",
-        "file:///tmp/nix-cache",
-        "--no-check-sigs",
-        "--keep-going",
-    ], {
+    await execExports.exec("nix", ["copy", "--all", "--to", "file:///tmp/nix-cache", "--keep-going"], {
         ignoreReturnCode: true,
     });
     // save cache

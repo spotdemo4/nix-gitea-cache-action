@@ -1,3 +1,4 @@
+import { spawn } from 'node:child_process';
 import require$$0$3 from 'os';
 import require$$0$4 from 'crypto';
 import require$$1$1 from 'fs';
@@ -82702,11 +82703,18 @@ async function main() {
             "/tmp/pubkey.pem",
         ]);
     }
+    // Create nix daemon
+    const daemon = spawn("./harmonia.sh", {
+        detached: true,
+        stdio: "ignore",
+    });
+    daemon.unref();
+    coreExports.info("Nix daemon starting...");
     // get public key
     const pubkey = await execExports.getExecOutput("cat", ["/tmp/pubkey.pem"]);
     // add cache as a substituter
     coreExports.exportVariable("NIX_CONFIG", `
-			extra-substituters = file:///tmp/nix-cache
+			extra-substituters = http://localhost:5001
 			extra-trusted-public-keys = ${pubkey.stdout.trim()}
 		`);
 }
