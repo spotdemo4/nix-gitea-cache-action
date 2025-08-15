@@ -200,7 +200,10 @@ async function main() {
 	// }
 
 	// Add cache as a substituter
-	core.exportVariable("NIX_CONFIG", "extra-substituters = /tmp/nix-cache");
+	core.exportVariable(
+		"NIX_CONFIG",
+		"extra-substituters = file:///tmp/nix-cache",
+	);
 }
 
 try {
