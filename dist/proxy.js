@@ -1,4 +1,4 @@
-import { existsSync, readFile } from 'node:fs';
+import { existsSync, createReadStream } from 'node:fs';
 import { createServer } from 'node:http';
 import path from 'node:path';
 
@@ -37,9 +37,6 @@ const server = createServer((req, res) => {
         return;
     }
     // extract URL path
-    // Avoid https://en.wikipedia.org/wiki/Directory_traversal_attack
-    // e.g curl --path-as-is http://localhost:9000/../fileInDanger.txt
-    // by limiting the path to current directory only
     const sanitizePath = path
         .normalize(parsedUrl.pathname)
         .replace(/^(\.\.[/\\])+/, "");
@@ -49,18 +46,19 @@ const server = createServer((req, res) => {
         res.end("Not Found");
         return;
     }
-    // read file and send response
-    readFile(pathname, (error, content) => {
-        if (error) {
-            res.writeHead(500);
-            res.end(`Error getting the file: ${error}.`);
-        }
-        else {
-            const ext = path.parse(pathname).ext;
-            const contentType = mimeTypes[ext] || "application/octet-stream";
-            res.writeHead(200, { "Content-Type": contentType });
-            res.end(content, "utf-8");
-        }
+    // determine content type
+    const ext = path.parse(pathname).ext;
+    const contentType = mimeTypes[ext] || "application/octet-stream";
+    res.writeHead(200, {
+        "Content-Type": contentType,
+        "Content-Disposition": `attachment; filename="${path.basename(pathname)}"`,
+    });
+    // stream the file
+    const fileStream = createReadStream(pathname);
+    fileStream.pipe(res);
+    fileStream.on("error", (err) => {
+        console.error("Error reading file:", err);
+        res.end("Error streaming file");
     });
 });
 server.listen(port, hostname);

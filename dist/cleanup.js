@@ -82680,7 +82680,14 @@ var coreExports = requireCore();
 
 var execExports = requireExec();
 
+var ioExports = requireIo();
+
 async function main() {
+    // make sure caching is available
+    if (!cacheExports.isFeatureAvailable()) {
+        coreExports.warning("cache is not available");
+        return;
+    }
     // optimise
     await execExports.exec("nix", ["store", "optimise"]);
     // sign
@@ -82689,33 +82696,34 @@ async function main() {
         "sign",
         "--all",
         "--key-file",
-        "/tmp/privkey.pem",
+        "/tmp/.secret-key",
     ]);
     // verify
-    await execExports.exec("nix", ["store", "verify", "--all", "--repair"]);
+    await execExports.exec("nix", ["store", "verify", "--all", "--repair"], {
+        silent: true,
+    });
     // get size of cache
-    const sizeOutput = await execExports.getExecOutput("du", ["-sb", "/tmp/nix-cache"], {
+    let size = 0;
+    const du = await execExports.getExecOutput("du", ["-sb", "/tmp/nix-cache"], {
         ignoreReturnCode: true,
     });
-    let size = 0;
-    if (sizeOutput.exitCode === 0) {
-        size = parseInt(sizeOutput.stdout.trim(), 10);
-        coreExports.info(`Nix cache size: ${size} bytes`);
+    if (du.exitCode === 0) {
+        size = parseInt(du.stdout.trim(), 10);
     }
-    // collect garbage if size exceeds max-size
-    const maxSizeInput = coreExports.getInput("max-size") || "5000000000"; // default to 5GB
-    const maxSize = parseInt(maxSizeInput, 10);
-    if (size > maxSize) {
-        coreExports.info(`Nix store size exceeds max-size (${maxSize} bytes). Running garbage collection.`);
-        // run garbage collection
-        await execExports.exec("rm", ["-rf", "/tmp/nix-cache/*"]);
+    coreExports.info(`nix cache size: ${size} bytes`);
+    // purge if size exceeds max-size
+    const max = parseInt(coreExports.getInput("max-size") || "5000000000", 10); // default to 5GB
+    if (size > max) {
+        coreExports.info(`nix store size exceeds max-size (${max} bytes), purging...`);
+        // purge cache
+        await ioExports.rmRF("/tmp/nix-cache");
     }
     // copy to cache
     await execExports.exec("nix", ["copy", "--all", "--to", "file:///tmp/nix-cache", "--keep-going"], {
         ignoreReturnCode: true,
     });
     // save cache
-    await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/privkey.pem", "/tmp/pubkey.pem"], "nix-store");
+    await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], "nix-store");
 }
 try {
     await main();

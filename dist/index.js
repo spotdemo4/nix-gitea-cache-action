@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import require$$1$9, { writeFileSync } from 'node:fs';
 import require$$0$3 from 'os';
 import require$$0$4 from 'crypto';
 import require$$1$1 from 'fs';
@@ -36,7 +37,6 @@ import require$$2$4 from 'node:https';
 import require$$3$1 from 'node:zlib';
 import require$$0$f from 'tty';
 import require$$2$5 from 'node:buffer';
-import require$$1$9 from 'node:fs';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -82684,59 +82684,47 @@ var execExports = requireExec();
 async function main() {
     // make sure caching is available
     if (!cacheExports.isFeatureAvailable()) {
-        coreExports.warning("Cache action is not available");
+        coreExports.warning("cache is not available");
         return;
     }
     // print nix version
-    const versionOutput = await execExports.getExecOutput("nix", ["--version"]);
-    coreExports.info(`Nix version: ${versionOutput.stdout.trim()}`);
+    const version = (await execExports.getExecOutput("nix", ["--version"])).stdout.trim();
+    coreExports.info(`nix version: ${version}`);
     // restore cache to tmp
-    const restore = await cacheExports.restoreCache(["/tmp/nix-cache", "/tmp/privkey.pem", "/tmp/pubkey.pem"], "nix-store");
+    const restore = await cacheExports.restoreCache(["/tmp/nix-cache", "/tmp/.secret-key"], "nix-store");
     coreExports.setOutput("cache-hit", restore ? "true" : "false");
     if (!restore) {
-        coreExports.info("Cache not found. Generating keypair.");
-        // generate keypair
-        await execExports.exec("nix-store", [
-            "--generate-binary-cache-key",
-            "simple.cache.action-1",
-            "/tmp/privkey.pem",
-            "/tmp/pubkey.pem",
-        ]);
+        coreExports.info("cache not found, generating keypair...");
+        // generate store secret key
+        const secretKey = (await execExports.getExecOutput("nix", ["key", "generate-secret", "--key-name", "simple.cache.action-1"], { silent: true })).stdout.trim();
+        // write to file
+        writeFileSync("/tmp/.secret-key", secretKey);
         return;
     }
-    // Create nix daemon
-    const daemon = spawn("node", ["./dist/proxy.js"], {
+    // create HTTP binary cache proxy server
+    coreExports.info("starting binary cache proxy server");
+    const proxy = spawn("node", ["./dist/proxy.js"], {
         detached: true,
         stdio: "ignore",
     });
-    daemon.unref();
-    coreExports.info("proxy server starting...");
-    // Wait for the proxy server to start
+    proxy.unref();
+    // wait for the proxy server to start
     let ping = 1;
     while (ping !== 0) {
         ping = await execExports.exec("nix", ["store", "info", "--store", "http://127.0.0.1:5001"], { ignoreReturnCode: true, silent: true });
         if (ping !== 0) {
-            coreExports.info("Waiting for daemon to start...");
+            coreExports.info("waiting for proxy server to start...");
             await new Promise((resolve) => setTimeout(resolve, 1000));
         }
     }
     // get public key
-    const pubkey = (await execExports.getExecOutput("cat", ["/tmp/pubkey.pem"])).stdout.trim();
-    // get substituters and trusted keys
-    const substituters = (await execExports.getExecOutput("nix", ["config", "show", "substituters"], {
-        ignoreReturnCode: true,
-    })).stdout
-        .trim()
-        .split(" ");
-    const trustedKeys = (await execExports.getExecOutput("nix", ["config", "show", "trusted-public-keys"], {
-        ignoreReturnCode: true,
-    })).stdout
-        .trim()
-        .split(" ");
+    const publicKey = (await execExports.getExecOutput("bash", ["-c", "cat /tmp/.secret-key | nix key convert-secret-to-public"], {
+        silent: true,
+    })).stdout.trim();
     // add cache as a substituter
     coreExports.exportVariable("NIX_CONFIG", `
-			substituters = http://127.0.0.1:5001 ${substituters.join(" ")}
-			trusted-public-keys = ${pubkey} ${trustedKeys.join(" ")}
+			extra-substituters = http://127.0.0.1:5001?priority=10
+			extra-trusted-public-keys = ${publicKey}
 		`);
 }
 try {
