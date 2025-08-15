@@ -82699,7 +82699,7 @@ async function main() {
     // Create nix daemon
     const daemon = spawn("bash", [
         "-c",
-        "NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nix daemon --force-trusted --store /tmp/nix-cache",
+        "NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nix daemon --store /tmp/nix-cache --force-trusted --extra-experimental-features daemon-trust-override",
     ], { detached: true, stdio: "ignore" });
     daemon.unref();
     coreExports.info("Nix daemon starting...");
