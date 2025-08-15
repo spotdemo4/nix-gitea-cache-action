@@ -82690,12 +82690,14 @@ async function main() {
     // Print nix version
     const versionOutput = await execExports.getExecOutput("nix", ["--version"]);
     coreExports.info(`Nix version: ${versionOutput.stdout.trim()}`);
+    await execExports.exec("nix", ["flake", "check", "--store", "/tmp/testing"], {
+        failOnStdErr: false,
+    });
     const out = await execExports.getExecOutput("ls", [
         "-la",
         "/nix/store/gkwbw9nzbkbz298njbn3577zmrnglbbi-bash-5.3p0/bin/",
     ]);
     coreExports.info(`Bash directory contents: ${out.stdout.trim()}`);
-    await execExports.exec("nix", ["flake", "check", "--store", "/tmp/testing"]);
     // Get nix conf
     // const nixConfOutput = await exec.getExecOutput("nix", ["config", "show"]);
     // const nixConf = nixConfOutput.stdout

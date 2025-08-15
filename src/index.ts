@@ -14,13 +14,15 @@ async function main() {
 	const versionOutput = await exec.getExecOutput("nix", ["--version"]);
 	core.info(`Nix version: ${versionOutput.stdout.trim()}`);
 
+	await exec.exec("nix", ["flake", "check", "--store", "/tmp/testing"], {
+		failOnStdErr: false,
+	});
+
 	const out = await exec.getExecOutput("ls", [
 		"-la",
 		"/nix/store/gkwbw9nzbkbz298njbn3577zmrnglbbi-bash-5.3p0/bin/",
 	]);
 	core.info(`Bash directory contents: ${out.stdout.trim()}`);
-
-	await exec.exec("nix", ["flake", "check", "--store", "/tmp/testing"]);
 
 	// Get nix conf
 	// const nixConfOutput = await exec.getExecOutput("nix", ["config", "show"]);
