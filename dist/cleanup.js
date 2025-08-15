@@ -82699,8 +82699,17 @@ async function main() {
         "/tmp/.secret-key",
     ]);
     // verify
+    coreExports.info("verifying nix store");
     await execExports.exec("nix", ["store", "verify", "--all", "--repair"], {
         silent: true,
+        listeners: {
+            stderr: (data) => {
+                const message = data.toString().trim();
+                if (message) {
+                    coreExports.warning(`nix store verify: ${message}`);
+                }
+            },
+        },
     });
     // get size of cache
     let size = 0;

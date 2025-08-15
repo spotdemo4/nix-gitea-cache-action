@@ -23,8 +23,17 @@ async function main() {
 	]);
 
 	// verify
+	core.info("verifying nix store");
 	await exec.exec("nix", ["store", "verify", "--all", "--repair"], {
 		silent: true,
+		listeners: {
+			stderr: (data: Buffer) => {
+				const message = data.toString().trim();
+				if (message) {
+					core.warning(`nix store verify: ${message}`);
+				}
+			},
+		},
 	});
 
 	// get size of cache
