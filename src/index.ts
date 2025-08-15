@@ -59,8 +59,17 @@ async function main() {
 		]);
 	}
 
+	// Verify nix store
+	await exec.exec("nix-store", [
+		"--verify",
+		"--check-contents",
+		"--repair",
+		"--store",
+		"unix:///tmp/nix-socket",
+	]);
+
 	// Delete old cache
-	await exec.exec("rm", ["-rf", "~/.cache/nix"]);
+	//await exec.exec("rm", ["-rf", "~/.cache/nix"]);
 
 	// Verify nix store integrity
 	// const verify = await exec.exec("nix", [
@@ -92,8 +101,8 @@ async function main() {
 	// core.exportVariable("NIX_STATE_DIR", "/tmp/nix-cache/nix/var/nix");
 	// core.exportVariable("NIX_LOG_DIR", "/tmp/nix-cache/nix/var/log/nix");
 
-	const currentDir = await exec.getExecOutput("ls", ["-la", "."]);
-	core.info(`Current directory: ${currentDir.stdout.trim()}`);
+	// const currentDir = await exec.getExecOutput("ls", ["-la", "."]);
+	// core.info(`Current directory: ${currentDir.stdout.trim()}`);
 }
 
 try {
