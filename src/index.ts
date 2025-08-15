@@ -80,7 +80,7 @@ async function main() {
 	await exec.exec("nix", [
 		"flake",
 		"archive",
-		"--store",
+		"--to",
 		"unix:///tmp/nix-socket",
 	]);
 

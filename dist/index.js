@@ -82742,7 +82742,7 @@ async function main() {
     await execExports.exec("nix", [
         "flake",
         "archive",
-        "--store",
+        "--to",
         "unix:///tmp/nix-socket",
     ]);
     const metadata = await execExports.getExecOutput("nix", [
