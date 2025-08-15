@@ -57,14 +57,9 @@ async function main() {
 	if (!restore) {
 		core.info("Cache not found.");
 
-		// initialize the cache directory
-		await exec.exec("nix", [
-			"copy",
-			"--all",
-			"--to",
-			"/tmp/nix-cache",
-			"--no-check-sigs",
-		]);
+		// Initialize the cache directory
+		core.info("Initializing the cache directory.");
+		await exec.exec("mkdir", ["-p", "/tmp/nix-cache"]);
 	}
 
 	// // Create nix daemon
