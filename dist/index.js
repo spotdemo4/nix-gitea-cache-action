@@ -82738,6 +82738,21 @@ async function main() {
         "--store",
         "unix:///tmp/nix-socket",
     ]);
+    // Archive local flake??
+    await execExports.exec("nix", [
+        "flake",
+        "archive",
+        "--store",
+        "unix:///tmp/nix-socket",
+    ]);
+    const metadata = await execExports.getExecOutput("nix", [
+        "flake",
+        "metadata",
+        "--json",
+        "--store",
+        "unix:///tmp/nix-socket",
+    ]);
+    coreExports.info(`Nix metadata: ${metadata.stdout.trim()}`);
     // Delete old cache
     //await exec.exec("rm", ["-rf", "~/.cache/nix"]);
     // Verify nix store integrity
