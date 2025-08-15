@@ -23,7 +23,7 @@ async function main() {
 	// Create nix daemon
 	await exec.exec("bash", [
 		"-c",
-		"nohup NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nix daemon --store /tmp/nix-cache &",
+		"NIX_DAEMON_SOCKET_PATH=/tmp/nix-socket nohup nix daemon --store /tmp/nix-cache &",
 	]);
 
 	// Verify nix store integrity
