@@ -3,15 +3,16 @@ import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 
 async function main() {
+	// Unset substitutions
+	core.exportVariable("NIX_CONFIG", "");
+
 	// Copy to cache
 	await exec.exec("nix", [
 		"copy",
-		"--from",
-		"/",
+		"--all",
 		"--to",
 		"/tmp/nix-cache",
 		"--no-check-sigs",
-		"--offline",
 	]);
 
 	// Optimise the cache
