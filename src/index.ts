@@ -1,5 +1,7 @@
 import { spawn } from "node:child_process";
 import { writeFileSync } from "node:fs";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
@@ -42,6 +44,8 @@ async function main() {
 	}
 
 	// create HTTP binary cache proxy server
+	const __filename = fileURLToPath(import.meta.url);
+	const __dirname = dirname(__filename);
 	core.info(`starting binary cache proxy server ${__dirname}/proxy.js`);
 	const proxy = spawn("node", [`${__dirname}/proxy.js`], {
 		detached: true,
