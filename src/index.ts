@@ -43,7 +43,7 @@ async function main() {
 
 	// create HTTP binary cache proxy server
 	core.info("starting binary cache proxy server");
-	const proxy = spawn("node", ["./dist/proxy.js"], {
+	const proxy = spawn("node", ["proxy.js"], {
 		detached: true,
 		stdio: "ignore",
 	});
@@ -51,14 +51,16 @@ async function main() {
 
 	// wait for the proxy server to start
 	let ping = 1;
-	while (ping !== 0) {
+	let attempts = 0;
+	while (ping !== 0 && attempts < 10) {
 		ping = await exec.exec(
 			"nix",
 			["store", "info", "--store", "http://127.0.0.1:5001"],
 			{ ignoreReturnCode: true, silent: true },
 		);
 		if (ping !== 0) {
-			core.info("waiting for proxy server to start...");
+			attempts++;
+			core.info(`waiting for proxy server to start, attempt ${attempts}...`);
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 		}
 	}
