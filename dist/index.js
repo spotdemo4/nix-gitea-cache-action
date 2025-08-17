@@ -82702,8 +82702,8 @@ async function main() {
         return;
     }
     // create HTTP binary cache proxy server
-    coreExports.info("starting binary cache proxy server");
-    const proxy = spawn("node", ["proxy.js"], {
+    coreExports.info(`starting binary cache proxy server ${__dirname}/proxy.js`);
+    const proxy = spawn("node", [`${__dirname}/proxy.js`], {
         detached: true,
         stdio: "ignore",
     });

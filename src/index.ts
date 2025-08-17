@@ -42,8 +42,8 @@ async function main() {
 	}
 
 	// create HTTP binary cache proxy server
-	core.info("starting binary cache proxy server");
-	const proxy = spawn("node", ["proxy.js"], {
+	core.info(`starting binary cache proxy server ${__dirname}/proxy.js`);
+	const proxy = spawn("node", [`${__dirname}/proxy.js`], {
 		detached: true,
 		stdio: "ignore",
 	});
