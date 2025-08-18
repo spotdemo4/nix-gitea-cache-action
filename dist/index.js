@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import require$$1$9, { writeFileSync, existsSync } from 'node:fs';
+import require$$1$9, { writeFileSync, existsSync, openSync, readFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import require$$0$3 from 'os';
@@ -82745,9 +82745,11 @@ async function main() {
         return;
     }
     coreExports.info(`starting binary cache proxy server ${__dirname}/proxy.js`);
+    const out = openSync("./tmp/out.log", "a"); // Open file for stdout
+    const err = openSync("./tmp/err.log", "a"); // Open file for stderr
     const proxy = spawn("node", [`${__dirname}/proxy.js`], {
         detached: true,
-        stdio: "ignore",
+        stdio: ["ignore", out, err],
     });
     proxy.unref();
     // wait for the proxy server to start
@@ -82760,6 +82762,14 @@ async function main() {
             coreExports.info(`waiting for proxy server to start, attempt ${attempts}...`);
             await new Promise((resolve) => setTimeout(resolve, 1000));
         }
+    }
+    if (attempts >= 10) {
+        coreExports.warning("proxy server did not start.");
+        const outlog = readFileSync("./tmp/out.log", "utf8");
+        const errlog = readFileSync("./tmp/err.log", "utf8");
+        coreExports.warning(`stdout: ${outlog}`);
+        coreExports.warning(`stderr: ${errlog}`);
+        return;
     }
     // add cache as a substituter
     coreExports.exportVariable("NIX_CONFIG", `
