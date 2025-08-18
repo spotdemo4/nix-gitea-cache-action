@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import require$$1$9, { writeFileSync } from 'node:fs';
+import require$$1$9, { writeFileSync, existsSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import require$$0$3 from 'os';
@@ -82740,7 +82740,11 @@ async function main() {
     // create HTTP binary cache proxy server
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
-    coreExports.info("starting binary cache proxy server");
+    if (!existsSync(`${__dirname}/proxy.js`)) {
+        coreExports.warning(`${__dirname}/proxy.js not found, skipping binary cache server`);
+        return;
+    }
+    coreExports.info(`starting binary cache proxy server ${__dirname}/proxy.js`);
     const proxy = spawn("node", [`${__dirname}/proxy.js`], {
         detached: true,
         stdio: "ignore",
