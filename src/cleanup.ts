@@ -67,7 +67,7 @@ async function main() {
 	// save cache
 	await cache.saveCache(
 		["/tmp/nix-cache", "/tmp/.secret-key"],
-		`nix-store-${flakeHash}`,
+		`nix-store-${flakeHash}-${Date.now()}`,
 	);
 }
 

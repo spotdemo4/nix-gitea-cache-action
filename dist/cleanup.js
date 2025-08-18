@@ -82728,7 +82728,7 @@ async function main() {
         coreExports.warning(`failed to copy some store paths (exit code ${copy})`);
     }
     // save cache
-    await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], `nix-store-${flakeHash}`);
+    await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], `nix-store-${flakeHash}-${Date.now()}`);
 }
 try {
     await main();

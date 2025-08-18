@@ -82740,7 +82740,7 @@ async function main() {
     // create HTTP binary cache proxy server
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
-    coreExports.info(`starting binary cache proxy server ${__dirname}/proxy.js`);
+    coreExports.info("starting binary cache proxy server");
     const proxy = spawn("node", [`${__dirname}/proxy.js`], {
         detached: true,
         stdio: "ignore",
