@@ -82680,12 +82680,22 @@ var coreExports = requireCore();
 
 var execExports = requireExec();
 
-var ioExports = requireIo();
-
 async function main() {
     // make sure caching is available
     if (!cacheExports.isFeatureAvailable()) {
         coreExports.warning("cache is not available");
+        return;
+    }
+    // get flake hash from state
+    const flakeHash = coreExports.getState("flakeHash");
+    if (!flakeHash) {
+        coreExports.warning("flake hash not found, not saving cache");
+        return;
+    }
+    // get public key from state
+    const publicKey = coreExports.getState("publicKey");
+    if (!publicKey) {
+        coreExports.warning("public key hash not found, not saving cache");
         return;
     }
     // optimise
@@ -82698,10 +82708,6 @@ async function main() {
         "--key-file",
         "/tmp/.secret-key",
     ]);
-    // get public key
-    const publicKey = (await execExports.getExecOutput("bash", ["-c", "cat /tmp/.secret-key | nix key convert-secret-to-public"], {
-        silent: true,
-    })).stdout.trim();
     // verify
     coreExports.info("verifying nix store");
     await execExports.exec("nix", [
@@ -82714,28 +82720,15 @@ async function main() {
     ], {
         silent: true,
     });
-    // get size of cache
-    let size = 0;
-    const du = await execExports.getExecOutput("du", ["-sb", "/tmp/nix-cache"], {
-        ignoreReturnCode: true,
-    });
-    if (du.exitCode === 0) {
-        size = parseInt(du.stdout.trim(), 10);
-    }
-    coreExports.info(`nix cache size: ${size} bytes`);
-    // purge if size exceeds max-size
-    const max = parseInt(coreExports.getInput("max-size") || "5000000000", 10); // default to 5GB
-    if (size > max) {
-        coreExports.info(`nix store size exceeds max-size (${max} bytes), purging...`);
-        // purge cache
-        await ioExports.rmRF("/tmp/nix-cache");
-    }
     // copy to cache
-    await execExports.exec("nix", ["copy", "--all", "--to", "file:///tmp/nix-cache", "--keep-going"], {
+    const copy = await execExports.exec("nix", ["copy", "--all", "--to", "file:///tmp/nix-cache", "--keep-going"], {
         ignoreReturnCode: true,
     });
+    if (copy !== 0) {
+        coreExports.warning(`failed to copy some store paths (exit code ${copy})`);
+    }
     // save cache
-    await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], "nix-store");
+    await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], `nix-store-${flakeHash}`);
 }
 try {
     await main();

@@ -15,18 +15,30 @@ async function main() {
 
 	// print nix version
 	const version = (
-		await exec.getExecOutput("nix", ["--version"])
+		await exec.getExecOutput("nix", ["--version"], {
+			silent: true,
+		})
 	).stdout.trim();
 	core.info(`nix version: ${version}`);
+
+	// get flake hash
+	const flakeHash = (
+		await exec.getExecOutput("nix", ["hash", "file", "flake.lock"], {
+			silent: true,
+		})
+	).stdout.trim();
+	core.info(`flake hash: ${flakeHash}`);
+	core.saveState("flakeHash", flakeHash);
 
 	// restore cache to tmp
 	const restore = await cache.restoreCache(
 		["/tmp/nix-cache", "/tmp/.secret-key"],
-		"nix-store",
+		`nix-store-${flakeHash}`,
+		["nix-store"],
 	);
 	core.setOutput("cache-hit", restore ? "true" : "false");
 	if (!restore) {
-		core.info("cache not found, generating keypair...");
+		core.info("generating cache secret key");
 
 		// generate store secret key
 		const secretKey = (
@@ -39,7 +51,42 @@ async function main() {
 
 		// write to file
 		writeFileSync("/tmp/.secret-key", secretKey);
+	}
 
+	// get public key
+	const publicKey = (
+		await exec.getExecOutput(
+			"bash",
+			["-c", "cat /tmp/.secret-key | nix key convert-secret-to-public"],
+			{
+				silent: true,
+			},
+		)
+	).stdout.trim();
+	core.info(`public key: ${publicKey}`);
+	core.saveState("publicKey", publicKey);
+
+	// early return if cache was not found
+	if (!restore) {
+		core.info("cache not found");
+		return;
+	}
+
+	// get size of cache
+	let size = 0;
+	const du = await exec.getExecOutput("du", ["-sb", "/tmp/nix-cache"], {
+		ignoreReturnCode: true,
+		silent: true,
+	});
+	if (du.exitCode === 0) {
+		size = parseInt(du.stdout.trim(), 10);
+	}
+	core.info(`cache size: ${size} bytes`);
+
+	// don't use cache if size exceeds max-size
+	const max = parseInt(core.getInput("max-size") || "5000000000", 10); // default to 5GB
+	if (size > max) {
+		core.info(`cache size exceeds max-size (${max} bytes), skipping`);
 		return;
 	}
 
@@ -68,17 +115,6 @@ async function main() {
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 		}
 	}
-
-	// get public key
-	const publicKey = (
-		await exec.getExecOutput(
-			"bash",
-			["-c", "cat /tmp/.secret-key | nix key convert-secret-to-public"],
-			{
-				silent: true,
-			},
-		)
-	).stdout.trim();
 
 	// add cache as a substituter
 	core.exportVariable(

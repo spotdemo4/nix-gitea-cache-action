@@ -82690,17 +82690,51 @@ async function main() {
         return;
     }
     // print nix version
-    const version = (await execExports.getExecOutput("nix", ["--version"])).stdout.trim();
+    const version = (await execExports.getExecOutput("nix", ["--version"], {
+        silent: true,
+    })).stdout.trim();
     coreExports.info(`nix version: ${version}`);
+    // get flake hash
+    const flakeHash = (await execExports.getExecOutput("nix", ["hash", "file", "flake.lock"], {
+        silent: true,
+    })).stdout.trim();
+    coreExports.info(`flake hash: ${flakeHash}`);
+    coreExports.saveState("flakeHash", flakeHash);
     // restore cache to tmp
-    const restore = await cacheExports.restoreCache(["/tmp/nix-cache", "/tmp/.secret-key"], "nix-store");
+    const restore = await cacheExports.restoreCache(["/tmp/nix-cache", "/tmp/.secret-key"], `nix-store-${flakeHash}`, ["nix-store"]);
     coreExports.setOutput("cache-hit", restore ? "true" : "false");
     if (!restore) {
-        coreExports.info("cache not found, generating keypair...");
+        coreExports.info("generating cache secret key");
         // generate store secret key
         const secretKey = (await execExports.getExecOutput("nix", ["key", "generate-secret", "--key-name", "simple.cache.action-1"], { silent: true })).stdout.trim();
         // write to file
         writeFileSync("/tmp/.secret-key", secretKey);
+    }
+    // get public key
+    const publicKey = (await execExports.getExecOutput("bash", ["-c", "cat /tmp/.secret-key | nix key convert-secret-to-public"], {
+        silent: true,
+    })).stdout.trim();
+    coreExports.info(`public key: ${publicKey}`);
+    coreExports.saveState("publicKey", publicKey);
+    // early return if cache was not found
+    if (!restore) {
+        coreExports.info("cache not found");
+        return;
+    }
+    // get size of cache
+    let size = 0;
+    const du = await execExports.getExecOutput("du", ["-sb", "/tmp/nix-cache"], {
+        ignoreReturnCode: true,
+        silent: true,
+    });
+    if (du.exitCode === 0) {
+        size = parseInt(du.stdout.trim(), 10);
+    }
+    coreExports.info(`cache size: ${size} bytes`);
+    // don't use cache if size exceeds max-size
+    const max = parseInt(coreExports.getInput("max-size") || "5000000000", 10); // default to 5GB
+    if (size > max) {
+        coreExports.info(`cache size exceeds max-size (${max} bytes), skipping`);
         return;
     }
     // create HTTP binary cache proxy server
@@ -82723,10 +82757,6 @@ async function main() {
             await new Promise((resolve) => setTimeout(resolve, 1000));
         }
     }
-    // get public key
-    const publicKey = (await execExports.getExecOutput("bash", ["-c", "cat /tmp/.secret-key | nix key convert-secret-to-public"], {
-        silent: true,
-    })).stdout.trim();
     // add cache as a substituter
     coreExports.exportVariable("NIX_CONFIG", `
 			extra-substituters = http://127.0.0.1:5001?priority=10

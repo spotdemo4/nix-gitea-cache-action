@@ -1,12 +1,25 @@
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
-import * as io from "@actions/io";
 
 async function main() {
 	// make sure caching is available
 	if (!cache.isFeatureAvailable()) {
 		core.warning("cache is not available");
+		return;
+	}
+
+	// get flake hash from state
+	const flakeHash = core.getState("flakeHash");
+	if (!flakeHash) {
+		core.warning("flake hash not found, not saving cache");
+		return;
+	}
+
+	// get public key from state
+	const publicKey = core.getState("publicKey");
+	if (!publicKey) {
+		core.warning("public key hash not found, not saving cache");
 		return;
 	}
 
@@ -21,17 +34,6 @@ async function main() {
 		"--key-file",
 		"/tmp/.secret-key",
 	]);
-
-	// get public key
-	const publicKey = (
-		await exec.getExecOutput(
-			"bash",
-			["-c", "cat /tmp/.secret-key | nix key convert-secret-to-public"],
-			{
-				silent: true,
-			},
-		)
-	).stdout.trim();
 
 	// verify
 	core.info("verifying nix store");
@@ -50,36 +52,23 @@ async function main() {
 		},
 	);
 
-	// get size of cache
-	let size = 0;
-	const du = await exec.getExecOutput("du", ["-sb", "/tmp/nix-cache"], {
-		ignoreReturnCode: true,
-	});
-	if (du.exitCode === 0) {
-		size = parseInt(du.stdout.trim(), 10);
-	}
-	core.info(`nix cache size: ${size} bytes`);
-
-	// purge if size exceeds max-size
-	const max = parseInt(core.getInput("max-size") || "5000000000", 10); // default to 5GB
-	if (size > max) {
-		core.info(`nix store size exceeds max-size (${max} bytes), purging...`);
-
-		// purge cache
-		await io.rmRF("/tmp/nix-cache");
-	}
-
 	// copy to cache
-	await exec.exec(
+	const copy = await exec.exec(
 		"nix",
 		["copy", "--all", "--to", "file:///tmp/nix-cache", "--keep-going"],
 		{
 			ignoreReturnCode: true,
 		},
 	);
+	if (copy !== 0) {
+		core.warning(`failed to copy some store paths (exit code ${copy})`);
+	}
 
 	// save cache
-	await cache.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], "nix-store");
+	await cache.saveCache(
+		["/tmp/nix-cache", "/tmp/.secret-key"],
+		`nix-store-${flakeHash}`,
+	);
 }
 
 try {
