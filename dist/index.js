@@ -82745,8 +82745,8 @@ async function main() {
         return;
     }
     coreExports.info(`starting binary cache proxy server ${__dirname}/proxy.js`);
-    const out = openSync("./tmp/out.log", "a"); // Open file for stdout
-    const err = openSync("./tmp/err.log", "a"); // Open file for stderr
+    const out = openSync("/tmp/out.log", "as"); // Open file for stdout
+    const err = openSync("/tmp/err.log", "as"); // Open file for stderr
     const proxy = spawn("node", [`${__dirname}/proxy.js`], {
         detached: true,
         stdio: ["ignore", out, err],
@@ -82765,8 +82765,8 @@ async function main() {
     }
     if (attempts >= 10) {
         coreExports.warning("proxy server did not start.");
-        const outlog = readFileSync("./tmp/out.log", "utf8");
-        const errlog = readFileSync("./tmp/err.log", "utf8");
+        const outlog = readFileSync("/tmp/out.log", "utf8");
+        const errlog = readFileSync("/tmp/err.log", "utf8");
         coreExports.warning(`stdout: ${outlog}`);
         coreExports.warning(`stderr: ${errlog}`);
         return;
