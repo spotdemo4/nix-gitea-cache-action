@@ -32,7 +32,7 @@ const server = createServer((req, res) => {
 	if (!req.url) return;
 
 	// parse URL
-	const parsedUrl = URL.parse(`http://${hostname}:${port}${req.url}`);
+	const parsedUrl = new URL(`http://${hostname}:${port}${req.url}`);
 	if (!parsedUrl) {
 		res.writeHead(400, { "Content-Type": "text/plain" });
 		res.end("Bad Request");

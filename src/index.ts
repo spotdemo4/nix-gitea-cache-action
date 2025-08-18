@@ -112,7 +112,7 @@ async function main() {
 	// wait for the proxy server to start
 	let ping = 1;
 	let attempts = 0;
-	while (ping !== 0 && attempts < 10) {
+	while (ping !== 0 && attempts < 5) {
 		ping = await exec.exec(
 			"nix",
 			["store", "info", "--store", "http://127.0.0.1:5001"],
@@ -124,7 +124,7 @@ async function main() {
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 		}
 	}
-	if (attempts >= 10) {
+	if (attempts >= 5) {
 		core.warning("proxy server did not start.");
 		const outlog = readFileSync("/tmp/out.log", "utf8");
 		const errlog = readFileSync("/tmp/err.log", "utf8");
