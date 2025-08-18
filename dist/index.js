@@ -82737,13 +82737,14 @@ async function main() {
         coreExports.info(`cache size exceeds max-size (${max} bytes), skipping`);
         return;
     }
-    // create HTTP binary cache proxy server
+    // determine __dirname
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     if (!existsSync(`${__dirname}/proxy.js`)) {
         coreExports.warning(`${__dirname}/proxy.js not found, skipping binary cache server`);
         return;
     }
+    // create HTTP binary cache proxy server
     coreExports.info(`starting binary cache proxy server ${__dirname}/proxy.js`);
     const out = openSync("/tmp/out.log", "as"); // Open file for stdout
     const err = openSync("/tmp/err.log", "as"); // Open file for stderr
