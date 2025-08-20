@@ -54,6 +54,37 @@
         shellHook = pkgs.nur.repos.trev.shellhook.ref;
       };
 
+      packages.default = pkgs.buildNpmPackage (finalAttrs: {
+        pname = "nix-simple-cache-action";
+        version = "1.4.1";
+        src = ./.;
+        nodejs = pkgs.nodejs_20;
+
+        npmDeps = pkgs.importNpmLock {
+          npmRoot = ./.;
+        };
+
+        npmConfigHook = pkgs.importNpmLock.npmConfigHook;
+
+        nativeBuildInputs = with pkgs; [
+          makeWrapper
+        ];
+
+        installPhase = ''
+          runHook preInstall
+
+          mkdir -p $out/{bin,lib/node_modules/nix-simple-cache-action}
+          cp -r dist node_modules package.json $out/lib/node_modules/nix-simple-cache-action
+
+          makeWrapper "${pkgs.lib.getExe pkgs.nodejs_20}" "$out/bin/nix-simple-cache-action" \
+            --add-flags "$out/lib/node_modules/nix-simple-cache-action/dist/index.js"
+
+          runHook postInstall
+        '';
+
+        meta.mainProgram = "nix-simple-cache-action";
+      });
+
       checks =
         pkgs.nur.repos.trev.lib.mkChecks {
           lint = {

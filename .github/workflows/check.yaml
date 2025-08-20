@@ -17,3 +17,4 @@ jobs:
       - uses: ./
 
       - run: nix flake check -L --accept-flake-config
+      - run: nix build .# --no-link --print-out-paths
