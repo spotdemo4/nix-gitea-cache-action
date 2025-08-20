@@ -82704,6 +82704,7 @@ async function main() {
     const restore = await cacheExports.restoreCache(["/tmp/nix-cache", "/tmp/.secret-key"], `nix-store-${flakeHash}`, ["nix-store"]);
     coreExports.setOutput("cache-hit", restore ? "true" : "false");
     if (!restore) {
+        coreExports.info("cache not found");
         coreExports.info("generating cache secret key");
         // generate store secret key
         const secretKey = (await execExports.getExecOutput("nix", ["key", "generate-secret", "--key-name", "simple.cache.action-1"], { silent: true })).stdout.trim();
@@ -82716,28 +82717,7 @@ async function main() {
     })).stdout.trim();
     coreExports.info(`public key: ${publicKey}`);
     coreExports.saveState("publicKey", publicKey);
-    // early return if cache was not found
-    if (!restore) {
-        coreExports.info("cache not found");
-        return;
-    }
-    // get size of cache
-    let size = 0;
-    const du = await execExports.getExecOutput("du", ["-sb", "/tmp/nix-cache"], {
-        ignoreReturnCode: true,
-        silent: true,
-    });
-    if (du.exitCode === 0) {
-        size = parseInt(du.stdout.trim(), 10);
-    }
-    coreExports.info(`cache size: ${size} bytes`);
-    // don't use cache if size exceeds max-size
-    const max = parseInt(coreExports.getInput("max-size") || "5000000000", 10); // default to 5GB
-    if (size > max) {
-        coreExports.info(`cache size exceeds max-size (${max} bytes), skipping`);
-        return;
-    }
-    // determine __dirname
+    // determine path to proxy.js
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     if (!existsSync(`${__dirname}/proxy.js`)) {
@@ -82745,7 +82725,7 @@ async function main() {
         return;
     }
     // create HTTP binary cache proxy server
-    coreExports.info(`starting binary cache proxy server ${__dirname}/proxy.js`);
+    coreExports.info(`starting binary cache proxy server`);
     const out = openSync("/tmp/out.log", "as"); // Open file for stdout
     const err = openSync("/tmp/err.log", "as"); // Open file for stderr
     const proxy = spawn("node", [`${__dirname}/proxy.js`], {
@@ -82766,15 +82746,13 @@ async function main() {
     }
     if (attempts >= 5) {
         coreExports.warning("proxy server did not start.");
-        const outlog = readFileSync("/tmp/out.log", "utf8");
-        const errlog = readFileSync("/tmp/err.log", "utf8");
-        coreExports.warning(`stdout: ${outlog}`);
-        coreExports.warning(`stderr: ${errlog}`);
+        coreExports.warning(`stdout: ${readFileSync("/tmp/out.log", "utf8")}`);
+        coreExports.warning(`stderr: ${readFileSync("/tmp/err.log", "utf8")}`);
         return;
     }
     // add cache as a substituter
     coreExports.exportVariable("NIX_CONFIG", `
-			extra-substituters = http://127.0.0.1:5001?priority=10
+			extra-substituters = http://127.0.0.1:5001?priority=50
 			extra-trusted-public-keys = ${publicKey}
 		`);
 }

@@ -38,6 +38,7 @@ async function main() {
 	);
 	core.setOutput("cache-hit", restore ? "true" : "false");
 	if (!restore) {
+		core.info("cache not found");
 		core.info("generating cache secret key");
 
 		// generate store secret key
@@ -66,31 +67,7 @@ async function main() {
 	core.info(`public key: ${publicKey}`);
 	core.saveState("publicKey", publicKey);
 
-	// early return if cache was not found
-	if (!restore) {
-		core.info("cache not found");
-		return;
-	}
-
-	// get size of cache
-	let size = 0;
-	const du = await exec.getExecOutput("du", ["-sb", "/tmp/nix-cache"], {
-		ignoreReturnCode: true,
-		silent: true,
-	});
-	if (du.exitCode === 0) {
-		size = parseInt(du.stdout.trim(), 10);
-	}
-	core.info(`cache size: ${size} bytes`);
-
-	// don't use cache if size exceeds max-size
-	const max = parseInt(core.getInput("max-size") || "5000000000", 10); // default to 5GB
-	if (size > max) {
-		core.info(`cache size exceeds max-size (${max} bytes), skipping`);
-		return;
-	}
-
-	// determine __dirname
+	// determine path to proxy.js
 	const __filename = fileURLToPath(import.meta.url);
 	const __dirname = dirname(__filename);
 	if (!existsSync(`${__dirname}/proxy.js`)) {
@@ -101,7 +78,7 @@ async function main() {
 	}
 
 	// create HTTP binary cache proxy server
-	core.info(`starting binary cache proxy server ${__dirname}/proxy.js`);
+	core.info(`starting binary cache proxy server`);
 	const out = openSync("/tmp/out.log", "as"); // Open file for stdout
 	const err = openSync("/tmp/err.log", "as"); // Open file for stderr
 	const proxy = spawn("node", [`${__dirname}/proxy.js`], {
@@ -127,10 +104,8 @@ async function main() {
 	}
 	if (attempts >= 5) {
 		core.warning("proxy server did not start.");
-		const outlog = readFileSync("/tmp/out.log", "utf8");
-		const errlog = readFileSync("/tmp/err.log", "utf8");
-		core.warning(`stdout: ${outlog}`);
-		core.warning(`stderr: ${errlog}`);
+		core.warning(`stdout: ${readFileSync("/tmp/out.log", "utf8")}`);
+		core.warning(`stderr: ${readFileSync("/tmp/err.log", "utf8")}`);
 		return;
 	}
 
@@ -138,7 +113,7 @@ async function main() {
 	core.exportVariable(
 		"NIX_CONFIG",
 		`
-			extra-substituters = http://127.0.0.1:5001?priority=10
+			extra-substituters = http://127.0.0.1:5001?priority=50
 			extra-trusted-public-keys = ${publicKey}
 		`,
 	);

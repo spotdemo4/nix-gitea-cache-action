@@ -82680,6 +82680,8 @@ var coreExports = requireCore();
 
 var execExports = requireExec();
 
+var ioExports = requireIo();
+
 async function main() {
     // make sure caching is available
     if (!cacheExports.isFeatureAvailable()) {
@@ -82697,6 +82699,22 @@ async function main() {
     if (!publicKey) {
         coreExports.warning("public key hash not found, not saving cache");
         return;
+    }
+    // get size of cache
+    let size = 0;
+    const du = await execExports.getExecOutput("du", ["-sb", "/tmp/nix-cache"], {
+        ignoreReturnCode: true,
+        silent: true,
+    });
+    if (du.exitCode === 0) {
+        size = parseInt(du.stdout.trim(), 10);
+    }
+    coreExports.info(`cache size: ${size} bytes`);
+    // delete cache if size exceeds max-size
+    const max = parseInt(coreExports.getInput("max-size") || "1000000000", 10); // default to 1GB
+    if (size > max) {
+        coreExports.info(`cache size exceeds max-size (${max} bytes), deleting cache`);
+        await ioExports.rmRF("/tmp/nix-cache");
     }
     // optimise
     await execExports.exec("nix", ["store", "optimise"]);
@@ -82723,8 +82741,13 @@ async function main() {
     if (copy !== 0) {
         coreExports.warning(`failed to copy some store paths (exit code ${copy})`);
     }
+    // get hash of cache
+    const cacheHash = (await execExports.getExecOutput("nix", ["hash", "path", "/tmp/nix-cache"], {
+        silent: true,
+    })).stdout.trim();
+    coreExports.info(`cache hash: ${cacheHash}`);
     // save cache
-    await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], `nix-store-${flakeHash}-${Date.now()}`);
+    await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], `nix-store-${flakeHash}-${cacheHash}`);
 }
 try {
     await main();
