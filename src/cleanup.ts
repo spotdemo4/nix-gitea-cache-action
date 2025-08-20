@@ -2,6 +2,7 @@ import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as io from "@actions/io";
+import { readFileSync } from "fs";
 
 async function main() {
 	// make sure caching is available
@@ -90,6 +91,11 @@ async function main() {
 		})
 	).stdout.trim();
 	core.info(`cache hash: ${cacheHash}`);
+
+	const stdout = readFileSync("/tmp/out.log", "utf8");
+	const stderr = readFileSync("/tmp/err.log", "utf8");
+	core.info(`proxy stdout: ${stdout}`);
+	core.info(`proxy stderr: ${stderr}`);
 
 	// save cache
 	await cache.saveCache(

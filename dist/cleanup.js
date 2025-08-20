@@ -1,6 +1,6 @@
 import require$$0$3 from 'os';
 import require$$0$4 from 'crypto';
-import require$$1$1 from 'fs';
+import require$$1$1, { readFileSync } from 'fs';
 import require$$1$6 from 'path';
 import require$$2 from 'http';
 import require$$1$2 from 'https';
@@ -82746,6 +82746,10 @@ async function main() {
         silent: true,
     })).stdout.trim();
     coreExports.info(`cache hash: ${cacheHash}`);
+    const stdout = readFileSync("/tmp/out.log", "utf8");
+    const stderr = readFileSync("/tmp/err.log", "utf8");
+    coreExports.info(`proxy stdout: ${stdout}`);
+    coreExports.info(`proxy stderr: ${stderr}`);
     // save cache
     await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], `nix-store-${flakeHash}-${cacheHash}`);
 }
