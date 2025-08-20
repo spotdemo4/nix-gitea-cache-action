@@ -82734,7 +82734,14 @@ async function main() {
         silent: true,
     });
     // copy to cache
-    const copy = await execExports.exec("nix", ["copy", "--to", "file:///tmp/nix-cache", "--keep-going", ...local.keys()], {
+    const copy = await execExports.exec("nix", [
+        "copy",
+        "--to",
+        "file:///tmp/nix-cache",
+        "--no-recursive",
+        "--keep-going",
+        ...local.keys(),
+    ], {
         ignoreReturnCode: true,
     });
     if (copy !== 0) {

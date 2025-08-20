@@ -93,7 +93,14 @@ async function main() {
 	// copy to cache
 	const copy = await exec.exec(
 		"nix",
-		["copy", "--to", "file:///tmp/nix-cache", "--keep-going", ...local.keys()],
+		[
+			"copy",
+			"--to",
+			"file:///tmp/nix-cache",
+			"--no-recursive",
+			"--keep-going",
+			...local.keys(),
+		],
 		{
 			ignoreReturnCode: true,
 		},
