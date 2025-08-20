@@ -82720,13 +82720,21 @@ async function main() {
     }
     // sign
     coreExports.info("signing");
-    await execExports.exec("nix", ["store", "sign", "--key-file", "/tmp/.secret-key", ...local.keys()], { silent: true });
+    await execExports.exec("nix", [
+        "store",
+        "sign",
+        "--recursive",
+        "--key-file",
+        "/tmp/.secret-key",
+        ...local.keys(),
+    ], { silent: true });
     // verify
     coreExports.info("verifying");
     await execExports.exec("nix", [
         "store",
         "verify",
         "--repair",
+        "--recursive",
         "--trusted-public-keys",
         publicKey,
         ...local.keys(),

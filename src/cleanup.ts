@@ -69,7 +69,14 @@ async function main() {
 	core.info("signing");
 	await exec.exec(
 		"nix",
-		["store", "sign", "--key-file", "/tmp/.secret-key", ...local.keys()],
+		[
+			"store",
+			"sign",
+			"--recursive",
+			"--key-file",
+			"/tmp/.secret-key",
+			...local.keys(),
+		],
 		{ silent: true },
 	);
 
@@ -81,6 +88,7 @@ async function main() {
 			"store",
 			"verify",
 			"--repair",
+			"--recursive",
 			"--trusted-public-keys",
 			publicKey,
 			...local.keys(),
