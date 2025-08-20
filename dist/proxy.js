@@ -71,6 +71,9 @@ const server = createServer(async (req, res) => {
         switch (req.method) {
             case "GET":
             case "HEAD": {
+                // delete host & referer headers
+                delete req.headers.host;
+                delete req.headers.referer;
                 // check if any substituter has the requested path
                 for (const substituter of substituters) {
                     // check if substituter contains path
@@ -92,8 +95,6 @@ const server = createServer(async (req, res) => {
                     }
                     console.log("<-", substituterURL.href);
                     // if substituter contains path, pipe request to it
-                    delete req.headers.host;
-                    delete req.headers.referer;
                     const proxy = request({
                         hostname: substituterURL.hostname,
                         port: 443,
