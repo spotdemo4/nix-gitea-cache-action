@@ -7,11 +7,32 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { createServer } from "node:http";
-import { request } from "node:https";
+import { type RequestOptions, request } from "node:https";
 import path from "node:path";
 import { promisify } from "node:util";
 
 const execPromise = promisify(exec);
+async function requestPromise(options: RequestOptions | string | URL): Promise<{
+	statusCode: number;
+	body: string;
+}> {
+	return new Promise((resolve, reject) => {
+		let body = "";
+		const req = request(options, (res) => {
+			res.on("data", (chunk: string) => {
+				body += chunk;
+			});
+			res.on("end", () => {
+				resolve({
+					statusCode: res.statusCode ?? 500,
+					body: body,
+				});
+			});
+		});
+		req.on("error", reject);
+		req.end();
+	});
+}
 
 const root = "/tmp/nix-cache";
 const hostname = "127.0.0.1";
@@ -48,14 +69,11 @@ if (!existsSync(root)) {
 
 // ensure nix-cache-info exists
 if (!existsSync(path.join(root, "nix-cache-info"))) {
-	const info = await fetch("https://cache.nixos.org/nix-cache-info", {
-		method: "GET",
-	});
-	if (!info.ok) {
+	const info = await requestPromise("https://cache.nixos.org/nix-cache-info");
+	if (info.statusCode > 299) {
 		throw new Error("Failed to fetch nix-cache-info");
 	}
-	const data = await info.text();
-	writeFileSync(path.join(root, "nix-cache-info"), data);
+	writeFileSync(path.join(root, "nix-cache-info"), info.body);
 }
 
 const server = createServer(async (req, res) => {
@@ -69,27 +87,31 @@ const server = createServer(async (req, res) => {
 				// check if any substituter has the requested path
 				for (const substituter of substituters) {
 					// check if substituter contains path
-					const suburl = new URL(req.url, substituter);
-					const subreq = await fetch(suburl, {
+					const substituterURL = new URL(req.url, substituter);
+					const head = await requestPromise({
+						hostname: substituterURL.hostname,
+						port: 443,
+						path: req.url,
 						method: "HEAD",
+						headers: req.headers,
 					});
-					if (!subreq.ok) continue;
+					if (head.statusCode > 299) continue;
 
 					// if HEAD request, return status
 					if (req.method === "HEAD") {
-						res.writeHead(subreq.status);
+						res.writeHead(head.statusCode);
 						res.end();
 						return;
 					}
 
-					console.log("<-", suburl.href);
+					console.log("<-", substituterURL.href);
 
 					// if substituter contains path, pipe request to it
 					delete req.headers.host;
 					delete req.headers.referer;
 					const proxy = request(
 						{
-							hostname: suburl.hostname,
+							hostname: substituterURL.hostname,
 							port: 443,
 							path: req.url,
 							method: req.method,

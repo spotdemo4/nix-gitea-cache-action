@@ -1,8 +1,8 @@
+import { readFileSync } from "node:fs";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as io from "@actions/io";
-import { readFileSync } from "fs";
 
 async function main() {
 	// make sure caching is available

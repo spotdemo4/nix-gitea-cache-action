@@ -1,6 +1,7 @@
+import require$$1$9, { readFileSync } from 'node:fs';
 import require$$0$3 from 'os';
 import require$$0$4 from 'crypto';
-import require$$1$1, { readFileSync } from 'fs';
+import require$$1$1 from 'fs';
 import require$$1$6 from 'path';
 import require$$2 from 'http';
 import require$$1$2 from 'https';
@@ -35,7 +36,6 @@ import require$$2$4 from 'node:https';
 import require$$3$1 from 'node:zlib';
 import require$$0$f from 'tty';
 import require$$2$5 from 'node:buffer';
-import require$$1$9 from 'node:fs';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
