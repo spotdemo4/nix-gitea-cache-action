@@ -2,6 +2,17 @@ import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 
+type StorePath = {
+	ca: string | null;
+	deriver: string;
+	narHash: string;
+	narSize: number;
+	references: string[];
+	registrationTime: number;
+	signatures: string[];
+	ultimate: boolean;
+};
+
 async function main() {
 	// make sure caching is available
 	if (!cache.isFeatureAvailable()) {
@@ -26,13 +37,35 @@ async function main() {
 	// optimise
 	await exec.exec("nix", ["store", "optimise"]);
 
+	// get store paths
+	core.info("getting store paths");
+	const storePaths: Map<string, StorePath> = new Map(
+		Object.entries(
+			JSON.parse(
+				(
+					await exec.getExecOutput("nix", ["path-info", "--all", "--json"], {
+						silent: true,
+					})
+				).stdout,
+			),
+		),
+	);
+
+	// filter out paths from nix cache
+	core.info("filtering cached paths");
+	const uncachedPaths = new Map<string, StorePath>();
+	for (const [path, info] of storePaths) {
+		if (info.signatures.includes("cache.nixos.org-1")) continue;
+		uncachedPaths.set(path, info);
+	}
+
 	// sign
 	await exec.exec("nix", [
 		"store",
 		"sign",
-		"--all",
 		"--key-file",
 		"/tmp/.secret-key",
+		...uncachedPaths.keys(),
 	]);
 
 	// verify
@@ -42,10 +75,10 @@ async function main() {
 		[
 			"store",
 			"verify",
-			"--all",
 			"--repair",
 			"--trusted-public-keys",
 			publicKey,
+			...uncachedPaths.keys(),
 		],
 		{
 			silent: true,
@@ -55,7 +88,13 @@ async function main() {
 	// copy to cache
 	const copy = await exec.exec(
 		"nix",
-		["copy", "--all", "--to", "file:///tmp/nix-cache", "--keep-going"],
+		[
+			"copy",
+			"--to",
+			"file:///tmp/nix-cache",
+			"--keep-going",
+			...uncachedPaths.keys(),
+		],
 		{
 			ignoreReturnCode: true,
 		},

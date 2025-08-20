@@ -82700,28 +82700,47 @@ async function main() {
     }
     // optimise
     await execExports.exec("nix", ["store", "optimise"]);
+    // get store paths
+    coreExports.info("getting store paths");
+    const storePaths = new Map(Object.entries(JSON.parse((await execExports.getExecOutput("nix", ["path-info", "--all", "--json"], {
+        silent: true,
+    })).stdout)));
+    // filter out paths from nix cache
+    coreExports.info("filtering cached paths");
+    const uncachedPaths = new Map();
+    for (const [path, info] of storePaths) {
+        if (info.signatures.includes("cache.nixos.org-1"))
+            continue;
+        uncachedPaths.set(path, info);
+    }
     // sign
     await execExports.exec("nix", [
         "store",
         "sign",
-        "--all",
         "--key-file",
         "/tmp/.secret-key",
+        ...uncachedPaths.keys(),
     ]);
     // verify
     coreExports.info("verifying nix store");
     await execExports.exec("nix", [
         "store",
         "verify",
-        "--all",
         "--repair",
         "--trusted-public-keys",
         publicKey,
+        ...uncachedPaths.keys(),
     ], {
         silent: true,
     });
     // copy to cache
-    const copy = await execExports.exec("nix", ["copy", "--all", "--to", "file:///tmp/nix-cache", "--keep-going"], {
+    const copy = await execExports.exec("nix", [
+        "copy",
+        "--to",
+        "file:///tmp/nix-cache",
+        "--keep-going",
+        ...uncachedPaths.keys(),
+    ], {
         ignoreReturnCode: true,
     });
     if (copy !== 0) {
