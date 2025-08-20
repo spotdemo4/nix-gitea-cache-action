@@ -82746,12 +82746,14 @@ async function main() {
         silent: true,
     })).stdout.trim();
     coreExports.info(`cache hash: ${cacheHash}`);
-    const stdout = readFileSync("/tmp/out.log", "utf8");
-    const stderr = readFileSync("/tmp/err.log", "utf8");
-    coreExports.info(`proxy stdout: ${stdout}`);
-    coreExports.info(`proxy stderr: ${stderr}`);
     // save cache
     await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], `nix-store-${flakeHash}-${cacheHash}`);
+    // print proxy errors if they exist
+    const stderr = readFileSync("/tmp/err.log", "utf8").trim();
+    if (stderr) {
+        coreExports.warning("proxy exited with errors");
+        coreExports.info(stderr);
+    }
 }
 try {
     await main();

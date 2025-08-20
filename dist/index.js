@@ -82725,10 +82725,10 @@ async function main() {
         return;
     }
     // create HTTP binary cache proxy server
-    coreExports.info(`starting binary cache proxy server`);
+    coreExports.info("starting binary cache proxy server");
     const out = openSync("/tmp/out.log", "as"); // Open file for stdout
     const err = openSync("/tmp/err.log", "as"); // Open file for stderr
-    const proxy = spawn("node", [`${__dirname}/proxy.js`], {
+    const proxy = spawn("node", ["--no-network-family-autoselection", `${__dirname}/proxy.js`], {
         detached: true,
         stdio: ["ignore", out, err],
     });

@@ -92,16 +92,18 @@ async function main() {
 	).stdout.trim();
 	core.info(`cache hash: ${cacheHash}`);
 
-	const stdout = readFileSync("/tmp/out.log", "utf8");
-	const stderr = readFileSync("/tmp/err.log", "utf8");
-	core.info(`proxy stdout: ${stdout}`);
-	core.info(`proxy stderr: ${stderr}`);
-
 	// save cache
 	await cache.saveCache(
 		["/tmp/nix-cache", "/tmp/.secret-key"],
 		`nix-store-${flakeHash}-${cacheHash}`,
 	);
+
+	// print proxy errors if they exist
+	const stderr = readFileSync("/tmp/err.log", "utf8").trim();
+	if (stderr) {
+		core.warning("proxy exited with errors");
+		core.info(stderr);
+	}
 }
 
 try {
