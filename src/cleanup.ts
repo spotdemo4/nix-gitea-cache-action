@@ -106,6 +106,7 @@ async function main() {
 			"--to",
 			"file:///tmp/nix-cache",
 			"--no-recursive",
+			"--substitute-on-destination",
 			"--keep-going",
 			...local.keys(),
 		],
