@@ -82700,57 +82700,24 @@ async function main() {
     }
     // optimise
     await execExports.exec("nix", ["store", "optimise"]);
-    // get store paths
-    coreExports.info("getting store paths");
-    const storePaths = new Map(Object.entries(JSON.parse((await execExports.getExecOutput("nix", ["path-info", "--all", "--json"], {
-        silent: true,
-    })).stdout)));
-    // filter out paths not built locally
-    coreExports.info("filtering store paths not built locally");
-    const local = new Map();
-    for (const [path, info] of storePaths) {
-        if (!info.ultimate)
-            continue;
-        local.set(path, info);
-    }
-    // if no local paths, nothing to do
-    if (local.size === 0) {
-        coreExports.info("no local store paths found, nothing to do");
-        return;
-    }
     // sign
     coreExports.info("signing");
-    await execExports.exec("nix", [
-        "store",
-        "sign",
-        "--recursive",
-        "--key-file",
-        "/tmp/.secret-key",
-        ...local.keys(),
-    ], { silent: true });
+    await execExports.exec("nix", ["store", "sign", "--key-file", "/tmp/.secret-key", "--all"], { silent: true });
     // verify
     coreExports.info("verifying");
     await execExports.exec("nix", [
         "store",
         "verify",
         "--repair",
-        "--recursive",
         "--trusted-public-keys",
         publicKey,
-        ...local.keys(),
+        "--all",
     ], {
         silent: true,
     });
-    // copy to cache
-    const copy = await execExports.exec("nix", [
-        "copy",
-        "--to",
-        "file:///tmp/nix-cache",
-        "--no-recursive",
-        "--substitute-on-destination",
-        "--keep-going",
-        ...local.keys(),
-    ], {
+    // add to cache
+    coreExports.info("adding to cache");
+    const copy = await execExports.exec("nix", ["copy", "--to", "http://127.0.0.1:5001", "--keep-going", "--all"], {
         ignoreReturnCode: true,
     });
     if (copy !== 0) {

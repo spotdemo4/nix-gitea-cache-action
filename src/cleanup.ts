@@ -2,17 +2,6 @@ import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 
-type StorePath = {
-	ca: string | null;
-	deriver: string;
-	narHash: string;
-	narSize: number;
-	references: string[];
-	registrationTime: number;
-	signatures: string[];
-	ultimate: boolean;
-};
-
 async function main() {
 	// make sure caching is available
 	if (!cache.isFeatureAvailable()) {
@@ -37,46 +26,11 @@ async function main() {
 	// optimise
 	await exec.exec("nix", ["store", "optimise"]);
 
-	// get store paths
-	core.info("getting store paths");
-	const storePaths: Map<string, StorePath> = new Map(
-		Object.entries(
-			JSON.parse(
-				(
-					await exec.getExecOutput("nix", ["path-info", "--all", "--json"], {
-						silent: true,
-					})
-				).stdout,
-			),
-		),
-	);
-
-	// filter out paths not built locally
-	core.info("filtering store paths not built locally");
-	const local = new Map<string, StorePath>();
-	for (const [path, info] of storePaths) {
-		if (!info.ultimate) continue;
-		local.set(path, info);
-	}
-
-	// if no local paths, nothing to do
-	if (local.size === 0) {
-		core.info("no local store paths found, nothing to do");
-		return;
-	}
-
 	// sign
 	core.info("signing");
 	await exec.exec(
 		"nix",
-		[
-			"store",
-			"sign",
-			"--recursive",
-			"--key-file",
-			"/tmp/.secret-key",
-			...local.keys(),
-		],
+		["store", "sign", "--key-file", "/tmp/.secret-key", "--all"],
 		{ silent: true },
 	);
 
@@ -88,28 +42,20 @@ async function main() {
 			"store",
 			"verify",
 			"--repair",
-			"--recursive",
 			"--trusted-public-keys",
 			publicKey,
-			...local.keys(),
+			"--all",
 		],
 		{
 			silent: true,
 		},
 	);
 
-	// copy to cache
+	// add to cache
+	core.info("adding to cache");
 	const copy = await exec.exec(
 		"nix",
-		[
-			"copy",
-			"--to",
-			"file:///tmp/nix-cache",
-			"--no-recursive",
-			"--substitute-on-destination",
-			"--keep-going",
-			...local.keys(),
-		],
+		["copy", "--to", "http://127.0.0.1:5001", "--keep-going", "--all"],
 		{
 			ignoreReturnCode: true,
 		},
