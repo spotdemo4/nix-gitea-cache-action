@@ -1,13 +1,17 @@
+import { exec } from "node:child_process";
 import {
 	createReadStream,
 	createWriteStream,
 	existsSync,
 	mkdirSync,
+	writeFileSync,
 } from "node:fs";
 import { createServer } from "node:http";
 import { request } from "node:https";
 import path from "node:path";
-import * as exec from "@actions/exec";
+import { promisify } from "node:util";
+
+const execPromise = promisify(exec);
 
 const root = "/tmp/nix-cache";
 const hostname = "127.0.0.1";
@@ -32,13 +36,27 @@ const mimeTypes: Record<string, string> = {
 	".otf": "application/font-otf",
 	".wasm": "application/wasm",
 };
-const substituters = (
-	await exec.getExecOutput("nix", ["config", "show", "substituters"], {
-		silent: true,
-	})
-).stdout
+const substituters = (await execPromise("nix config show substituters")).stdout
 	.split(" ")
 	.map((s) => s.trim());
+console.log("substituters:", substituters);
+
+// make sure the root directory exists
+if (!existsSync(root)) {
+	mkdirSync(root, { recursive: true });
+}
+
+// make sure nix-cache-info exists
+if (!existsSync(path.join(root, "nix-cache-info"))) {
+	const info = await fetch("https://cache.nixos.org/nix-cache-info", {
+		method: "GET",
+	});
+	if (!info.ok) {
+		throw new Error("Failed to fetch nix-cache-info");
+	}
+	const data = await info.text();
+	writeFileSync(path.join(root, "nix-cache-info"), data);
+}
 
 const server = createServer(async (req, res) => {
 	if (!req.url) return;
@@ -152,5 +170,5 @@ const server = createServer(async (req, res) => {
 	}
 });
 
-console.log(`Starting server at http://${hostname}:${port}`);
+console.log(`starting server at http://${hostname}:${port}`);
 server.listen(port, hostname);
