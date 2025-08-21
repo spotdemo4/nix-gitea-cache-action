@@ -82789,6 +82789,8 @@ async function main() {
         path: "/substituters",
         timeout: 5000,
     });
+    coreExports.info(JSON.stringify(subUpdate.response));
+    coreExports.info(subUpdate.response.statusCode?.toString() ?? "none");
     if (subUpdate.response.statusCode || 500 > 299) {
         coreExports.warning("failed to load substituters");
     }
