@@ -143,9 +143,9 @@ const server = createServer(async (req, res) => {
                 substituters = (await execPromise("nix config show substituters")).stdout
                     .split(" ")
                     .map((s) => s.trim());
-                console.log("substituters:", substituters);
+                console.log("substituters:", substituters.join(", "));
                 res.writeHead(200, { "Content-Type": "text/plain" });
-                res.end("substituters updated");
+                res.end(JSON.stringify(substituters));
                 return;
             }
         }

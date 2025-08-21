@@ -82734,6 +82734,7 @@ async function main() {
         detached: true,
         stdio: ["ignore", out, err],
     });
+    coreExports.saveState("proxyPID", proxy.pid?.toString());
     proxy.unref();
     // wait for the proxy server to start
     let ping = 1;

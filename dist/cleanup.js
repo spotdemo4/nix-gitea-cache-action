@@ -82783,6 +82783,10 @@ async function main() {
     if (subUpdate.statusCode > 299) {
         coreExports.warning("failed to load substituters");
     }
+    else {
+        const substituters = JSON.parse(subUpdate.body);
+        coreExports.info(`substituters: ${substituters.join(", ")}`);
+    }
     // add to cache
     coreExports.info("adding to cache");
     const copy = await execExports.exec("nix", ["copy", "--to", "http://127.0.0.1:5001", "--keep-going", "--all"], {
@@ -82800,10 +82804,16 @@ async function main() {
     coreExports.info(`cache hash: ${cacheHash}`);
     // save cache
     await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], `nix-store-${flakeHash}-${cacheHash}`);
+    // close proxy server
+    const proxyPID = coreExports.getState("proxyPID");
+    if (proxyPID) {
+        coreExports.info("stopping proxy server");
+        process.kill(parseInt(proxyPID, 10));
+    }
     // print proxy errors if they exist
     const stderr = readFileSync("/tmp/err.log", "utf8").trim();
     if (stderr) {
-        coreExports.warning("proxy exited with errors");
+        coreExports.warning("proxy server had errors:");
         coreExports.info(stderr);
     }
 }

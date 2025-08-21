@@ -82,6 +82,9 @@ async function main() {
 	});
 	if (subUpdate.statusCode > 299) {
 		core.warning("failed to load substituters");
+	} else {
+		const substituters = JSON.parse(subUpdate.body) as string[];
+		core.info(`substituters: ${substituters.join(", ")}`);
 	}
 
 	// add to cache
@@ -117,10 +120,17 @@ async function main() {
 		`nix-store-${flakeHash}-${cacheHash}`,
 	);
 
+	// close proxy server
+	const proxyPID = core.getState("proxyPID");
+	if (proxyPID) {
+		core.info("stopping proxy server");
+		process.kill(parseInt(proxyPID, 10));
+	}
+
 	// print proxy errors if they exist
 	const stderr = readFileSync("/tmp/err.log", "utf8").trim();
 	if (stderr) {
-		core.warning("proxy exited with errors");
+		core.warning("proxy server had errors:");
 		core.info(stderr);
 	}
 }
