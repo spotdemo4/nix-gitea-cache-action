@@ -79,6 +79,7 @@ async function main() {
 		host: "127.0.0.1",
 		port: 5001,
 		path: "/substituters",
+		timeout: 5000,
 	});
 	if (subUpdate.statusCode > 299) {
 		core.warning("failed to load substituters");

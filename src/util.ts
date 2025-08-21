@@ -22,7 +22,13 @@ export async function requestPromise(
 				});
 			});
 		});
-		req.on("error", reject);
+		req.on("timeout", () => {
+			req.destroy(); // destroy the request if a timeout occurs
+			reject(new Error("request timed out"));
+		});
+		req.on("error", (err) => {
+			reject(err);
+		});
 		req.end();
 	});
 }
