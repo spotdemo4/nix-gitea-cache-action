@@ -82789,10 +82789,12 @@ async function main() {
         path: "/substituters",
         timeout: 5000,
     });
-    coreExports.info(subUpdate.response.statusCode?.toString() ?? "none");
-    coreExports.info(await subUpdate.body);
-    if (subUpdate.response.statusCode || 500 > 299) {
+    if (!subUpdate.response.statusCode || subUpdate.response.statusCode > 299) {
         coreExports.warning("failed to load substituters");
+    }
+    else {
+        const substituters = JSON.parse(await subUpdate.body);
+        coreExports.info(`substituters: ${substituters.join(", ")}`);
     }
     // add to cache
     coreExports.info("adding to cache");

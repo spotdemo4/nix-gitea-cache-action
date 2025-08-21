@@ -46,12 +46,13 @@ const server = createServer(async (req, res) => {
 						},
 						true,
 					);
-					if (head.response.statusCode || 500 > 299) continue;
+					if (!head.response.statusCode || head.response.statusCode > 299)
+						continue;
 
 					console.log("✓", substituterURL.href);
 
 					// return status
-					res.writeHead(head.response.statusCode || 500, head.response.headers);
+					res.writeHead(head.response.statusCode, head.response.headers);
 					res.end();
 
 					return;
@@ -93,12 +94,13 @@ const server = createServer(async (req, res) => {
 						},
 						true,
 					);
-					if (get.response.statusCode || 500 > 299) continue;
+					if (!get.response.statusCode || get.response.statusCode > 299)
+						continue;
 
 					console.log("<-", substituterURL.href);
 
 					// return response
-					res.writeHead(get.response.statusCode || 500, get.response.headers);
+					res.writeHead(get.response.statusCode, get.response.headers);
 					get.response.pipe(res, {
 						end: true,
 					});

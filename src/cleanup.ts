@@ -81,9 +81,7 @@ async function main() {
 		path: "/substituters",
 		timeout: 5000,
 	});
-	core.info(subUpdate.response.statusCode?.toString() ?? "none");
-	core.info(await subUpdate.body);
-	if (subUpdate.response.statusCode || 500 > 299) {
+	if (!subUpdate.response.statusCode || subUpdate.response.statusCode > 299) {
 		core.warning("failed to load substituters");
 	} else {
 		const substituters = JSON.parse(await subUpdate.body) as string[];
