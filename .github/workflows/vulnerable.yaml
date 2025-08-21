@@ -1,4 +1,4 @@
-name: flake
+name: vulnerable
 
 on:
   schedule:
@@ -9,10 +9,10 @@ permissions:
   contents: read
 
 jobs:
-  flake:
+  npm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - uses: DeterminateSystems/nix-installer-action@90bb610b90bf290cad97484ba341453bd1cbefea # v19
         with:
           extra-conf: |
@@ -20,4 +20,4 @@ jobs:
             extra-trusted-public-keys = trevnur.cachix.org-1:hBd15IdszwT52aOxdKs5vNTbq36emvEeGqpb25Bkq6o=
       - uses: ./
 
-      - run: nix develop --command flake-checker -f
+      - run: nix develop --command npm audit --audit-level moderate

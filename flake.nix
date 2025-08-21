@@ -46,6 +46,7 @@
 
           # Nix
           alejandra
+          flake-checker
 
           # Actions
           action-validator
@@ -98,7 +99,6 @@
             ];
             checkPhase = ''
               biome check .
-
               prettier --check .
               alejandra -c .
               renovate-config-validator

@@ -81,7 +81,7 @@ const server = createServer(async (req, res) => {
                         });
                     });
                     proxy.on("error", (err) => {
-                        console.error("Proxy error:", err);
+                        console.error("proxy error:", err);
                         res.writeHead(502, { "Content-Type": "text/plain" });
                         res.end("bad gateway");
                     });
@@ -147,7 +147,7 @@ const server = createServer(async (req, res) => {
                 console.log("substituters:", substituters.join(", "));
                 res.writeHead(200, { "Content-Type": "text/plain" });
                 res.end(JSON.stringify(substituters));
-                return;
+                break;
             }
         }
     }

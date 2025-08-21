@@ -2,6 +2,7 @@
 
 [![check](https://img.shields.io/github/actions/workflow/status/spotdemo4/nix-gitea-cache-action/check.yaml?logo=GitHub&logoColor=%23cdd6f4&label=check&labelColor=%2311111b)](https://github.com/spotdemo4/nix-gitea-cache-action/actions/workflows/check.yaml)
 [![flake](https://img.shields.io/github/actions/workflow/status/spotdemo4/nix-gitea-cache-action/flake.yaml?logo=nixos&logoColor=%2389dceb&label=flake&labelColor=%2311111b)](https://github.com/spotdemo4/nix-gitea-cache-action/actions/workflows/flake.yaml)
+[![vulnerable](https://img.shields.io/github/actions/workflow/status/spotdemo4/nix-gitea-cache-action/vulnerable.yaml?logo=npm&logoColor=%23cdd6f4&label=vulnerable&labelColor=%2311111b)](https://github.com/spotdemo4/nix-gitea-cache-action/actions/workflows/vulnerable.yaml)
 
 This action saves and restores the nix store to/from the actions cache. It is mainly useful for Gitea & Forgejo, as they are unsupported by the other nix cache actions. 
 
@@ -27,14 +28,14 @@ Gitea/Forgejo:
 
 ```yaml
 uses: https://github.com/DeterminateSystems/nix-installer-action@main
-uses: https://github.com/spotdemo4/nix-simple-cache-action@v1.4.1
+uses: https://github.com/spotdemo4/nix-simple-cache-action@v1.4.2
 ```
 
 GitHub:
 
 ```yaml
 uses: DeterminateSystems/nix-installer-action@main
-uses: spotdemo4/nix-simple-cache-action@v1.4.1
+uses: spotdemo4/nix-simple-cache-action@v1.4.2
 ```
 
 ## Alternatives
