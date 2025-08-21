@@ -82697,7 +82697,13 @@ async function requestPromise(options, secure) {
                 });
             });
         });
-        req.on("error", reject);
+        req.on("timeout", () => {
+            req.destroy(); // destroy the request if a timeout occurs
+            reject(new Error("request timed out"));
+        });
+        req.on("error", (err) => {
+            reject(err);
+        });
         req.end();
     });
 }
@@ -82779,6 +82785,7 @@ async function main() {
         host: "127.0.0.1",
         port: 5001,
         path: "/substituters",
+        timeout: 5000,
     });
     if (subUpdate.statusCode > 299) {
         coreExports.warning("failed to load substituters");
@@ -82817,9 +82824,14 @@ async function main() {
         process.kill(parseInt(proxyPID, 10));
     }
     // print proxy errors if they exist
+    const stdout = readFileSync("/tmp/out.log", "utf8").trim();
+    if (stdout) {
+        coreExports.info("proxy server output:");
+        coreExports.info(stdout);
+    }
     const stderr = readFileSync("/tmp/err.log", "utf8").trim();
     if (stderr) {
-        coreExports.warning("proxy server had errors:");
+        coreExports.warning("proxy server errors:");
         coreExports.info(stderr);
     }
 }

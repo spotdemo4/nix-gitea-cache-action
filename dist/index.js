@@ -82694,6 +82694,9 @@ async function main() {
         silent: true,
     })).stdout.trim();
     coreExports.info(`nix version: ${version}`);
+    // print node version
+    const nodeVersion = process.version;
+    coreExports.info(`node version: ${nodeVersion}`);
     // get flake hash
     const flakeHash = (await execExports.getExecOutput("nix", ["hash", "file", "--type", "sha256", "flake.lock"], {
         silent: true,

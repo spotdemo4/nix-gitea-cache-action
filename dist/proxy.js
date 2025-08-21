@@ -20,7 +20,13 @@ async function requestPromise(options, secure) {
                 });
             });
         });
-        req.on("error", reject);
+        req.on("timeout", () => {
+            req.destroy(); // destroy the request if a timeout occurs
+            reject(new Error("request timed out"));
+        });
+        req.on("error", (err) => {
+            reject(err);
+        });
         req.end();
     });
 }
@@ -56,6 +62,7 @@ const server = createServer(async (req, res) => {
                         path: req.url,
                         method: "HEAD",
                         headers: req.headers,
+                        timeout: 5000,
                     }, true);
                     if (head.statusCode > 299)
                         continue;
@@ -73,6 +80,7 @@ const server = createServer(async (req, res) => {
                         path: req.url,
                         method: req.method,
                         headers: req.headers,
+                        timeout: 5000,
                     }, (proxyRes) => {
                         res.writeHead(proxyRes.statusCode || 200, proxyRes.headers);
                         // substituter -> response
