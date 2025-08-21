@@ -42,39 +42,61 @@ const mimeTypes = {
     ".narinfo": "application/x-nix-narinfo",
 };
 let substituters = [];
+const substitutable = new Map();
 const server = createServer(async (req, res) => {
     try {
         if (!req.url)
             return;
-        const localPath = path.join(root, req.url);
         switch (req.method) {
-            case "GET":
             case "HEAD": {
-                // delete host & referer headers
-                delete req.headers.host;
-                delete req.headers.referer;
                 // check if any substituter has the requested path
                 for (const substituter of substituters) {
                     const substituterURL = new URL(req.url, substituter);
+                    delete req.headers.host;
+                    delete req.headers.referer;
                     const head = await requestPromise({
                         hostname: substituterURL.hostname,
                         port: 443,
                         path: req.url,
-                        method: "HEAD",
+                        method: req.method,
                         headers: req.headers,
                         timeout: 5000,
                     }, true);
                     if (head.statusCode > 299)
                         continue;
-                    // if HEAD request, just return status
-                    if (req.method === "HEAD") {
-                        res.writeHead(head.statusCode);
-                        res.end();
-                        return;
+                    console.log("✓", substituterURL.href);
+                    // add to substitutable
+                    if (!substitutable.has(req.url)) {
+                        substitutable.set(req.url, substituter);
                     }
+                    // return status
+                    res.writeHead(head.statusCode);
+                    res.end();
+                    return;
+                }
+                // else check if requested path exists locally
+                const localPath = path.join(root, req.url);
+                if (!existsSync(localPath)) {
+                    console.log("x", localPath);
+                    res.writeHead(404, { "Content-Type": "text/plain" });
+                    res.end("not found");
+                    return;
+                }
+                console.log("✓", localPath);
+                // return status
+                res.writeHead(200);
+                res.end();
+                break;
+            }
+            case "GET": {
+                // check if any substituter has the requested path
+                if (substitutable.has(req.url)) {
+                    const substituter = substitutable.get(req.url);
+                    const substituterURL = new URL(req.url, substituter);
                     console.log("<-", substituterURL.href);
-                    // if substituter contains path, pipe request to it
-                    const proxy = request({
+                    delete req.headers.host;
+                    delete req.headers.referer;
+                    const get = request({
                         hostname: substituterURL.hostname,
                         port: 443,
                         path: req.url,
@@ -82,24 +104,25 @@ const server = createServer(async (req, res) => {
                         headers: req.headers,
                         timeout: 5000,
                     }, (proxyRes) => {
-                        res.writeHead(proxyRes.statusCode || 200, proxyRes.headers);
+                        res.writeHead(proxyRes.statusCode || 500, proxyRes.headers);
                         // substituter -> response
                         proxyRes.pipe(res, {
                             end: true,
                         });
                     });
-                    proxy.on("error", (err) => {
+                    get.on("error", (err) => {
                         console.error("proxy error:", err);
                         res.writeHead(502, { "Content-Type": "text/plain" });
                         res.end("bad gateway");
                     });
                     // request -> substituter
-                    req.pipe(proxy, {
+                    req.pipe(get, {
                         end: true,
                     });
                     return;
                 }
                 // else check if requested path exists locally
+                const localPath = path.join(root, req.url);
                 if (!existsSync(localPath)) {
                     res.writeHead(404, { "Content-Type": "text/plain" });
                     res.end("not found");
@@ -124,6 +147,7 @@ const server = createServer(async (req, res) => {
             }
             case "PUT": {
                 // ensure directory exists
+                const localPath = path.join(root, req.url);
                 const dir = path.dirname(localPath);
                 if (!existsSync(dir)) {
                     mkdirSync(dir, { recursive: true });
