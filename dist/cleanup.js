@@ -82701,6 +82701,25 @@ async function requestPromise(options, secure) {
         req.end();
     });
 }
+function formatBytes(bytes, decimals = 2) {
+    if (!+bytes)
+        return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = [
+        "Bytes",
+        "KiB",
+        "MiB",
+        "GiB",
+        "TiB",
+        "PiB",
+        "EiB",
+        "ZiB",
+        "YiB",
+    ];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
+}
 
 async function main() {
     // make sure caching is available
@@ -82729,11 +82748,11 @@ async function main() {
     if (du.exitCode === 0) {
         size = parseInt(du.stdout.trim(), 10);
     }
-    coreExports.info(`cache size: ${size} bytes`);
+    coreExports.info(`cache size: ${formatBytes(size)}`);
     // delete cache if size exceeds max-size
     const max = parseInt(coreExports.getInput("max-size") || "1000000000", 10); // default to 1GB
     if (size > max) {
-        coreExports.info(`cache size exceeds max-size (${max} bytes), deleting cache`);
+        coreExports.info(`${formatBytes(size)} > max ${formatBytes(max)}, deleting cache`);
         await ioExports.rmRF("/tmp/nix-cache");
     }
     // optimise
@@ -82753,7 +82772,7 @@ async function main() {
     ], {
         silent: true,
     });
-    // have proxy server load in substituters so duplicates are not added
+    // have proxy server load in substituters so cached paths are not added
     coreExports.info("loading substituters");
     const subUpdate = await requestPromise({
         method: "POST",
@@ -82762,7 +82781,7 @@ async function main() {
         path: "/substituters",
     });
     if (subUpdate.statusCode > 299) {
-        coreExports.warning("failed to update substituters");
+        coreExports.warning("failed to load substituters");
     }
     // add to cache
     coreExports.info("adding to cache");
@@ -82773,9 +82792,11 @@ async function main() {
         coreExports.warning(`failed to copy some store paths (exit code ${copy})`);
     }
     // get hash of cache
-    const cacheHash = (await execExports.getExecOutput("nix", ["hash", "path", "/tmp/nix-cache"], {
+    const cacheHash = (await execExports.getExecOutput("nix", ["hash", "path", "--type", "sha256", "/tmp/nix-cache"], {
         silent: true,
-    })).stdout.trim();
+    })).stdout
+        .trim()
+        .split("sha256-")[1];
     coreExports.info(`cache hash: ${cacheHash}`);
     // save cache
     await cacheExports.saveCache(["/tmp/nix-cache", "/tmp/.secret-key"], `nix-store-${flakeHash}-${cacheHash}`);

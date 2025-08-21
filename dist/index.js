@@ -82695,9 +82695,11 @@ async function main() {
     })).stdout.trim();
     coreExports.info(`nix version: ${version}`);
     // get flake hash
-    const flakeHash = (await execExports.getExecOutput("nix", ["hash", "file", "flake.lock"], {
+    const flakeHash = (await execExports.getExecOutput("nix", ["hash", "file", "--type", "sha256", "flake.lock"], {
         silent: true,
-    })).stdout.trim();
+    })).stdout
+        .trim()
+        .split("sha256-")[1];
     coreExports.info(`flake hash: ${flakeHash}`);
     coreExports.saveState("flakeHash", flakeHash);
     // restore cache to tmp
@@ -82728,7 +82730,7 @@ async function main() {
     coreExports.info("starting binary cache proxy server");
     const out = openSync("/tmp/out.log", "as"); // Open file for stdout
     const err = openSync("/tmp/err.log", "as"); // Open file for stderr
-    const proxy = spawn("node", ["--no-network-family-autoselection", `${__dirname}/proxy.js`], {
+    const proxy = spawn("node", [`${__dirname}/proxy.js`], {
         detached: true,
         stdio: ["ignore", out, err],
     });

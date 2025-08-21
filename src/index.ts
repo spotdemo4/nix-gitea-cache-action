@@ -23,10 +23,16 @@ async function main() {
 
 	// get flake hash
 	const flakeHash = (
-		await exec.getExecOutput("nix", ["hash", "file", "flake.lock"], {
-			silent: true,
-		})
-	).stdout.trim();
+		await exec.getExecOutput(
+			"nix",
+			["hash", "file", "--type", "sha256", "flake.lock"],
+			{
+				silent: true,
+			},
+		)
+	).stdout
+		.trim()
+		.split("sha256-")[1];
 	core.info(`flake hash: ${flakeHash}`);
 	core.saveState("flakeHash", flakeHash);
 
@@ -81,14 +87,10 @@ async function main() {
 	core.info("starting binary cache proxy server");
 	const out = openSync("/tmp/out.log", "as"); // Open file for stdout
 	const err = openSync("/tmp/err.log", "as"); // Open file for stderr
-	const proxy = spawn(
-		"node",
-		["--no-network-family-autoselection", `${__dirname}/proxy.js`],
-		{
-			detached: true,
-			stdio: ["ignore", out, err],
-		},
-	);
+	const proxy = spawn("node", [`${__dirname}/proxy.js`], {
+		detached: true,
+		stdio: ["ignore", out, err],
+	});
 	proxy.unref();
 
 	// wait for the proxy server to start

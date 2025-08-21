@@ -3,7 +3,7 @@ import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as io from "@actions/io";
-import { requestPromise } from "./util.js";
+import { formatBytes, requestPromise } from "./util.js";
 
 async function main() {
 	// make sure caching is available
@@ -35,12 +35,12 @@ async function main() {
 	if (du.exitCode === 0) {
 		size = parseInt(du.stdout.trim(), 10);
 	}
-	core.info(`cache size: ${size} bytes`);
+	core.info(`cache size: ${formatBytes(size)}`);
 
 	// delete cache if size exceeds max-size
 	const max = parseInt(core.getInput("max-size") || "1000000000", 10); // default to 1GB
 	if (size > max) {
-		core.info(`cache size exceeds max-size (${max} bytes), deleting cache`);
+		core.info(`${formatBytes(size)} > max ${formatBytes(max)}, deleting cache`);
 		await io.rmRF("/tmp/nix-cache");
 	}
 
@@ -72,7 +72,7 @@ async function main() {
 		},
 	);
 
-	// have proxy server load in substituters so duplicates are not added
+	// have proxy server load in substituters so cached paths are not added
 	core.info("loading substituters");
 	const subUpdate = await requestPromise({
 		method: "POST",
@@ -81,7 +81,7 @@ async function main() {
 		path: "/substituters",
 	});
 	if (subUpdate.statusCode > 299) {
-		core.warning("failed to update substituters");
+		core.warning("failed to load substituters");
 	}
 
 	// add to cache
@@ -99,10 +99,16 @@ async function main() {
 
 	// get hash of cache
 	const cacheHash = (
-		await exec.getExecOutput("nix", ["hash", "path", "/tmp/nix-cache"], {
-			silent: true,
-		})
-	).stdout.trim();
+		await exec.getExecOutput(
+			"nix",
+			["hash", "path", "--type", "sha256", "/tmp/nix-cache"],
+			{
+				silent: true,
+			},
+		)
+	).stdout
+		.trim()
+		.split("sha256-")[1];
 	core.info(`cache hash: ${cacheHash}`);
 
 	// save cache

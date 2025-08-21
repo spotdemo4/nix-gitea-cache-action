@@ -13,7 +13,7 @@ Any action that installs Nix ([DeterminateSystems/nix-installer-action](https://
 
 ### `max-size`
 
-Maximum size of the cache in bytes. If the cache grows greater than this amount, it will be re-created with only the latest run's store. Defaults to 5GB.
+Maximum size of the cache in bytes. If the cache grows greater than this amount, it will be re-created with only the latest run's store. Defaults to 1GB.
 
 ## Outputs
 
