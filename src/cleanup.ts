@@ -97,6 +97,8 @@ async function main() {
 			"copy",
 			"--to",
 			"http://127.0.0.1:5001?compression=zstd&parallel-compression=true",
+			"--connect-timeout",
+			"30",
 			"--keep-going",
 			"--all",
 		],
