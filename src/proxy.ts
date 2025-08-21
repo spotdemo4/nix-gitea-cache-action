@@ -6,7 +6,6 @@ import {
 	mkdirSync,
 } from "node:fs";
 import { createServer } from "node:http";
-import { request } from "node:https";
 import path from "node:path";
 import { promisify } from "node:util";
 import { requestPromise } from "./util.js";
@@ -23,7 +22,6 @@ const mimeTypes: Record<string, string> = {
 	".narinfo": "application/x-nix-narinfo",
 };
 let substituters: string[] = [];
-const substitutable: Map<string, string> = new Map();
 
 const server = createServer(async (req, res) => {
 	try {
@@ -48,17 +46,12 @@ const server = createServer(async (req, res) => {
 						},
 						true,
 					);
-					if (head.statusCode > 299) continue;
+					if (head.response.statusCode || 500 > 299) continue;
 
 					console.log("✓", substituterURL.href);
 
-					// add to substitutable
-					if (!substitutable.has(req.url)) {
-						substitutable.set(req.url, substituter);
-					}
-
 					// return status
-					res.writeHead(head.statusCode);
+					res.writeHead(head.response.statusCode || 500, head.response.headers);
 					res.end();
 
 					return;
@@ -84,15 +77,12 @@ const server = createServer(async (req, res) => {
 
 			case "GET": {
 				// check if any substituter has the requested path
-				if (substitutable.has(req.url)) {
-					const substituter = substitutable.get(req.url);
+				for (const substituter of substituters) {
 					const substituterURL = new URL(req.url, substituter);
-
-					console.log("<-", substituterURL.href);
 
 					delete req.headers.host;
 					delete req.headers.referer;
-					const get = request(
+					const get = await requestPromise(
 						{
 							hostname: substituterURL.hostname,
 							port: 443,
@@ -101,21 +91,15 @@ const server = createServer(async (req, res) => {
 							headers: req.headers,
 							timeout: 5000,
 						},
-						(proxyRes) => {
-							res.writeHead(proxyRes.statusCode || 500, proxyRes.headers);
-							// substituter -> response
-							proxyRes.pipe(res, {
-								end: true,
-							});
-						},
+						true,
 					);
-					get.on("error", (err) => {
-						console.error("proxy error:", err);
-						res.writeHead(502, { "Content-Type": "text/plain" });
-						res.end("bad gateway");
-					});
-					// request -> substituter
-					req.pipe(get, {
+					if (get.response.statusCode || 500 > 299) continue;
+
+					console.log("<-", substituterURL.href);
+
+					// return response
+					res.writeHead(get.response.statusCode || 500, get.response.headers);
+					get.response.pipe(res, {
 						end: true,
 					});
 

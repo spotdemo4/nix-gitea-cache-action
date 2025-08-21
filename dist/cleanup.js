@@ -82690,11 +82690,13 @@ async function requestPromise(options, secure) {
             res.on("data", (chunk) => {
                 body += chunk;
             });
-            res.on("end", () => {
-                resolve({
-                    statusCode: res.statusCode ?? 500,
-                    body: body,
-                });
+            resolve({
+                response: res,
+                body: new Promise((resolveBody) => {
+                    res.on("end", () => {
+                        resolveBody(body);
+                    });
+                }),
             });
         });
         req.on("timeout", () => {
@@ -82787,12 +82789,8 @@ async function main() {
         path: "/substituters",
         timeout: 5000,
     });
-    if (subUpdate.statusCode > 299) {
+    if (subUpdate.response.statusCode || 500 > 299) {
         coreExports.warning("failed to load substituters");
-    }
-    else {
-        const substituters = JSON.parse(subUpdate.body);
-        coreExports.info(`substituters: ${substituters.join(", ")}`);
     }
     // add to cache
     coreExports.info("adding to cache");

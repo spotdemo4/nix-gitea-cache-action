@@ -81,10 +81,10 @@ async function main() {
 		path: "/substituters",
 		timeout: 5000,
 	});
-	if (subUpdate.statusCode > 299) {
+	if (subUpdate.response.statusCode || 500 > 299) {
 		core.warning("failed to load substituters");
 	} else {
-		const substituters = JSON.parse(subUpdate.body) as string[];
+		const substituters = JSON.parse(await subUpdate.body) as string[];
 		core.info(`substituters: ${substituters.join(", ")}`);
 	}
 

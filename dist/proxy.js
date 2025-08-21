@@ -1,9 +1,9 @@
 import { exec } from 'node:child_process';
 import { existsSync, mkdirSync, createWriteStream, createReadStream } from 'node:fs';
 import { createServer } from 'node:http';
-import { request } from 'node:https';
 import path from 'node:path';
 import { promisify } from 'node:util';
+import { request } from 'node:https';
 
 async function requestPromise(options, secure) {
     return new Promise((resolve, reject) => {
@@ -13,11 +13,13 @@ async function requestPromise(options, secure) {
             res.on("data", (chunk) => {
                 body += chunk;
             });
-            res.on("end", () => {
-                resolve({
-                    statusCode: res.statusCode ?? 500,
-                    body: body,
-                });
+            resolve({
+                response: res,
+                body: new Promise((resolveBody) => {
+                    res.on("end", () => {
+                        resolveBody(body);
+                    });
+                }),
             });
         });
         req.on("timeout", () => {
@@ -42,7 +44,6 @@ const mimeTypes = {
     ".narinfo": "application/x-nix-narinfo",
 };
 let substituters = [];
-const substitutable = new Map();
 const server = createServer(async (req, res) => {
     try {
         if (!req.url)
@@ -62,15 +63,11 @@ const server = createServer(async (req, res) => {
                         headers: req.headers,
                         timeout: 5000,
                     }, true);
-                    if (head.statusCode > 299)
+                    if (head.response.statusCode || 500 > 299)
                         continue;
                     console.log("✓", substituterURL.href);
-                    // add to substitutable
-                    if (!substitutable.has(req.url)) {
-                        substitutable.set(req.url, substituter);
-                    }
                     // return status
-                    res.writeHead(head.statusCode);
+                    res.writeHead(head.response.statusCode || 500, head.response.headers);
                     res.end();
                     return;
                 }
@@ -90,33 +87,24 @@ const server = createServer(async (req, res) => {
             }
             case "GET": {
                 // check if any substituter has the requested path
-                if (substitutable.has(req.url)) {
-                    const substituter = substitutable.get(req.url);
+                for (const substituter of substituters) {
                     const substituterURL = new URL(req.url, substituter);
-                    console.log("<-", substituterURL.href);
                     delete req.headers.host;
                     delete req.headers.referer;
-                    const get = request({
+                    const get = await requestPromise({
                         hostname: substituterURL.hostname,
                         port: 443,
                         path: req.url,
                         method: req.method,
                         headers: req.headers,
                         timeout: 5000,
-                    }, (proxyRes) => {
-                        res.writeHead(proxyRes.statusCode || 500, proxyRes.headers);
-                        // substituter -> response
-                        proxyRes.pipe(res, {
-                            end: true,
-                        });
-                    });
-                    get.on("error", (err) => {
-                        console.error("proxy error:", err);
-                        res.writeHead(502, { "Content-Type": "text/plain" });
-                        res.end("bad gateway");
-                    });
-                    // request -> substituter
-                    req.pipe(get, {
+                    }, true);
+                    if (get.response.statusCode || 500 > 299)
+                        continue;
+                    console.log("<-", substituterURL.href);
+                    // return response
+                    res.writeHead(get.response.statusCode || 500, get.response.headers);
+                    get.response.pipe(res, {
                         end: true,
                     });
                     return;
