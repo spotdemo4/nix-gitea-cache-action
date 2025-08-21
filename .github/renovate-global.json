@@ -5,6 +5,6 @@
 	"onboarding": false,
 	"requireConfig": "optional",
 	"platform": "github",
-	"repositories": ["spotdemo4/nix-gitea-cache-action"],
+	"repositories": ["spotdemo4/nix-simple-cache-action"],
 	"allowedCommands": ["npm install", "npm run build"]
 }
