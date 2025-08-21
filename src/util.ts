@@ -1,12 +1,15 @@
-import { type RequestOptions, request } from "node:https";
+import { request as http } from "node:http";
+import { request as https, type RequestOptions } from "node:https";
 
 export async function requestPromise(
 	options: RequestOptions | string | URL,
+	secure?: boolean,
 ): Promise<{
 	statusCode: number;
 	body: string;
 }> {
 	return new Promise((resolve, reject) => {
+		const request = secure ? https : http;
 		let body = "";
 		const req = request(options, (res) => {
 			res.on("data", (chunk: string) => {

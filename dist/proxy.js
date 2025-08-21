@@ -5,10 +5,11 @@ import { request } from 'node:https';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
-async function requestPromise(options) {
+async function requestPromise(options, secure) {
     return new Promise((resolve, reject) => {
+        const request$1 = request ;
         let body = "";
-        const req = request(options, (res) => {
+        const req = request$1(options, (res) => {
             res.on("data", (chunk) => {
                 body += chunk;
             });
@@ -82,7 +83,7 @@ const server = createServer(async (req, res) => {
                         path: req.url,
                         method: "HEAD",
                         headers: req.headers,
-                    });
+                    }, true);
                     if (head.statusCode > 299)
                         continue;
                     // if HEAD request, return status

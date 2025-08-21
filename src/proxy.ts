@@ -46,7 +46,10 @@ if (!existsSync(root)) {
 
 // ensure nix-cache-info exists
 if (!existsSync(path.join(root, "nix-cache-info"))) {
-	const info = await requestPromise("https://cache.nixos.org/nix-cache-info");
+	const info = await requestPromise(
+		"https://cache.nixos.org/nix-cache-info",
+		true,
+	);
 	if (info.statusCode > 299) {
 		throw new Error("Failed to fetch nix-cache-info");
 	}
@@ -69,13 +72,16 @@ const server = createServer(async (req, res) => {
 				for (const substituter of substituters) {
 					// check if substituter contains path
 					const substituterURL = new URL(req.url, substituter);
-					const head = await requestPromise({
-						hostname: substituterURL.hostname,
-						port: 443,
-						path: req.url,
-						method: "HEAD",
-						headers: req.headers,
-					});
+					const head = await requestPromise(
+						{
+							hostname: substituterURL.hostname,
+							port: 443,
+							path: req.url,
+							method: "HEAD",
+							headers: req.headers,
+						},
+						true,
+					);
 					if (head.statusCode > 299) continue;
 
 					// if HEAD request, return status

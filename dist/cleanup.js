@@ -31,8 +31,8 @@ import require$$6$1 from 'timers';
 import require$$1$7 from 'node:os';
 import require$$2$3 from 'node:process';
 import require$$0$e from 'node:crypto';
-import require$$1$8 from 'node:http';
-import require$$2$4, { request as request$2 } from 'node:https';
+import require$$1$8, { request as request$2 } from 'node:http';
+import require$$2$4 from 'node:https';
 import require$$3$1 from 'node:zlib';
 import require$$0$f from 'tty';
 import require$$2$5 from 'node:buffer';
@@ -82682,10 +82682,11 @@ var execExports = requireExec();
 
 var ioExports = requireIo();
 
-async function requestPromise(options) {
+async function requestPromise(options, secure) {
     return new Promise((resolve, reject) => {
+        const request = request$2;
         let body = "";
-        const req = request$2(options, (res) => {
+        const req = request(options, (res) => {
             res.on("data", (chunk) => {
                 body += chunk;
             });
