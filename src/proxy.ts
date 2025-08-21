@@ -7,32 +7,12 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { createServer } from "node:http";
-import { type RequestOptions, request } from "node:https";
+import { request } from "node:https";
 import path from "node:path";
 import { promisify } from "node:util";
+import { requestPromise } from "./util.js";
 
 const execPromise = promisify(exec);
-async function requestPromise(options: RequestOptions | string | URL): Promise<{
-	statusCode: number;
-	body: string;
-}> {
-	return new Promise((resolve, reject) => {
-		let body = "";
-		const req = request(options, (res) => {
-			res.on("data", (chunk: string) => {
-				body += chunk;
-			});
-			res.on("end", () => {
-				resolve({
-					statusCode: res.statusCode ?? 500,
-					body: body,
-				});
-			});
-		});
-		req.on("error", reject);
-		req.end();
-	});
-}
 
 const root = "/tmp/nix-cache";
 const hostname = "127.0.0.1";
@@ -57,10 +37,7 @@ const mimeTypes: Record<string, string> = {
 	".otf": "application/font-otf",
 	".wasm": "application/wasm",
 };
-const substituters = (await execPromise("nix config show substituters")).stdout
-	.split(" ")
-	.map((s) => s.trim());
-console.log("substituters:", substituters);
+let substituters: string[] = [];
 
 // ensure the root directory exists
 if (!existsSync(root)) {
@@ -188,6 +165,28 @@ const server = createServer(async (req, res) => {
 					res.writeHead(201, { "Content-Type": "text/plain" });
 					res.end("Created");
 				});
+
+				break;
+			}
+
+			case "POST": {
+				if (req.url !== "/substituters") {
+					res.writeHead(404, { "Content-Type": "text/plain" });
+					res.end("Not Found");
+					return;
+				}
+
+				// update substitutors
+				substituters = (
+					await execPromise("nix config show substituters")
+				).stdout
+					.split(" ")
+					.map((s) => s.trim());
+				console.log("substituters:", substituters);
+
+				res.writeHead(200, { "Content-Type": "text/plain" });
+				res.end("Substituters updated");
+				return;
 			}
 		}
 	} catch (err) {

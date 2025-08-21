@@ -3,6 +3,7 @@ import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as io from "@actions/io";
+import { requestPromise } from "./util.js";
 
 async function main() {
 	// make sure caching is available
@@ -70,6 +71,18 @@ async function main() {
 			silent: true,
 		},
 	);
+
+	// have proxy server load in substituters so duplicates are not added
+	core.info("loading substituters");
+	const subUpdate = await requestPromise({
+		method: "POST",
+		host: "127.0.0.1",
+		port: 5001,
+		path: "/substituters",
+	});
+	if (subUpdate.statusCode > 299) {
+		core.warning("failed to update substituters");
+	}
 
 	// add to cache
 	core.info("adding to cache");

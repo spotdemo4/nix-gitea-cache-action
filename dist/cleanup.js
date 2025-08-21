@@ -32,7 +32,7 @@ import require$$1$7 from 'node:os';
 import require$$2$3 from 'node:process';
 import require$$0$e from 'node:crypto';
 import require$$1$8 from 'node:http';
-import require$$2$4 from 'node:https';
+import require$$2$4, { request as request$2 } from 'node:https';
 import require$$3$1 from 'node:zlib';
 import require$$0$f from 'tty';
 import require$$2$5 from 'node:buffer';
@@ -82682,6 +82682,25 @@ var execExports = requireExec();
 
 var ioExports = requireIo();
 
+async function requestPromise(options) {
+    return new Promise((resolve, reject) => {
+        let body = "";
+        const req = request$2(options, (res) => {
+            res.on("data", (chunk) => {
+                body += chunk;
+            });
+            res.on("end", () => {
+                resolve({
+                    statusCode: res.statusCode ?? 500,
+                    body: body,
+                });
+            });
+        });
+        req.on("error", reject);
+        req.end();
+    });
+}
+
 async function main() {
     // make sure caching is available
     if (!cacheExports.isFeatureAvailable()) {
@@ -82733,6 +82752,17 @@ async function main() {
     ], {
         silent: true,
     });
+    // have proxy server load in substituters so duplicates are not added
+    coreExports.info("loading substituters");
+    const subUpdate = await requestPromise({
+        method: "POST",
+        host: "127.0.0.1",
+        port: 5001,
+        path: "/substituters",
+    });
+    if (subUpdate.statusCode > 299) {
+        coreExports.warning("failed to update substituters");
+    }
     // add to cache
     coreExports.info("adding to cache");
     const copy = await execExports.exec("nix", ["copy", "--to", "http://127.0.0.1:5001", "--keep-going", "--all"], {

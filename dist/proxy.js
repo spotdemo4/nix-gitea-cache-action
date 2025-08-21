@@ -5,7 +5,6 @@ import { request } from 'node:https';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
-const execPromise = promisify(exec);
 async function requestPromise(options) {
     return new Promise((resolve, reject) => {
         let body = "";
@@ -24,6 +23,8 @@ async function requestPromise(options) {
         req.end();
     });
 }
+
+const execPromise = promisify(exec);
 const root = "/tmp/nix-cache";
 const hostname = "127.0.0.1";
 const port = 5001;
@@ -47,10 +48,7 @@ const mimeTypes = {
     ".otf": "application/font-otf",
     ".wasm": "application/wasm",
 };
-const substituters = (await execPromise("nix config show substituters")).stdout
-    .split(" ")
-    .map((s) => s.trim());
-console.log("substituters:", substituters);
+let substituters = [];
 // ensure the root directory exists
 if (!existsSync(root)) {
     mkdirSync(root, { recursive: true });
@@ -160,6 +158,22 @@ const server = createServer(async (req, res) => {
                     res.writeHead(201, { "Content-Type": "text/plain" });
                     res.end("Created");
                 });
+                break;
+            }
+            case "POST": {
+                if (req.url !== "/substituters") {
+                    res.writeHead(404, { "Content-Type": "text/plain" });
+                    res.end("Not Found");
+                    return;
+                }
+                // update substitutors
+                substituters = (await execPromise("nix config show substituters")).stdout
+                    .split(" ")
+                    .map((s) => s.trim());
+                console.log("substituters:", substituters);
+                res.writeHead(200, { "Content-Type": "text/plain" });
+                res.end("Substituters updated");
+                return;
             }
         }
     }
