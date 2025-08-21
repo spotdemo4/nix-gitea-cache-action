@@ -82824,13 +82824,11 @@ async function main() {
         process.kill(parseInt(proxyPID, 10));
     }
     // print proxy errors if they exist
-    const stdout = readFileSync("/tmp/out.log", "utf8").trim();
-    if (stdout) {
-        coreExports.info("proxy server output:");
-        coreExports.info(stdout);
-    }
     const stderr = readFileSync("/tmp/err.log", "utf8").trim();
     if (stderr) {
+        const stdout = readFileSync("/tmp/out.log", "utf8").trim();
+        coreExports.info("proxy server output:");
+        coreExports.info(stdout);
         coreExports.warning("proxy server errors:");
         coreExports.info(stderr);
     }

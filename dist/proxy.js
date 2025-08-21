@@ -68,7 +68,7 @@ const server = createServer(async (req, res) => {
                     return;
                 }
                 console.log("✓", localPath);
-                // return status
+                // return good status code
                 res.writeHead(200);
                 res.end();
                 break;
@@ -89,7 +89,7 @@ const server = createServer(async (req, res) => {
                     if (!get.statusCode || get.statusCode > 299)
                         continue;
                     console.log("<-", substituterURL.href);
-                    // return response
+                    // pipe store path to response
                     res.writeHead(get.statusCode, get.headers);
                     get.pipe(res, {
                         end: true,
