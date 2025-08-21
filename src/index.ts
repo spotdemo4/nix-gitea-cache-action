@@ -21,6 +21,10 @@ async function main() {
 	).stdout.trim();
 	core.info(`nix version: ${version}`);
 
+	// print node version
+	const nodeVersion = process.version;
+	core.info(`node version: ${nodeVersion}`);
+
 	// get flake hash
 	const flakeHash = (
 		await exec.getExecOutput(

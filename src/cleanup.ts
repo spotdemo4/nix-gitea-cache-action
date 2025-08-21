@@ -135,9 +135,14 @@ async function main() {
 	}
 
 	// print proxy errors if they exist
+	const stdout = readFileSync("/tmp/out.log", "utf8").trim();
+	if (stdout) {
+		core.info("proxy server output:");
+		core.info(stdout);
+	}
 	const stderr = readFileSync("/tmp/err.log", "utf8").trim();
 	if (stderr) {
-		core.warning("proxy server had errors:");
+		core.warning("proxy server errors:");
 		core.info(stderr);
 	}
 }
