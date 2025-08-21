@@ -1,33 +1,28 @@
-import { request as http, type IncomingMessage } from "node:http";
+import {
+	type ClientRequest,
+	request as http,
+	type IncomingMessage,
+} from "node:http";
 import { request as https, type RequestOptions } from "node:https";
 
-export async function requestPromise(
+export function requestPromise(
 	options: RequestOptions | string | URL,
 	secure?: boolean,
 ): Promise<{
+	request: ClientRequest;
 	response: IncomingMessage;
-	body: Promise<string>;
 }> {
 	return new Promise((resolve, reject) => {
 		const request = secure ? https : http;
-		let body = "";
 
 		const req = request(options, (res) => {
-			res.on("data", (chunk: string) => {
-				body += chunk;
-			});
-
 			resolve({
+				request: req,
 				response: res,
-				body: new Promise((resolveBody) => {
-					res.on("end", () => {
-						resolveBody(body);
-					});
-				}),
 			});
 		});
 
-		req.on("timeout", () => {
+		req.setTimeout(10000, () => {
 			req.destroy(); // destroy the request if a timeout occurs
 			reject(new Error("request timed out"));
 		});
@@ -35,6 +30,15 @@ export async function requestPromise(
 			reject(err);
 		});
 		req.end();
+	});
+}
+
+export function streamToString(stream: NodeJS.ReadableStream): Promise<string> {
+	const chunks: Buffer[] = [];
+	return new Promise((resolve, reject) => {
+		stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+		stream.on("error", (err) => reject(err));
+		stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
 	});
 }
 

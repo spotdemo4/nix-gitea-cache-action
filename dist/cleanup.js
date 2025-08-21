@@ -82682,24 +82682,16 @@ var execExports = requireExec();
 
 var ioExports = requireIo();
 
-async function requestPromise(options, secure) {
+function requestPromise(options, secure) {
     return new Promise((resolve, reject) => {
         const request = request$2;
-        let body = "";
         const req = request(options, (res) => {
-            res.on("data", (chunk) => {
-                body += chunk;
-            });
             resolve({
+                request: req,
                 response: res,
-                body: new Promise((resolveBody) => {
-                    res.on("end", () => {
-                        resolveBody(body);
-                    });
-                }),
             });
         });
-        req.on("timeout", () => {
+        req.setTimeout(10000, () => {
             req.destroy(); // destroy the request if a timeout occurs
             reject(new Error("request timed out"));
         });
@@ -82707,6 +82699,14 @@ async function requestPromise(options, secure) {
             reject(err);
         });
         req.end();
+    });
+}
+function streamToString(stream) {
+    const chunks = [];
+    return new Promise((resolve, reject) => {
+        stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+        stream.on("error", (err) => reject(err));
+        stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
     });
 }
 function formatBytes(bytes, decimals = 2) {
@@ -82787,13 +82787,12 @@ async function main() {
         host: "127.0.0.1",
         port: 5001,
         path: "/substituters",
-        timeout: 5000,
     });
     if (!subUpdate.response.statusCode || subUpdate.response.statusCode > 299) {
         coreExports.warning("failed to load substituters");
     }
     else {
-        const substituters = JSON.parse(await subUpdate.body);
+        const substituters = JSON.parse(await streamToString(subUpdate.response));
         coreExports.info(`substituters: ${substituters.join(", ")}`);
     }
     // add to cache

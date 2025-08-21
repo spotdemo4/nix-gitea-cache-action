@@ -42,7 +42,6 @@ const server = createServer(async (req, res) => {
 							path: req.url,
 							method: req.method,
 							headers: req.headers,
-							timeout: 5000,
 						},
 						true,
 					);
@@ -90,7 +89,6 @@ const server = createServer(async (req, res) => {
 							path: req.url,
 							method: req.method,
 							headers: req.headers,
-							timeout: 5000,
 						},
 						true,
 					);

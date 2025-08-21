@@ -5,24 +5,16 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import { request } from 'node:https';
 
-async function requestPromise(options, secure) {
+function requestPromise(options, secure) {
     return new Promise((resolve, reject) => {
         const request$1 = request ;
-        let body = "";
         const req = request$1(options, (res) => {
-            res.on("data", (chunk) => {
-                body += chunk;
-            });
             resolve({
+                request: req,
                 response: res,
-                body: new Promise((resolveBody) => {
-                    res.on("end", () => {
-                        resolveBody(body);
-                    });
-                }),
             });
         });
-        req.on("timeout", () => {
+        req.setTimeout(10000, () => {
             req.destroy(); // destroy the request if a timeout occurs
             reject(new Error("request timed out"));
         });
@@ -61,7 +53,6 @@ const server = createServer(async (req, res) => {
                         path: req.url,
                         method: req.method,
                         headers: req.headers,
-                        timeout: 5000,
                     }, true);
                     if (!head.response.statusCode || head.response.statusCode > 299)
                         continue;
@@ -97,7 +88,6 @@ const server = createServer(async (req, res) => {
                         path: req.url,
                         method: req.method,
                         headers: req.headers,
-                        timeout: 5000,
                     }, true);
                     if (!get.response.statusCode || get.response.statusCode > 299)
                         continue;

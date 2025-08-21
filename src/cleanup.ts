@@ -3,7 +3,7 @@ import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import * as io from "@actions/io";
-import { formatBytes, requestPromise } from "./util.js";
+import { formatBytes, requestPromise, streamToString } from "./util.js";
 
 async function main() {
 	// make sure caching is available
@@ -79,12 +79,13 @@ async function main() {
 		host: "127.0.0.1",
 		port: 5001,
 		path: "/substituters",
-		timeout: 5000,
 	});
 	if (!subUpdate.response.statusCode || subUpdate.response.statusCode > 299) {
 		core.warning("failed to load substituters");
 	} else {
-		const substituters = JSON.parse(await subUpdate.body) as string[];
+		const substituters = JSON.parse(
+			await streamToString(subUpdate.response),
+		) as string[];
 		core.info(`substituters: ${substituters.join(", ")}`);
 	}
 
