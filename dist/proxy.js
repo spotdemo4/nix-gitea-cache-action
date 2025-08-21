@@ -31,7 +31,8 @@ const hostname = "127.0.0.1";
 const port = 5001;
 const mimeTypes = {
     ".nar": "application/x-nix-nar",
-    ".nar.xz": "application/x-nix-nar+x-xz",
+    ".nar.xz": "application/x-xz",
+    ".nar.zst": "application/zstd",
     ".narinfo": "application/x-nix-narinfo",
 };
 let substituters = [];

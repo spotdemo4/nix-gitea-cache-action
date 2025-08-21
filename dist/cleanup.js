@@ -82789,7 +82789,13 @@ async function main() {
     }
     // add to cache
     coreExports.info("adding to cache");
-    const copy = await execExports.exec("nix", ["copy", "--to", "http://127.0.0.1:5001", "--keep-going", "--all"], {
+    const copy = await execExports.exec("nix", [
+        "copy",
+        "--to",
+        "http://127.0.0.1:5001?compression=zstd&parallel-compression=true",
+        "--keep-going",
+        "--all",
+    ], {
         ignoreReturnCode: true,
     });
     if (copy !== 0) {

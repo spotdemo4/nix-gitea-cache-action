@@ -91,7 +91,13 @@ async function main() {
 	core.info("adding to cache");
 	const copy = await exec.exec(
 		"nix",
-		["copy", "--to", "http://127.0.0.1:5001", "--keep-going", "--all"],
+		[
+			"copy",
+			"--to",
+			"http://127.0.0.1:5001?compression=zstd&parallel-compression=true",
+			"--keep-going",
+			"--all",
+		],
 		{
 			ignoreReturnCode: true,
 		},
