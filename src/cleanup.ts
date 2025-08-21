@@ -80,11 +80,11 @@ async function main() {
 		port: 5001,
 		path: "/substituters",
 	});
-	if (!subUpdate.response.statusCode || subUpdate.response.statusCode > 299) {
+	if (!subUpdate.statusCode || subUpdate.statusCode > 299) {
 		core.warning("failed to load substituters");
 	} else {
 		const substituters = JSON.parse(
-			await streamToString(subUpdate.response),
+			await streamToString(subUpdate),
 		) as string[];
 		core.info(`substituters: ${substituters.join(", ")}`);
 	}

@@ -1,25 +1,15 @@
-import {
-	type ClientRequest,
-	request as http,
-	type IncomingMessage,
-} from "node:http";
+import { request as http, type IncomingMessage } from "node:http";
 import { request as https, type RequestOptions } from "node:https";
 
 export function requestPromise(
 	options: RequestOptions | string | URL,
 	secure?: boolean,
-): Promise<{
-	request: ClientRequest;
-	response: IncomingMessage;
-}> {
+): Promise<IncomingMessage> {
 	return new Promise((resolve, reject) => {
 		const request = secure ? https : http;
 
 		const req = request(options, (res) => {
-			resolve({
-				request: req,
-				response: res,
-			});
+			resolve(res);
 		});
 
 		req.setTimeout(10000, () => {

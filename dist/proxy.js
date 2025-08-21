@@ -9,10 +9,7 @@ function requestPromise(options, secure) {
     return new Promise((resolve, reject) => {
         const request$1 = request ;
         const req = request$1(options, (res) => {
-            resolve({
-                request: req,
-                response: res,
-            });
+            resolve(res);
         });
         req.setTimeout(10000, () => {
             req.destroy(); // destroy the request if a timeout occurs
@@ -54,11 +51,11 @@ const server = createServer(async (req, res) => {
                         method: req.method,
                         headers: req.headers,
                     }, true);
-                    if (!head.response.statusCode || head.response.statusCode > 299)
+                    if (!head.statusCode || head.statusCode > 299)
                         continue;
                     console.log("✓", substituterURL.href);
                     // return status
-                    res.writeHead(head.response.statusCode, head.response.headers);
+                    res.writeHead(head.statusCode, head.headers);
                     res.end();
                     return;
                 }
@@ -89,12 +86,12 @@ const server = createServer(async (req, res) => {
                         method: req.method,
                         headers: req.headers,
                     }, true);
-                    if (!get.response.statusCode || get.response.statusCode > 299)
+                    if (!get.statusCode || get.statusCode > 299)
                         continue;
                     console.log("<-", substituterURL.href);
                     // return response
-                    res.writeHead(get.response.statusCode, get.response.headers);
-                    get.response.pipe(res, {
+                    res.writeHead(get.statusCode, get.headers);
+                    get.pipe(res, {
                         end: true,
                     });
                     return;

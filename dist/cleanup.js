@@ -82686,10 +82686,7 @@ function requestPromise(options, secure) {
     return new Promise((resolve, reject) => {
         const request = request$2;
         const req = request(options, (res) => {
-            resolve({
-                request: req,
-                response: res,
-            });
+            resolve(res);
         });
         req.setTimeout(10000, () => {
             req.destroy(); // destroy the request if a timeout occurs
@@ -82788,11 +82785,11 @@ async function main() {
         port: 5001,
         path: "/substituters",
     });
-    if (!subUpdate.response.statusCode || subUpdate.response.statusCode > 299) {
+    if (!subUpdate.statusCode || subUpdate.statusCode > 299) {
         coreExports.warning("failed to load substituters");
     }
     else {
-        const substituters = JSON.parse(await streamToString(subUpdate.response));
+        const substituters = JSON.parse(await streamToString(subUpdate));
         coreExports.info(`substituters: ${substituters.join(", ")}`);
     }
     // add to cache
